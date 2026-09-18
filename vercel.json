@@ -13,7 +13,14 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/BoraApi/api/index.ts" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/assets/(.*)", "dest": "/BoraApp/assets/$1" },
+    { "src": "/icons/(.*)", "dest": "/BoraApp/icons/$1" },
+    { "src": "/venues/(.*)", "dest": "/BoraApp/venues/$1" },
+    { "src": "/registerSW.js", "dest": "/BoraApp/registerSW.js" },
+    { "src": "/manifest.webmanifest", "dest": "/BoraApp/manifest.webmanifest" },
+    { "src": "/logo.png", "dest": "/BoraApp/logo.png" },
+    { "src": "/sw.js", "dest": "/BoraApp/sw.js" },
+    { "src": "/workbox-(.*)", "dest": "/BoraApp/workbox-$1" },
+    { "src": "/(.*)", "dest": "/BoraApp/index.html" }
   ]
 }

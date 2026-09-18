@@ -16,6 +16,7 @@ build/
 # Credenciais locais (nunca comitar)
 CREDENTIALS.md
 **/CREDENTIALS.md
+vercel-import.env
 
 # Logs
 *.log
