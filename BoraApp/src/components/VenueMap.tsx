@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 
+import { cn } from '@/utils/cn';
 import type { Venue } from '@/types/domain';
 
 // Barra da Tijuca, RJ — mesmo fallback usado no resto do app quando não há geolocalização.
@@ -25,15 +26,32 @@ function buildPinIcon(score?: number) {
   });
 }
 
-export function VenueMap({ venues }: { venues: Venue[] }) {
+export function VenueMap({
+  venues,
+  zoom = 13,
+  heightClassName = 'h-[65vh]',
+  interactive = true,
+}: {
+  venues: Venue[];
+  zoom?: number;
+  heightClassName?: string;
+  interactive?: boolean;
+}) {
   const navigate = useNavigate();
 
   const center: [number, number] =
     venues.length > 0 ? [venues[0].latitude, venues[0].longitude] : DEFAULT_CENTER;
 
   return (
-    <div className="map-dark-tiles h-[65vh] w-full overflow-hidden rounded-2xl border border-border">
-      <MapContainer center={center} zoom={13} scrollWheelZoom className="h-full w-full bg-surface">
+    <div className={cn('map-dark-tiles w-full overflow-hidden rounded-2xl border border-border', heightClassName)}>
+      <MapContainer
+        center={center}
+        zoom={zoom}
+        scrollWheelZoom={interactive}
+        dragging={interactive}
+        zoomControl={interactive}
+        className="h-full w-full bg-surface"
+      >
         {/*
           Tile padrão do OpenStreetMap — o único realmente livre e sem cadastro/API key
           (CARTO passou a exigir chave até pro plano "grátis"). O visual escuro vem de um

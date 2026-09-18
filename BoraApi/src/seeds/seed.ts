@@ -85,7 +85,7 @@ const VENUES: VenueSeed[] = [
   {
     name: 'Bar do Zeca',
     description: 'Boteco de esquina no Recreio, samba de raiz e petiscos.',
-    category: 'bar',
+    category: 'praia',
     musicGenres: ['samba', 'mpb'],
     vibes: ['casual', 'praia'],
     priceRange: 'economico',
@@ -193,10 +193,23 @@ async function seed() {
         }),
       );
       console.log(`Seeded venue: ${seedData.name}`);
-    } else if (venue.coverImageUrl !== coverImageUrl) {
-      venue.coverImageUrl = coverImageUrl;
+    } else {
+      // Mantém o registro existente sincronizado com o seed — evita ter que
+      // apagar o banco toda vez que um dado de exemplo muda (ex.: categoria).
+      Object.assign(venue, {
+        description: seedData.description,
+        category: seedData.category,
+        musicGenres: seedData.musicGenres,
+        vibes: seedData.vibes,
+        priceRange: seedData.priceRange,
+        address: seedData.address,
+        latitude: seedData.latitude,
+        longitude: seedData.longitude,
+        city: seedData.city,
+        coverImageUrl,
+      });
       venue = await venueRepo.save(venue);
-      console.log(`Updated cover image: ${seedData.name}`);
+      console.log(`Updated venue: ${seedData.name}`);
     }
 
     let event = await eventRepo.findOne({ where: { name: seedData.event.name } });

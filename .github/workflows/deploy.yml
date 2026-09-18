@@ -77,7 +77,7 @@ jobs:
         run: npm run build
 
   migrate:
-    name: Run database migrations
+    name: Run migrations & seed
     needs: [build-and-test-api, build-and-test-app]
     runs-on: ubuntu-latest
     environment:
@@ -106,6 +106,18 @@ jobs:
 
       - name: Run database migrations
         run: node ./node_modules/typeorm/cli.js migration:run -d dist/data-source.js
+        env:
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_SSL: ${{ secrets.DATABASE_SSL }}
+
+      - name: Seed database
+        # Idempotente — só cria o que falta e sincroniza os venues de exemplo
+        # já existentes (ver src/seeds/seed.ts). Seguro rodar em todo deploy.
+        run: npm run seed
         env:
           DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
           DATABASE_PORT: ${{ secrets.DATABASE_PORT }}

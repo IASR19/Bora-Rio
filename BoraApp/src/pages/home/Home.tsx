@@ -1,5 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
-import { Bell, Beer, MapPin, Music, PartyPopper, Search, UtensilsCrossed } from 'lucide-react';
+import {
+  Beer,
+  Bell,
+  MapPin,
+  Music,
+  PartyPopper,
+  Search,
+  Sunrise,
+  UtensilsCrossed,
+  Volume2,
+  Waves,
+} from 'lucide-react';
 import { useState, type WheelEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,12 +20,15 @@ import { eventsService } from '@/services/events.service';
 import { Input } from '@/shared/ui/Input';
 import { cn } from '@/utils/cn';
 
-/** Cada atalho mapeia pra um filtro real de busca (escopo.md #8). */
+/** Cada atalho mapeia pra um filtro real de busca (escopo.md #8 e #12 "outras categorias"). */
 const SHORTCUTS = [
-  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true, category: undefined },
-  { key: 'bares', label: 'Bares', icon: Beer, now: false, category: 'bar' },
-  { key: 'festas', label: 'Festas', icon: Music, now: false, category: 'festa' },
-  { key: 'jantar', label: 'Jantar', icon: UtensilsCrossed, now: false, category: 'restaurante' },
+  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true, category: undefined, music: undefined },
+  { key: 'bares', label: 'Bares', icon: Beer, now: false, category: 'bar', music: undefined },
+  { key: 'festas', label: 'Festas', icon: Music, now: false, category: 'festa', music: undefined },
+  { key: 'jantar', label: 'Jantar', icon: UtensilsCrossed, now: false, category: 'restaurante', music: undefined },
+  { key: 'pagode', label: 'Pagode', icon: Volume2, now: false, category: undefined, music: 'pagode' },
+  { key: 'eletronico', label: 'Eletrônico', icon: Sunrise, now: false, category: undefined, music: 'eletronico' },
+  { key: 'praia', label: 'Praia', icon: Waves, now: false, category: 'praia', music: undefined },
 ] as const;
 
 export function Home() {
@@ -25,13 +39,14 @@ export function Home() {
 
   const { data: events, isLoading } = useQuery({
     queryKey: ['events', 'recommended', activeShortcut],
-    queryFn: () => eventsService.search({ now: shortcut.now, category: shortcut.category }),
+    queryFn: () => eventsService.search({ now: shortcut.now, category: shortcut.category, music: shortcut.music }),
   });
 
-  // Roda do mouse (desktop) também rola o carrossel de atalhos na horizontal,
-  // já que ele não cabe inteiro na largura do telefone.
+  // Roda do mouse (desktop) também rola o carrossel de atalhos na horizontal, já que ele
+  // não cabe inteiro na largura do telefone. preventDefault evita rolar a página junto.
   const handleShortcutsWheel = (e: WheelEvent<HTMLDivElement>) => {
     if (e.deltaY === 0) return;
+    e.preventDefault();
     e.currentTarget.scrollLeft += e.deltaY;
   };
 
