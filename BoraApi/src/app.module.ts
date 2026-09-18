@@ -9,9 +9,13 @@ import { ClsUserInterceptor } from './common/interceptors/cls-user.interceptor';
 import { createBaseDbOptions } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { BlocksModule } from './modules/blocks/blocks.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { CheckinsModule } from './modules/checkins/checkins.module';
+import { DeuBoraModule } from './modules/deu-bora/deu-bora.module';
 import { EventsModule } from './modules/events/events.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
+import { FollowsModule } from './modules/follows/follows.module';
 import { HealthModule } from './modules/health/health.module';
 import { PreferencesModule } from './modules/preferences/preferences.module';
 import { ReportsModule } from './modules/reports/reports.module';
@@ -39,6 +43,10 @@ import { SharedModule } from './shared/shared.module';
     RewardsModule,
     FavoritesModule,
     ReportsModule,
+    FollowsModule,
+    BlocksModule,
+    ChatModule,
+    DeuBoraModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

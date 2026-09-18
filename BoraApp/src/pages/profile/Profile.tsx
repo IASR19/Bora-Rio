@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
 import { checkinsService } from '@/services/checkins.service';
+import { deuBoraService } from '@/services/deu-bora.service';
 import { eventsService } from '@/services/events.service';
 
 const MENU = [
@@ -23,6 +24,7 @@ export function Profile() {
 
   const { data: myEvents } = useQuery({ queryKey: ['events', 'mine'], queryFn: eventsService.mine });
   const { data: checkinCount } = useQuery({ queryKey: ['checkins', 'mine', 'count'], queryFn: checkinsService.myCount });
+  const { data: matches } = useQuery({ queryKey: ['deu-bora', 'matches'], queryFn: deuBoraService.myMatches });
 
   const eventCount = (myEvents?.confirmed.length ?? 0) + (myEvents?.past.length ?? 0);
 
@@ -51,10 +53,10 @@ export function Profile() {
           <p className="text-lg font-extrabold">{checkinCount ?? 0}</p>
           <p className="text-xs text-muted">Check-ins</p>
         </div>
-        <div>
-          <p className="text-lg font-extrabold">0</p>
+        <button onClick={() => navigate('/matches')}>
+          <p className="text-lg font-extrabold">{matches?.length ?? 0}</p>
           <p className="text-xs text-muted">Conexões</p>
-        </div>
+        </button>
       </div>
 
       <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-surface">

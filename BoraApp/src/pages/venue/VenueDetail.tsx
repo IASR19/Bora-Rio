@@ -17,6 +17,7 @@ import type { ReportCategory } from '@/types/domain';
 import { cn } from '@/utils/cn';
 
 import { BenefitsTab } from './tabs/BenefitsTab';
+import { BoraRoomTab } from './tabs/BoraRoomTab';
 import { LocationTab } from './tabs/LocationTab';
 import { AboutTab } from './tabs/AboutTab';
 import { WhoIsGoingTab } from './tabs/WhoIsGoingTab';
@@ -99,7 +100,6 @@ export function VenueDetail() {
     if (!event) return;
     await eventsService.markConfirmed(event.id).catch(() => undefined);
     setInterestState('confirmed');
-    navigate(`/checkin/${event.id}`);
   };
 
   const handleSendReport = async () => {
@@ -211,18 +211,19 @@ export function VenueDetail() {
         </div>
 
         <Tabs.Root defaultValue="about" className="mt-6">
-          <Tabs.List className="flex gap-5 border-b border-border text-sm font-semibold text-muted">
+          <Tabs.List className="flex gap-5 overflow-x-auto border-b border-border text-sm font-semibold text-muted">
             {[
               { value: 'about', label: 'Sobre' },
               { value: 'who', label: 'Quem vai' },
               { value: 'benefits', label: 'Benefícios' },
               { value: 'location', label: 'Local' },
+              ...(event ? [{ value: 'room', label: 'Bora Room' }] : []),
             ].map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
                 className={cn(
-                  'border-b-2 border-transparent pb-3 data-[state=active]:border-destaque data-[state=active]:text-foreground',
+                  'shrink-0 border-b-2 border-transparent pb-3 data-[state=active]:border-destaque data-[state=active]:text-foreground',
                 )}
               >
                 {tab.label}
@@ -242,17 +243,35 @@ export function VenueDetail() {
           <Tabs.Content value="location" className="pt-4">
             <LocationTab venue={venue} />
           </Tabs.Content>
+          {event && (
+            <Tabs.Content value="room" className="pt-4">
+              <BoraRoomTab eventId={event.id} />
+            </Tabs.Content>
+          )}
         </Tabs.Root>
       </div>
 
       {event && (
         <div className="fixed inset-x-0 bottom-0 z-30 mx-auto flex max-w-[480px] gap-3 border-t border-border bg-background/95 p-4 backdrop-blur">
-          <Button variant="outline" className="flex-1" onClick={handleInterested} disabled={interestState !== 'none'}>
-            {interestState === 'none' ? 'Tenho interesse' : 'Interessado'}
-          </Button>
-          <Button className="flex-1" onClick={handleConfirmed}>
-            Eu vou
-          </Button>
+          {interestState === 'confirmed' ? (
+            <>
+              <Button variant="outline" className="flex-1" onClick={handleShare}>
+                Chamar um amigo
+              </Button>
+              <Button className="flex-1" onClick={() => navigate(`/checkin/${event.id}`)}>
+                Ir para check-in
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" className="flex-1" onClick={handleInterested} disabled={interestState !== 'none'}>
+                {interestState === 'none' ? 'Tenho interesse' : 'Interessado'}
+              </Button>
+              <Button className="flex-1" onClick={handleConfirmed}>
+                Eu vou
+              </Button>
+            </>
+          )}
         </div>
       )}
 

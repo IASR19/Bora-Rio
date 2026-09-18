@@ -91,3 +91,20 @@ export interface Reward {
   quantityTotal: number;
   quantityRedeemed: number;
 }
+
+export interface ChatMessage {
+  id: string;
+  body: string;
+  createdAt: string;
+  sender: { id: string; name: string; avatarUrl: string | null };
+}
+
+export interface DeuBoraResult {
+  matched: boolean;
+  conversationId?: string;
+}
+
+export interface DeuBoraMatch {
+  conversationId: string;
+  user: { id: string; name: string; avatarUrl: string | null; city: string | null };
+}

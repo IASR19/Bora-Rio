@@ -14,11 +14,13 @@ import { BoraQuickActions } from './pages/bora/BoraQuickActions';
 import { CheckIn } from './pages/checkin/CheckIn';
 import { CheckInConfirmed } from './pages/checkin/CheckInConfirmed';
 import { DeuBora } from './pages/checkin/DeuBora';
+import { DirectChat } from './pages/chat/DirectChat';
 import { CompleteProfile } from './pages/auth/CompleteProfile';
 import { CreateEvent } from './pages/events/CreateEvent';
 import { Events } from './pages/events/Events';
 import { Explore } from './pages/explore/Explore';
 import { Home } from './pages/home/Home';
+import { Matches } from './pages/matches/Matches';
 import { Notifications } from './pages/notifications/Notifications';
 import { HowItWorks } from './pages/onboarding/HowItWorks';
 import { Permissions } from './pages/onboarding/Permissions';
@@ -92,6 +94,8 @@ export default function App() {
         <Route path="/profile/support" element={<Support />} />
         <Route path="/profile/payments" element={<Payments />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/matches" element={<Matches />} />
+        <Route path="/chat/:conversationId" element={<DirectChat />} />
       </Route>
 
       <Route path="/bora" element={<BoraQuickActions />} />

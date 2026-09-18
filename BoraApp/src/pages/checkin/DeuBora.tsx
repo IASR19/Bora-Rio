@@ -3,6 +3,7 @@ import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { deuBoraService } from '@/services/deu-bora.service';
 import { eventsService } from '@/services/events.service';
 import { Button } from '@/shared/ui/Button';
 import { cn } from '@/utils/cn';
@@ -11,6 +12,9 @@ export function DeuBora() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [submitting, setSubmitting] = useState(false);
+  const [matchedWith, setMatchedWith] = useState<string[]>([]);
+  const [submitted, setSubmitted] = useState(false);
 
   const { data } = useQuery({
     queryKey: ['participants', eventId],
@@ -28,6 +32,50 @@ export function DeuBora() {
   };
 
   const people = data?.checkedIn ?? [];
+
+  const handleSubmit = async () => {
+    if (!eventId || !selected.size) return;
+    setSubmitting(true);
+    try {
+      const results = await Promise.all(
+        Array.from(selected).map((toUserId) =>
+          deuBoraService
+            .submitInterest(eventId, toUserId)
+            .then((result) => (result.matched ? toUserId : null))
+            .catch(() => null),
+        ),
+      );
+      setMatchedWith(results.filter((id): id is string => Boolean(id)));
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    const matchedNames = people.filter((p) => matchedWith.includes(p.id)).map((p) => p.name);
+    return (
+      <div className="app-shell flex min-h-dvh flex-col items-center justify-center bg-background px-6 text-center">
+        {matchedNames.length ? (
+          <>
+            <p className="text-3xl">🎉❤️</p>
+            <h1 className="mt-3 text-2xl font-extrabold">Deu Bora com {matchedNames.join(', ')}!</h1>
+            <p className="mt-2 text-sm text-muted">O interesse foi mútuo — o chat já está liberado.</p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-extrabold">Interesse enviado</h1>
+            <p className="mt-2 text-sm text-muted">
+              Se a pessoa também demonstrar interesse em você, o chat é liberado automaticamente.
+            </p>
+          </>
+        )}
+        <Button size="lg" className="mt-8 w-full" onClick={() => navigate('/matches')}>
+          Ver conexões
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="app-shell min-h-dvh bg-background px-6 pb-10 pt-10">
@@ -55,8 +103,8 @@ export function DeuBora() {
         {!people.length && <p className="text-sm text-muted">Ninguém fez check-in ainda.</p>}
       </div>
 
-      <Button size="lg" className="mt-10 w-full" disabled={!selected.size} onClick={() => navigate('/home')}>
-        Enviar interesse
+      <Button size="lg" className="mt-10 w-full" disabled={!selected.size || submitting} onClick={handleSubmit}>
+        {submitting ? 'Enviando...' : 'Enviar interesse'}
       </Button>
       <p className="mt-3 text-center text-xs text-muted">
         Se houver interesse mútuo, o chat é liberado automaticamente.
