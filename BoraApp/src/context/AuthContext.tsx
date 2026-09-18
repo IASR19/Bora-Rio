@@ -9,6 +9,7 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<User>;
+  loginWithGoogle: (idToken: string) => Promise<User>;
   register: (payload: RegisterPayload) => Promise<User>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -26,6 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const { user: loggedUser, accessToken } = await authService.login(email, password);
+    setAccessToken(accessToken);
+    setUser(loggedUser);
+    return loggedUser;
+  };
+
+  const loginWithGoogle = async (idToken: string) => {
+    const { user: loggedUser, accessToken } = await authService.loginWithGoogle(idToken);
     setAccessToken(accessToken);
     setUser(loggedUser);
     return loggedUser;
@@ -50,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const value = useMemo(
-    () => ({ user, loading, login, register, logout, refreshUser }),
+    () => ({ user, loading, login, loginWithGoogle, register, logout, refreshUser }),
     [user, loading],
   );
 

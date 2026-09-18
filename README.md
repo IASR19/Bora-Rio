@@ -9,9 +9,21 @@ inicial/MVP: shadcn/Tailwind, sem Storybook/Cypress/Orval/i18n).
 ```
 Bora-Rio/
 ├── BoraApi/      # Backend — NestJS + TypeORM + PostgreSQL
+│   └── api/      # Entry point serverless (Vercel Functions) — reusa BoraApi/src
 ├── BoraApp/      # Frontend — React + Vite + PWA (shadcn/ui + Tailwind)
+├── vercel.json   # Um único deploy: front estático + API serverless, mesmo domínio
 └── escopo/       # Documento de escopo e identidade visual (não versionado)
 ```
+
+## Infra
+
+**Um único deploy na Vercel** (não usa Railway): o `vercel.json` na raiz builda o
+front (`BoraApp`, estático) e a API NestJS (`BoraApi/api/index.ts`, serverless
+function) juntos, no mesmo domínio. Como front e API ficam same-origin, o
+frontend chama `/api/...` relativo em produção (sem precisar de
+`VITE_API_BASE_URL`, sem CORS). O Postgres continua sendo um serviço externo
+(Neon, Supabase, Railway Postgres etc. — só o banco, não a API) apontado pelas
+variáveis `DATABASE_*`.
 
 ## Primeiro setup
 

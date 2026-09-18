@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Bell, Beer, MapPin, Music, PartyPopper, Search, UtensilsCrossed } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type WheelEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventCard } from '@/components/EventCard';
@@ -9,22 +9,31 @@ import { eventsService } from '@/services/events.service';
 import { Input } from '@/shared/ui/Input';
 import { cn } from '@/utils/cn';
 
+/** Cada atalho mapeia pra um filtro real de busca (escopo.md #8). */
 const SHORTCUTS = [
-  { key: 'agora', label: 'BORA Agora', icon: PartyPopper },
-  { key: 'bares', label: 'Bares', icon: Beer },
-  { key: 'festas', label: 'Festas', icon: Music },
-  { key: 'jantar', label: 'Jantar', icon: UtensilsCrossed },
-];
+  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true, category: undefined },
+  { key: 'bares', label: 'Bares', icon: Beer, now: false, category: 'bar' },
+  { key: 'festas', label: 'Festas', icon: Music, now: false, category: 'festa' },
+  { key: 'jantar', label: 'Jantar', icon: UtensilsCrossed, now: false, category: 'restaurante' },
+] as const;
 
 export function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeShortcut, setActiveShortcut] = useState('agora');
+  const [activeShortcut, setActiveShortcut] = useState<(typeof SHORTCUTS)[number]['key']>('agora');
+  const shortcut = SHORTCUTS.find((s) => s.key === activeShortcut) ?? SHORTCUTS[0];
 
   const { data: events, isLoading } = useQuery({
-    queryKey: ['events', 'recommended'],
-    queryFn: () => eventsService.search({ now: activeShortcut === 'agora' }),
+    queryKey: ['events', 'recommended', activeShortcut],
+    queryFn: () => eventsService.search({ now: shortcut.now, category: shortcut.category }),
   });
+
+  // Roda do mouse (desktop) também rola o carrossel de atalhos na horizontal,
+  // já que ele não cabe inteiro na largura do telefone.
+  const handleShortcutsWheel = (e: WheelEvent<HTMLDivElement>) => {
+    if (e.deltaY === 0) return;
+    e.currentTarget.scrollLeft += e.deltaY;
+  };
 
   return (
     <div className="bg-background px-5 pt-6">
@@ -53,22 +62,26 @@ export function Home() {
         <Input placeholder="O que você está procurando?" className="pl-11" />
       </div>
 
-      <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
-        {SHORTCUTS.map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            onClick={() => setActiveShortcut(key)}
-            className={cn(
-              'flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors',
-              activeShortcut === key
-                ? 'border-transparent bg-bora-gradient text-white'
-                : 'border-border bg-surface text-muted',
-            )}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </button>
-        ))}
+      <div className="relative mt-5">
+        <div className="flex gap-2 overflow-x-auto scroll-smooth pb-1" onWheel={handleShortcutsWheel}>
+          {SHORTCUTS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveShortcut(key)}
+              className={cn(
+                'flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors',
+                activeShortcut === key
+                  ? 'border-transparent bg-bora-gradient text-white'
+                  : 'border-border bg-surface text-muted',
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </button>
+          ))}
+        </div>
+        {/* Dica visual de que dá pra rolar mais pra direita */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent" />
       </div>
 
       <div className="mt-8 flex items-center justify-between">

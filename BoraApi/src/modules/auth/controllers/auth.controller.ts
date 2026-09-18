@@ -5,7 +5,13 @@ import { Request, Response } from 'express';
 import { REFRESH_TOKEN_COOKIE } from '../auth.constants';
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from '../auth.cookies';
 import { Public } from '../decorators/public.decorator';
-import { ConfirmVerificationDto, LoginDto, RegisterDto, RequestVerificationDto } from '../dto/auth.dto';
+import {
+  ConfirmVerificationDto,
+  GoogleLoginDto,
+  LoginDto,
+  RegisterDto,
+  RequestVerificationDto,
+} from '../dto/auth.dto';
 import { AuthService } from '../services/auth.service';
 
 @ApiTags('auth')
@@ -26,6 +32,15 @@ export class AuthController {
   @Post('login')
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const user = await this.authService.validateCredentials(dto);
+    const tokens = this.authService.issueTokens(user);
+    setRefreshTokenCookie(res, tokens.refreshToken);
+    return { user, accessToken: tokens.accessToken };
+  }
+
+  @Public()
+  @Post('google')
+  async loginWithGoogle(@Body() dto: GoogleLoginDto, @Res({ passthrough: true }) res: Response) {
+    const user = await this.authService.loginWithGoogle(dto.idToken);
     const tokens = this.authService.issueTokens(user);
     setRefreshTokenCookie(res, tokens.refreshToken);
     return { user, accessToken: tokens.accessToken };

@@ -9,6 +9,7 @@ export default new DataSource({
   username: process.env.DATABASE_USER ?? 'postgres',
   password: process.env.DATABASE_PASSWORD ?? 'postgres',
   database: process.env.DATABASE_NAME ?? 'bora-local',
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
   entities: ['src/modules/**/entities/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
 });

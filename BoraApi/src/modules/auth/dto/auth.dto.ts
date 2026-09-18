@@ -58,3 +58,9 @@ export class ConfirmVerificationDto {
   @Length(6, 6)
   code: string;
 }
+
+export class GoogleLoginDto {
+  /** ID token (JWT) retornado pelo Google Identity Services no front. */
+  @IsString()
+  idToken: string;
+}

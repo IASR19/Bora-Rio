@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ListFilter, Map as MapIcon, MapPin, Rows3 } from 'lucide-react';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { venuesService } from '@/services/venues.service';
@@ -8,6 +8,9 @@ import { ScoreBadge } from '@/shared/ui/ScoreBadge';
 import { cn } from '@/utils/cn';
 
 import { FiltersSheet, type Filters } from './FiltersSheet';
+
+// Leaflet é pesado (~350kb) — só carrega quando a pessoa realmente troca pra "Mapa".
+const VenueMap = lazy(() => import('@/components/VenueMap').then((m) => ({ default: m.VenueMap })));
 
 export function Explore() {
   const navigate = useNavigate();
@@ -54,9 +57,17 @@ export function Explore() {
       </div>
 
       {mode === 'map' ? (
-        <div className="mt-6 flex h-[60vh] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-surface text-muted">
-          <MapIcon className="h-8 w-8" />
-          <p className="text-sm">Mapa em breve — integração com provedor de mapas.</p>
+        <div className="mt-6">
+          {isLoading && <p className="mb-3 text-sm text-muted">Carregando...</p>}
+          <Suspense
+            fallback={
+              <div className="flex h-[65vh] items-center justify-center rounded-2xl border border-border bg-surface text-sm text-muted">
+                Carregando mapa...
+              </div>
+            }
+          >
+            <VenueMap venues={venues ?? []} />
+          </Suspense>
         </div>
       ) : (
         <div className="mt-5 space-y-3 pb-6">
@@ -67,7 +78,11 @@ export function Explore() {
               onClick={() => navigate(`/venue/${venue.id}`)}
               className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface p-3 text-left"
             >
-              <div className="h-16 w-16 shrink-0 rounded-xl bg-bora-gradient-soft" />
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-bora-gradient-soft">
+                {venue.coverImageUrl && (
+                  <img src={venue.coverImageUrl} alt="" className="h-full w-full object-cover" />
+                )}
+              </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold">{venue.name}</p>
                 <p className="flex items-center gap-1 text-xs text-muted">

@@ -31,6 +31,7 @@ export class EventsService {
 
     if (query.city) qb.andWhere('venue.city = :city', { city: query.city });
     if (query.venueId) qb.andWhere('event.venueId = :venueId', { venueId: query.venueId });
+    if (query.category) qb.andWhere('venue.category = :category', { category: query.category });
 
     if (query.now) {
       const limit = new Date(Date.now() + BORA_AGORA_WINDOW_HOURS * 60 * 60 * 1000);

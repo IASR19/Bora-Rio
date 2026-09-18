@@ -1,5 +1,7 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
+
+import { VENUE_CATEGORIES } from '../../../shared/constants/domain.constants';
 
 export class QueryEventsDto {
   @IsOptional()
@@ -9,6 +11,10 @@ export class QueryEventsDto {
   @IsOptional()
   @IsUUID()
   venueId?: string;
+
+  @IsOptional()
+  @IsIn(VENUE_CATEGORIES)
+  category?: string; // filtra pela categoria do estabelecimento (bar, festa, restaurante...)
 
   @IsOptional()
   @Type(() => Boolean)

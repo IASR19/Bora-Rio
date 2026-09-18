@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { GoogleSignInButton } from '@/components/GoogleSignInButton';
+import { featureFlags } from '@/config/featureFlags';
 import { useAuth } from '@/context/AuthContext';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
@@ -33,12 +35,12 @@ export function Login() {
       <h1 className="text-3xl font-extrabold">Entrar no BORA</h1>
 
       <div className="mt-8 space-y-3">
-        <Button variant="outline" className="w-full" type="button">
-          Continuar com Google
-        </Button>
-        <Button variant="outline" className="w-full" type="button">
-          Continuar com Apple
-        </Button>
+        <GoogleSignInButton onSuccess={() => navigate('/home')} onError={setError} />
+        {featureFlags.appleLogin && (
+          <Button variant="outline" className="w-full" type="button">
+            Continuar com Apple
+          </Button>
+        )}
       </div>
 
       <div className="my-6 flex items-center gap-3 text-xs text-muted">

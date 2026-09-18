@@ -29,14 +29,18 @@ export class User extends BaseEntity {
   passwordHash: string | null;
 
   @Index({ unique: true })
-  @Column({ length: 20 })
-  phone: string;
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  phone: string | null;
 
   @Column({ name: 'phone_verified', type: 'boolean', default: false })
   phoneVerified: boolean;
 
-  @Column({ name: 'birth_date', type: 'date' })
-  birthDate: string;
+  @Index({ unique: true })
+  @Column({ name: 'google_id', type: 'varchar', nullable: true })
+  googleId: string | null;
+
+  @Column({ name: 'birth_date', type: 'date', nullable: true })
+  birthDate: string | null;
 
   @Column({ type: 'enum', enum: Gender, default: Gender.UNDISCLOSED })
   gender: Gender;

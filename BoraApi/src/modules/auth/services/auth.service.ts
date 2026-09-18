@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { Repository } from 'typeorm';
 
 import { User } from '../../users/entities/user.entity';
@@ -10,7 +11,9 @@ import { UsersService } from '../../users/users.service';
 import { VERIFICATION_CODE_TTL_MINUTES } from '../auth.constants';
 import {
   EmailAlreadyRegisteredException,
+  GoogleLoginNotConfiguredException,
   InvalidCredentialsException,
+  InvalidGoogleTokenException,
   InvalidVerificationCodeException,
 } from '../auth-errors';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
@@ -23,6 +26,8 @@ export interface TokenPair {
 
 @Injectable()
 export class AuthService {
+  private readonly googleClient = new OAuth2Client();
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -81,6 +86,38 @@ export class AuthService {
       },
     );
     return { accessToken, refreshToken: newRefreshToken };
+  }
+
+  async loginWithGoogle(idToken: string): Promise<User> {
+    const audience = this.configService.get<string>('GOOGLE_CLIENT_ID');
+    if (!audience) throw new GoogleLoginNotConfiguredException();
+
+    let payload;
+    try {
+      const ticket = await this.googleClient.verifyIdToken({ idToken, audience });
+      payload = ticket.getPayload();
+    } catch {
+      throw new InvalidGoogleTokenException();
+    }
+
+    if (!payload?.email || !payload.sub) throw new InvalidGoogleTokenException();
+    if (payload.email_verified === false) throw new InvalidGoogleTokenException();
+
+    const existingByGoogleId = await this.usersService.findByGoogleId(payload.sub);
+    if (existingByGoogleId) return existingByGoogleId;
+
+    const existingByEmail = await this.usersService.findByEmail(payload.email);
+    if (existingByEmail) {
+      await this.usersService.linkGoogleId(existingByEmail.id, payload.sub);
+      return this.usersService.findById(existingByEmail.id);
+    }
+
+    return this.usersService.createFromGoogle({
+      name: payload.name ?? payload.email.split('@')[0],
+      email: payload.email,
+      googleId: payload.sub,
+      avatarUrl: payload.picture,
+    });
   }
 
   async requestPhoneVerification(phone: string): Promise<string> {

@@ -15,6 +15,28 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  findByGoogleId(googleId: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { googleId } });
+  }
+
+  async linkGoogleId(userId: string, googleId: string): Promise<void> {
+    await this.usersRepository.update({ id: userId }, { googleId });
+  }
+
+  createFromGoogle(data: { name: string; email: string; googleId: string; avatarUrl?: string | null }): Promise<User> {
+    const user = this.usersRepository.create({
+      name: data.name,
+      email: data.email,
+      googleId: data.googleId,
+      avatarUrl: data.avatarUrl ?? null,
+      phone: null,
+      phoneVerified: false,
+      passwordHash: null,
+      birthDate: null,
+    });
+    return this.usersRepository.save(user);
+  }
+
   async findById(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) throw new ResourceNotFoundException('User', id);

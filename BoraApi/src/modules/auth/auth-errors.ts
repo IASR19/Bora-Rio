@@ -18,3 +18,15 @@ export class InvalidVerificationCodeException extends BusinessException {
     super('Invalid or expired verification code');
   }
 }
+
+export class InvalidGoogleTokenException extends BusinessException {
+  constructor() {
+    super('Invalid Google token', CommonErrorCodes.INVALID_CREDENTIALS);
+  }
+}
+
+export class GoogleLoginNotConfiguredException extends BusinessException {
+  constructor() {
+    super('Login com Google não está configurado no servidor');
+  }
+}

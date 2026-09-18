@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
+import { featureFlags } from '@/config/featureFlags';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
@@ -29,7 +30,9 @@ export function Register() {
     setLoading(true);
     try {
       await register(form);
-      navigate('/verification', { state: { phone: form.phone } });
+      navigate(featureFlags.phoneVerification ? '/verification' : '/preferences/intentions', {
+        state: { phone: form.phone },
+      });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Não foi possível criar sua conta.');
     } finally {

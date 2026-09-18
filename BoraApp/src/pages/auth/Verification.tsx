@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { featureFlags } from '@/config/featureFlags';
 import { authService } from '@/services/auth.service';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
@@ -15,8 +16,13 @@ export function Verification() {
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
+    // Etapa desativada em teste (VITE_FEATURE_PHONE_VERIFICATION=false) — pula direto.
+    if (!featureFlags.phoneVerification) {
+      navigate('/preferences/intentions', { replace: true });
+      return;
+    }
     if (phone) authService.requestVerification(phone).catch(() => undefined);
-  }, [phone]);
+  }, [phone, navigate]);
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;

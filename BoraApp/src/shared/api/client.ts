@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api';
+// Em produção, front e API vivem no mesmo deploy Vercel (same-origin) — "/api" relativo
+// já resolve certo sem precisar de env var. Em dev local, o .env aponta pra localhost:3000.
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 let accessToken: string | null = null;
 let csrfToken: string | null = null;

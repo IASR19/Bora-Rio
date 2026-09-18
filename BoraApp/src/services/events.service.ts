@@ -2,11 +2,12 @@ import { apiFetch } from '@/shared/api/client';
 import type { BoraEvent, EventParticipants } from '@/types/domain';
 
 export const eventsService = {
-  search: (params: { now?: boolean; city?: string; venueId?: string } = {}) => {
+  search: (params: { now?: boolean; city?: string; venueId?: string; category?: string } = {}) => {
     const qs = new URLSearchParams();
     if (params.now) qs.set('now', 'true');
     if (params.city) qs.set('city', params.city);
     if (params.venueId) qs.set('venueId', params.venueId);
+    if (params.category) qs.set('category', params.category);
     const suffix = qs.toString() ? `?${qs.toString()}` : '';
     return apiFetch<BoraEvent[]>(`/events${suffix}`);
   },

@@ -54,3 +54,38 @@ body {
 ::-webkit-scrollbar {
   display: none;
 }
+
+/*
+ * Mapa escuro "de graça": inverte só a camada de tiles do OpenStreetMap (que é clara
+ * por padrão) via filtro CSS, sem depender de um provedor de tiles escuros pago/com
+ * chave. Pins, popups e controles ficam fora do filtro (senão o gradiente da marca
+ * também seria invertido).
+ */
+.map-dark-tiles .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.9);
+}
+
+.map-dark-tiles .leaflet-control-zoom a {
+  background-color: hsl(var(--surface));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+.map-dark-tiles .leaflet-control-zoom a:hover {
+  background-color: hsl(var(--surface-alt));
+}
+
+.map-dark-tiles .leaflet-control-attribution {
+  background-color: hsl(var(--surface) / 0.85);
+  color: hsl(var(--muted-foreground));
+}
+
+.map-dark-tiles .leaflet-control-attribution a {
+  color: hsl(var(--foreground));
+}
+
+.map-dark-tiles .leaflet-popup-content-wrapper,
+.map-dark-tiles .leaflet-popup-tip {
+  background-color: hsl(var(--surface));
+  color: hsl(var(--foreground));
+}

@@ -22,6 +22,9 @@ export const authService = {
   login: (email: string, password: string) =>
     apiFetch<AuthResponse>('/auth/login', { method: 'POST', body: { email, password }, auth: false }),
 
+  loginWithGoogle: (idToken: string) =>
+    apiFetch<AuthResponse>('/auth/google', { method: 'POST', body: { idToken }, auth: false }),
+
   logout: () => apiFetch('/auth/logout', { method: 'POST', auth: false }),
 
   requestVerification: (phone: string) =>
