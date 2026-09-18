@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
+import { isValidCnpj } from '../../shared/helpers/document.helper';
 import { distanceKm } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
+import { Event, EventStatus } from '../events/entities/event.entity';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { QueryVenuesDto } from './dto/query-venues.dto';
@@ -19,6 +22,9 @@ export interface VenueWithScore extends Venue {
 export class VenuesService {
   constructor(
     @InjectRepository(Venue) private readonly venuesRepository: Repository<Venue>,
+    // Repositório direto em vez de importar EventsModule — evita depêndencia
+    // circular (EventsModule já importa VenuesModule), mesmo padrão do ChatModule.
+    @InjectRepository(Event) private readonly eventsRepository: Repository<Event>,
     private readonly scoreService: BoraScoreService,
   ) {}
 
@@ -45,6 +51,28 @@ export class VenuesService {
       verified: false,
     });
     return this.venuesRepository.save(venue);
+  }
+
+  /** CNPJ com dígito verificador válido libera o local na hora, sem revisão
+   * manual — e publica de uma vez os eventos que estavam esperando confiança
+   * (ver escopo.md e a conversa sobre verificação de estabelecimento). */
+  async verifyWithCnpj(venueId: string, cnpj: string): Promise<Venue> {
+    const digits = cnpj.replace(/\D/g, '');
+    if (!isValidCnpj(digits)) {
+      throw new BusinessException('CNPJ inválido');
+    }
+
+    const venue = await this.findById(venueId);
+    venue.cnpj = digits;
+    venue.verified = true;
+    await this.venuesRepository.save(venue);
+
+    await this.eventsRepository.update(
+      { venueId: venue.id, status: EventStatus.PENDING_REVIEW },
+      { status: EventStatus.PUBLISHED },
+    );
+
+    return venue;
   }
 
   async search(query: QueryVenuesDto, preferences: UserPreferences | null): Promise<VenueWithScore[]> {

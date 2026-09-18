@@ -22,6 +22,15 @@ function formatCep(value: string) {
   return digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
 }
 
+function formatCnpj(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 14);
+  return digits
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+}
+
 /** Datetime local pro <input type="datetime-local">, já a partir de amanhã. */
 function defaultStartsAt() {
   const d = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -42,6 +51,8 @@ export function CreateEvent() {
 
   const [newVenueName, setNewVenueName] = useState('');
   const [newVenueCategory, setNewVenueCategory] = useState('bar');
+  const [isBusinessVenue, setIsBusinessVenue] = useState(false);
+  const [cnpj, setCnpj] = useState('');
   const [cep, setCep] = useState('');
   const [cepStatus, setCepStatus] = useState<'idle' | 'loading' | 'found' | 'not-found'>('idle');
   const [address, setAddress] = useState<CepAddress | null>(null);
@@ -55,7 +66,12 @@ export function CreateEvent() {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ status: string; venueId: string } | null>(null);
+  const [result, setResult] = useState<{
+    status: string;
+    venueId: string;
+    cnpjVerified: boolean;
+    cnpjError: string | null;
+  } | null>(null);
 
   const handleVenueQueryChange = (value: string) => {
     setVenueQuery(value);
@@ -157,7 +173,24 @@ export function CreateEvent() {
         startsAt: new Date(startsAt).toISOString(),
         coverImageUrl: coverImageUrl ?? undefined,
       });
-      setResult({ status: event.status ?? 'published', venueId: event.venueId });
+
+      let cnpjVerified = false;
+      let cnpjError: string | null = null;
+      if (creatingNewVenue && isBusinessVenue && cnpj) {
+        try {
+          await venuesService.verifyWithCnpj(event.venueId, cnpj);
+          cnpjVerified = true;
+        } catch (cnpjErr) {
+          cnpjError = cnpjErr instanceof ApiError ? cnpjErr.message : 'Não foi possível confirmar o CNPJ.';
+        }
+      }
+
+      setResult({
+        status: cnpjVerified ? 'published' : (event.status ?? 'published'),
+        venueId: event.venueId,
+        cnpjVerified,
+        cnpjError,
+      });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Não foi possível criar o evento.');
     } finally {
@@ -171,10 +204,18 @@ export function CreateEvent() {
       <div className="bg-background px-5 pt-8 text-center">
         <p className="text-2xl font-extrabold">{published ? 'Evento publicado! 🎉' : 'Evento enviado ✅'}</p>
         <p className="mx-auto mt-3 max-w-xs text-sm text-muted">
-          {published
-            ? 'Já aparece na busca pra todo mundo.'
-            : 'Ainda está em análise — dá pra ver pelo link direto, e ele aparece pra todo mundo assim que ganhar mais confiança (ex.: pessoas confirmando presença de verdade no local).'}
+          {result.cnpjVerified
+            ? 'CNPJ confirmado — o local ficou verificado e já aparece pra todo mundo.'
+            : published
+              ? 'Já aparece na busca pra todo mundo.'
+              : 'Ainda está em análise — dá pra ver pelo link direto, e ele aparece pra todo mundo assim que ganhar mais confiança (ex.: pessoas confirmando presença de verdade no local, ou você verificar sua identidade em Perfil > Segurança).'}
         </p>
+        {result.cnpjError && (
+          <p className="mx-auto mt-3 max-w-xs text-sm text-destaque">
+            O evento foi criado, mas não consegui confirmar o CNPJ: {result.cnpjError} O local continua sem
+            verificação por enquanto.
+          </p>
+        )}
         <Button size="lg" className="mt-6 w-full" onClick={() => navigate(`/venue/${result.venueId}`)}>
           Ver evento
         </Button>
@@ -190,8 +231,8 @@ export function CreateEvent() {
 
       <h1 className="mt-4 text-2xl font-extrabold">Criar evento</h1>
       <p className="mt-1 text-sm text-muted">
-        Eventos em locais novos ou de contas recentes começam em análise até ganharem confiança — check-ins reais
-        publicam automaticamente.
+        Local com CNPJ verificado, ou você com identidade verificada (Perfil {'>'} Segurança), publicam na hora.
+        Senão, o evento fica em análise até 3 check-ins reais confirmarem que é de verdade.
       </p>
 
       <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
@@ -258,6 +299,27 @@ export function CreateEvent() {
                   {address.street && `${address.street}, `}
                   {address.neighborhood} — {address.city}/{address.state}
                 </p>
+              )}
+
+              <label className="flex items-center gap-2 pt-1 text-sm">
+                <input
+                  type="checkbox"
+                  checked={isBusinessVenue}
+                  onChange={(e) => setIsBusinessVenue(e.target.checked)}
+                  className="h-4 w-4 accent-destaque"
+                />
+                É um estabelecimento comercial
+              </label>
+              {isBusinessVenue && (
+                <>
+                  <Input
+                    placeholder="00.000.000/0000-00"
+                    value={cnpj}
+                    onChange={(e) => setCnpj(formatCnpj(e.target.value))}
+                    inputMode="numeric"
+                  />
+                  <p className="text-xs text-muted">CNPJ válido libera o local pra todo mundo na hora.</p>
+                </>
               )}
             </div>
           )}

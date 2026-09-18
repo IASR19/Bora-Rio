@@ -43,10 +43,9 @@ export class Event extends BaseEntity {
   ticketUrl: string | null;
 
   /** Eventos do catálogo/seed nascem 'published'; eventos criados por usuário
-   * dependem do local ser confiável e do trust score (ver EventTrustService). */
+   * publicam na hora se o local for verificado (CNPJ) ou o criador tiver
+   * identidade verificada (telefone + CPF + selfie) — ver EventsService.create.
+   * Senão ficam pending_review até 3 check-ins reais promoverem sozinho. */
   @Column({ type: 'enum', enum: EventStatus, default: EventStatus.PUBLISHED })
   status: EventStatus;
-
-  @Column({ name: 'trust_score', type: 'int', nullable: true })
-  trustScore: number | null;
 }

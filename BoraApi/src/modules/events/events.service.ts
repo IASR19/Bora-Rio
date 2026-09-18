@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { distanceKm } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
-import { EventTrustService } from '../../shared/services/event-trust.service';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
 import { UsersService } from '../users/users.service';
-import { Venue } from '../venues/entities/venue.entity';
 import { VenuesService } from '../venues/venues.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { QueryEventsDto } from './dto/query-events.dto';
@@ -17,8 +15,6 @@ import { Event, EventStatus } from './entities/event.entity';
 import { EventParticipation } from './entities/event-participation.entity';
 
 const BORA_AGORA_WINDOW_HOURS = 6;
-const DUPLICATE_WINDOW_HOURS = 2;
-const TRUST_SCORE_TO_PUBLISH = 70;
 const CHECKINS_TO_PUBLISH = 3;
 
 export interface EventWithScore extends Event {
@@ -33,7 +29,6 @@ export class EventsService {
     @InjectRepository(EventParticipation)
     private readonly participationRepository: Repository<EventParticipation>,
     private readonly scoreService: BoraScoreService,
-    private readonly trustService: EventTrustService,
     private readonly venuesService: VenuesService,
     private readonly usersService: UsersService,
   ) {}
@@ -110,37 +105,16 @@ export class EventsService {
       throw new BusinessException('A data do evento precisa estar no futuro');
     }
 
-    // Resolve/valida tudo que pode falhar ANTES de criar o local novo (efeito
-    // colateral persistido) — senão uma validação que falha depois de já ter
-    // criado o Venue deixa um local órfão, não verificado, pra trás.
-    let venue: Venue;
-    let hasDuplicate = false;
-
-    if (dto.venueId) {
-      venue = await this.venuesService.findById(dto.venueId);
-      const windowStart = new Date(startsAt.getTime() - DUPLICATE_WINDOW_HOURS * 60 * 60 * 1000);
-      const windowEnd = new Date(startsAt.getTime() + DUPLICATE_WINDOW_HOURS * 60 * 60 * 1000);
-      const duplicate = await this.eventsRepository.findOne({
-        where: { venueId: venue.id, startsAt: Between(windowStart, windowEnd) },
-      });
-      hasDuplicate = Boolean(duplicate);
-    } else {
-      venue = await this.venuesService.createFromUser(dto.newVenue!);
-    }
+    // Resolve o local ANTES do resto do que pode falhar já foi validado acima
+    // (data no futuro) — evita criar um Venue novo órfão se uma validação
+    // seguinte falhar.
+    const venue = dto.venueId
+      ? await this.venuesService.findById(dto.venueId)
+      : await this.venuesService.createFromUser(dto.newVenue!);
 
     const creator = await this.usersService.findById(userId);
-    const accountAgeDays = (Date.now() - creator.createdAt.getTime()) / (24 * 60 * 60 * 1000);
-
-    const trustScore = this.trustService.calculate({
-      phoneVerified: creator.phoneVerified,
-      accountAgeDays,
-      venueVerified: venue.verified,
-      startsAt,
-      hasDuplicate,
-    });
-
-    const status =
-      venue.verified && trustScore >= TRUST_SCORE_TO_PUBLISH ? EventStatus.PUBLISHED : EventStatus.PENDING_REVIEW;
+    const identityVerified = creator.phoneVerified && Boolean(creator.cpf) && Boolean(creator.selfieUrl);
+    const status = venue.verified || identityVerified ? EventStatus.PUBLISHED : EventStatus.PENDING_REVIEW;
 
     const event = await this.eventsRepository.save(
       this.eventsRepository.create({
@@ -153,7 +127,6 @@ export class EventsService {
         targetAge: dto.targetAge ?? null,
         coverImageUrl: dto.coverImageUrl ?? null,
         status,
-        trustScore,
       }),
     );
 

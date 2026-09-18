@@ -44,4 +44,10 @@ export class Venue extends BaseEntity {
    * um evento nascem false — controla se eventos ali podem se auto-publicar. */
   @Column({ type: 'boolean', default: true })
   verified: boolean;
+
+  /** Só dígito verificador validado (ver VenuesService.verifyWithCnpj). Não é
+   * único — uma rede pode ter várias unidades com o mesmo CNPJ. */
+  @Index()
+  @Column({ type: 'varchar', length: 14, nullable: true })
+  cnpj: string | null;
 }

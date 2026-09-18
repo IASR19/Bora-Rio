@@ -63,6 +63,16 @@ export class User extends BaseEntity {
   @Column({ name: 'subscription_status', type: 'enum', enum: SubscriptionStatus, default: SubscriptionStatus.FREE })
   subscriptionStatus: SubscriptionStatus;
 
+  /** Só dígito verificador validado — não confirma posse nem consulta Receita
+   * Federal. Junto com telefone verificado e selfie, libera publicar evento
+   * na hora (ver EventsService.create). */
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 11, nullable: true })
+  cpf: string | null;
+
+  @Column({ name: 'selfie_url', type: 'varchar', nullable: true })
+  selfieUrl: string | null;
+
   @OneToOne(() => UserPreferences, (preferences) => preferences.user)
   preferences: UserPreferences;
 }

@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { SubmitIdentityDto } from './dto/submit-identity.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
@@ -19,6 +20,11 @@ export class UsersController {
   @Patch('me')
   updateMe(@CurrentUser() user: JwtPayload, @Body() dto: UpdateUserDto) {
     return this.usersService.update(user.sub, dto);
+  }
+
+  @Patch('me/identity')
+  submitIdentity(@CurrentUser() user: JwtPayload, @Body() dto: SubmitIdentityDto) {
+    return this.usersService.submitIdentity(user.sub, dto);
   }
 
   @Delete('me')

@@ -5,7 +5,10 @@ import { Repository } from 'typeorm';
 import { CommonErrorCodes } from '../../common/constants/error-codes';
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
+import { isUniqueViolation } from '../../common/utils/database.utils';
+import { isValidCpf } from '../../shared/helpers/document.helper';
 import { RegisterDto } from '../auth/dto/auth.dto';
+import { SubmitIdentityDto } from './dto/submit-identity.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
@@ -81,6 +84,38 @@ export class UsersService {
 
     Object.assign(user, dto);
     return this.usersRepository.save(user);
+  }
+
+  /** Telefone confirmado + CPF válido + selfie liberam publicar evento na hora,
+   * mesmo em local ainda não verificado (ver EventsService.create). */
+  async submitIdentity(userId: string, dto: SubmitIdentityDto): Promise<User> {
+    const user = await this.findById(userId);
+    if (!user.phoneVerified) {
+      throw new BusinessException('Verifique seu telefone antes de enviar sua identidade');
+    }
+
+    const digits = dto.cpf.replace(/\D/g, '');
+    if (!isValidCpf(digits)) {
+      throw new BusinessException('CPF inválido');
+    }
+
+    const existing = await this.usersRepository.findOne({ where: { cpf: digits } });
+    if (existing && existing.id !== userId) {
+      throw new BusinessException('Esse CPF já está associado a outra conta', CommonErrorCodes.DUPLICATED_RESOURCE);
+    }
+
+    user.cpf = digits;
+    user.selfieUrl = dto.selfieUrl;
+    try {
+      return await this.usersRepository.save(user);
+    } catch (err) {
+      // Corrida: duas contas enviando o mesmo CPF quase ao mesmo tempo — o
+      // índice único pega o que o findOne acima não pegou a tempo.
+      if (isUniqueViolation(err)) {
+        throw new BusinessException('Esse CPF já está associado a outra conta', CommonErrorCodes.DUPLICATED_RESOURCE);
+      }
+      throw err;
+    }
   }
 
   /** Perfil completo o bastante pra usar o app: idade, telefone e localização

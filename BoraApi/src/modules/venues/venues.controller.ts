@@ -8,6 +8,7 @@ import { JwtPayload } from '../auth/types/jwt-payload.type';
 import { PreferencesService } from '../preferences/preferences.service';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { QueryVenuesDto } from './dto/query-venues.dto';
+import { SubmitCnpjDto } from './dto/submit-cnpj.dto';
 import { VenuesService } from './venues.service';
 
 @ApiTags('venues')
@@ -34,5 +35,10 @@ export class VenuesController {
   @Post()
   create(@Body() dto: CreateVenueDto) {
     return this.venuesService.createFromUser(dto);
+  }
+
+  @Post(':id/cnpj')
+  verifyWithCnpj(@Param('id', ParseGuidPipe) id: string, @Body() dto: SubmitCnpjDto) {
+    return this.venuesService.verifyWithCnpj(id, dto.cnpj);
   }
 }

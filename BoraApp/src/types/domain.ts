@@ -12,6 +12,8 @@ export interface User {
   longitude: number | null;
   showInWhoIsGoing: boolean;
   subscriptionStatus: 'free' | 'active' | 'canceled';
+  cpf: string | null;
+  selfieUrl: string | null;
 }
 
 export interface UserPreferences {
