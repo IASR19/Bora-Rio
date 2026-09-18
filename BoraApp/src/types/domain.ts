@@ -2,12 +2,14 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
   phoneVerified: boolean;
-  birthDate: string;
+  birthDate: string | null;
   gender: string;
   avatarUrl: string | null;
   city: string | null;
+  latitude: number | null;
+  longitude: number | null;
   showInWhoIsGoing: boolean;
   subscriptionStatus: 'free' | 'active' | 'canceled';
 }

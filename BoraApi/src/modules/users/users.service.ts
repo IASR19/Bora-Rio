@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { CommonErrorCodes } from '../../common/constants/error-codes';
+import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { RegisterDto } from '../auth/dto/auth.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -62,8 +64,21 @@ export class UsersService {
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
+
+    if (dto.phone && dto.phone !== user.phone) {
+      const existing = await this.usersRepository.findOne({ where: { phone: dto.phone } });
+      if (existing) throw new BusinessException('Telefone já está em uso', CommonErrorCodes.DUPLICATED_RESOURCE);
+      user.phoneVerified = false;
+    }
+
     Object.assign(user, dto);
     return this.usersRepository.save(user);
+  }
+
+  /** Perfil completo o bastante pra usar o app: idade, telefone e localização
+   * são necessários pro BORA Score (restrição de idade, distância) funcionar. */
+  isProfileComplete(user: User): boolean {
+    return Boolean(user.birthDate && user.phone && user.city);
   }
 
   getPublicProfile(user: User) {

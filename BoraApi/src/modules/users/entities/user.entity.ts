@@ -51,6 +51,12 @@ export class User extends BaseEntity {
   @Column({ name: 'city', type: 'varchar', nullable: true })
   city: string | null;
 
+  @Column({ name: 'latitude', type: 'double precision', nullable: true })
+  latitude: number | null;
+
+  @Column({ name: 'longitude', type: 'double precision', nullable: true })
+  longitude: number | null;
+
   @Column({ name: 'show_in_who_is_going', type: 'boolean', default: true })
   showInWhoIsGoing: boolean;
 

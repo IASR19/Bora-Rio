@@ -9,7 +9,9 @@ import {
   MinLength,
 } from 'class-validator';
 
+import { IsMinAge } from '../../../shared/validators/min-age.validator';
 import { Gender } from '../../users/entities/user.entity';
+import { MIN_AGE } from '../auth.constants';
 
 export class RegisterDto {
   @IsString()
@@ -17,6 +19,7 @@ export class RegisterDto {
   name: string;
 
   @IsDateString()
+  @IsMinAge(MIN_AGE)
   birthDate: string;
 
   @IsEnum(Gender)

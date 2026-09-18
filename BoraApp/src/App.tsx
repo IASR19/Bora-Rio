@@ -14,6 +14,7 @@ import { BoraQuickActions } from './pages/bora/BoraQuickActions';
 import { CheckIn } from './pages/checkin/CheckIn';
 import { CheckInConfirmed } from './pages/checkin/CheckInConfirmed';
 import { DeuBora } from './pages/checkin/DeuBora';
+import { CompleteProfile } from './pages/auth/CompleteProfile';
 import { Events } from './pages/events/Events';
 import { Explore } from './pages/explore/Explore';
 import { Home } from './pages/home/Home';
@@ -32,6 +33,20 @@ function RequireAuth({ children }: { children: React.ReactElement }) {
   return children;
 }
 
+/** Idade, telefone e cidade são obrigatórios — sem isso não dá pra calcular
+ * BORA Score (distância, restrição de idade) nem mostrar "perto de você". */
+function isProfileComplete(user: { birthDate: string | null; phone: string | null; city: string | null }) {
+  return Boolean(user.birthDate && user.phone && user.city);
+}
+
+function ProtectedLayout() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!isProfileComplete(user)) return <Navigate to="/complete-profile" replace />;
+  return <MainLayout />;
+}
+
 export default function App() {
   return (
     <Routes>
@@ -42,6 +57,14 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/verification" element={<Verification />} />
+      <Route
+        path="/complete-profile"
+        element={
+          <RequireAuth>
+            <CompleteProfile />
+          </RequireAuth>
+        }
+      />
 
       <Route path="/preferences/intentions" element={<IntentionsStep />} />
       <Route path="/preferences/music" element={<MusicStep />} />
@@ -50,15 +73,8 @@ export default function App() {
       <Route path="/preferences/budget" element={<BudgetStep />} />
       <Route path="/subscription" element={<BoraClub />} />
 
-      <Route element={<MainLayout />}>
-        <Route
-          path="/home"
-          element={
-            <RequireAuth>
-              <Home />
-            </RequireAuth>
-          }
-        />
+      <Route element={<ProtectedLayout />}>
+        <Route path="/home" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/events" element={<Events />} />
         <Route path="/profile" element={<Profile />} />
