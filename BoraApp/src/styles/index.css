@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Sora';
+  src: local('Sora');
+  font-display: swap;
+}
+
+:root {
+  --background: 224 40% 7%; /* #0B0F1A */
+  --surface: 222 31% 15%; /* #1B2233 */
+  --surface-alt: 222 28% 19%;
+  --foreground: 214 32% 91%; /* #E2E8F0 */
+  --muted-foreground: 215 20% 65%; /* #94A3B8 */
+  --border: 222 25% 22%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Sora', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* Mobile-first shell: content sits inside a phone-width column with safe-area padding */
+.app-shell {
+  max-width: 480px;
+  margin-inline: auto;
+  min-height: 100dvh;
+  position: relative;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.gradient-text {
+  background-image: linear-gradient(135deg, #ff8a00 0%, #ff2d95 55%, #7a2bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
