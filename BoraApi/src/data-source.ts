@@ -10,6 +10,8 @@ export default new DataSource({
   password: process.env.DATABASE_PASSWORD ?? 'postgres',
   database: process.env.DATABASE_NAME ?? 'bora-local',
   ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
-  entities: ['src/modules/**/entities/*.entity.ts'],
-  migrations: ['src/migrations/*.ts'],
+  // Glob relativo a __dirname: resolve pra src/*.ts rodando via ts-node (dev/CLI local)
+  // e pra dist/*.js rodando o build compilado (produção — ver migration:run:prod).
+  entities: [`${__dirname}/modules/**/entities/*.entity{.ts,.js}`],
+  migrations: [`${__dirname}/migrations/*{.ts,.js}`],
 });
