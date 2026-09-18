@@ -9,6 +9,7 @@ export interface VenueQuery {
   lng?: number;
   maxDistanceKm?: number;
   city?: string;
+  q?: string;
 }
 
 function toQueryString(query: VenueQuery): string {

@@ -5,18 +5,23 @@ import { ParseGuidPipe } from '../../shared/pipes/parse-guid.pipe';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { PreferencesService } from '../preferences/preferences.service';
 import { QueryEventsDto } from './dto/query-events.dto';
 import { EventsService } from './events.service';
 
 @ApiTags('events')
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly preferencesService: PreferencesService,
+  ) {}
 
   @Public()
   @Get()
-  search(@Query() query: QueryEventsDto) {
-    return this.eventsService.search(query);
+  async search(@Query() query: QueryEventsDto, @CurrentUser() user: JwtPayload) {
+    const preferences = user ? await this.preferencesService.findByUserId(user.sub) : null;
+    return this.eventsService.search(query, preferences);
   }
 
   @Get('mine')

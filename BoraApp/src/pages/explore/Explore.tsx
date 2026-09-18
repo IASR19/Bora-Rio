@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { ListFilter, Map as MapIcon, MapPin, Rows3 } from 'lucide-react';
+import { ListFilter, Map as MapIcon, MapPin, Rows3, X } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { venuesService } from '@/services/venues.service';
 import { ScoreBadge } from '@/shared/ui/ScoreBadge';
@@ -14,9 +14,10 @@ const VenueMap = lazy(() => import('@/components/VenueMap').then((m) => ({ defau
 
 export function Explore() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<'list' | 'map'>('list');
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filters, setFilters] = useState<Filters>({});
+  const [filters, setFilters] = useState<Filters>({ q: searchParams.get('q') ?? undefined });
 
   const { data: venues, isLoading } = useQuery({
     queryKey: ['venues', filters],
@@ -25,6 +26,16 @@ export function Explore() {
 
   return (
     <div className="bg-background px-5 pt-6">
+      {filters.q && (
+        <div className="mb-3 flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
+          <span>
+            Buscando por <strong>&ldquo;{filters.q}&rdquo;</strong>
+          </span>
+          <button onClick={() => setFilters((f) => ({ ...f, q: undefined }))} aria-label="Limpar busca">
+            <X className="h-4 w-4 text-muted" />
+          </button>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div className="flex rounded-full border border-border bg-surface p-1">
           <button

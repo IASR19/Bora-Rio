@@ -1,10 +1,11 @@
 import * as Tabs from '@radix-ui/react-tabs';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Heart, MapPin, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { eventsService } from '@/services/events.service';
+import { favoritesService } from '@/services/favorites.service';
 import { venuesService } from '@/services/venues.service';
 import { Button } from '@/shared/ui/Button';
 import { ScoreBadge } from '@/shared/ui/ScoreBadge';
@@ -18,7 +19,10 @@ import { WhoIsGoingTab } from './tabs/WhoIsGoingTab';
 export function VenueDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [interestState, setInterestState] = useState<'none' | 'interested' | 'confirmed'>('none');
+  const [shareCopied, setShareCopied] = useState(false);
+  const [favoritePending, setFavoritePending] = useState(false);
 
   const { data: venue } = useQuery({
     queryKey: ['venue', id],
@@ -32,7 +36,38 @@ export function VenueDetail() {
     enabled: !!id,
   });
 
+  const { data: favoriteIds } = useQuery({
+    queryKey: ['favorites', 'mine'],
+    queryFn: favoritesService.mine,
+  });
+
   const event = events?.[0];
+  const isFavorite = Boolean(id && favoriteIds?.includes(id));
+
+  const handleToggleFavorite = async () => {
+    if (!id || favoritePending) return;
+    setFavoritePending(true);
+    try {
+      await (isFavorite ? favoritesService.remove(id) : favoritesService.add(id));
+      await queryClient.invalidateQueries({ queryKey: ['favorites', 'mine'] });
+    } catch {
+      // silencioso — o coração simplesmente não muda de estado
+    } finally {
+      setFavoritePending(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = event?.name ?? venue?.name ?? 'BORA';
+    if (navigator.share) {
+      await navigator.share({ title, url }).catch(() => undefined);
+      return;
+    }
+    await navigator.clipboard.writeText(url).catch(() => undefined);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2000);
+  };
 
   const handleInterested = async () => {
     if (!event) return;
@@ -58,14 +93,28 @@ export function VenueDetail() {
             <ArrowLeft className="h-5 w-5 text-white" />
           </button>
           <div className="flex gap-2">
-            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur">
+            <button
+              onClick={handleShare}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
+              aria-label="Compartilhar"
+            >
               <Share2 className="h-4 w-4 text-white" />
             </button>
-            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur">
-              <Heart className="h-4 w-4 text-white" />
+            <button
+              onClick={handleToggleFavorite}
+              disabled={favoritePending}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
+              aria-label="Favoritar"
+            >
+              <Heart className={cn('h-4 w-4 text-white', isFavorite && 'fill-destaque text-destaque')} />
             </button>
           </div>
         </div>
+        {shareCopied && (
+          <p className="absolute bottom-3 right-4 rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur">
+            Link copiado
+          </p>
+        )}
       </div>
 
       <div className="px-5 pt-4">

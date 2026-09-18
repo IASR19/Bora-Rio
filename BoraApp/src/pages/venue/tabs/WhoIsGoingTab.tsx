@@ -5,18 +5,15 @@ import type { PublicParticipant } from '@/types/domain';
 
 function ParticipantRow({ participant }: { participant: PublicParticipant }) {
   return (
-    <div className="flex items-center justify-between py-2.5">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-bora-gradient-soft text-sm font-bold text-destaque">
-          {participant.avatarUrl ? (
-            <img src={participant.avatarUrl} className="h-full w-full rounded-full object-cover" alt={participant.name} />
-          ) : (
-            participant.name.charAt(0)
-          )}
-        </div>
-        <p className="font-semibold">{participant.name}</p>
+    <div className="flex items-center gap-3 py-2.5">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-bora-gradient-soft text-sm font-bold text-destaque">
+        {participant.avatarUrl ? (
+          <img src={participant.avatarUrl} className="h-full w-full rounded-full object-cover" alt={participant.name} />
+        ) : (
+          participant.name.charAt(0)
+        )}
       </div>
-      <button className="rounded-full border border-border px-4 py-1.5 text-xs font-semibold">Seguir</button>
+      <p className="font-semibold">{participant.name}</p>
     </div>
   );
 }

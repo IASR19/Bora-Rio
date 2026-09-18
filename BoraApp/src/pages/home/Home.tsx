@@ -35,12 +35,25 @@ export function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activeShortcut, setActiveShortcut] = useState<(typeof SHORTCUTS)[number]['key']>('agora');
+  const [search, setSearch] = useState('');
   const shortcut = SHORTCUTS.find((s) => s.key === activeShortcut) ?? SHORTCUTS[0];
 
   const { data: events, isLoading } = useQuery({
-    queryKey: ['events', 'recommended', activeShortcut],
-    queryFn: () => eventsService.search({ now: shortcut.now, category: shortcut.category, music: shortcut.music }),
+    queryKey: ['events', 'recommended', activeShortcut, user?.latitude, user?.longitude],
+    queryFn: () =>
+      eventsService.search({
+        now: shortcut.now,
+        category: shortcut.category,
+        music: shortcut.music,
+        lat: user?.latitude ?? undefined,
+        lng: user?.longitude ?? undefined,
+      }),
   });
+
+  const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter' || !search.trim()) return;
+    navigate(`/explore?q=${encodeURIComponent(search.trim())}`);
+  };
 
   // Roda do mouse (desktop) também rola o carrossel de atalhos na horizontal, já que ele
   // não cabe inteiro na largura do telefone. preventDefault evita rolar a página junto.
@@ -63,10 +76,9 @@ export function Home() {
           type="button"
           className="relative flex h-10 w-10 items-center justify-center rounded-full bg-surface"
           aria-label="Notificações"
-          onClick={() => navigate('/profile')}
+          onClick={() => navigate('/notifications')}
         >
           <Bell className="h-5 w-5" />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destaque" />
         </button>
       </div>
 
@@ -74,7 +86,13 @@ export function Home() {
 
       <div className="relative mt-4">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" />
-        <Input placeholder="O que você está procurando?" className="pl-11" />
+        <Input
+          placeholder="O que você está procurando?"
+          className="pl-11"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearchSubmit}
+        />
       </div>
 
       <div className="relative mt-5">
@@ -115,7 +133,7 @@ export function Home() {
           </div>
         )}
         {events?.map((event) => (
-          <EventCard key={event.id} event={event} score={88} />
+          <EventCard key={event.id} event={event} score={event.boraScore} distanceKm={event.distanceKm} />
         ))}
       </div>
     </div>

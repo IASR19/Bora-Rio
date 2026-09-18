@@ -3,11 +3,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
+import { distanceKm } from '../../shared/helpers/geo.helper';
+import { BoraScoreService } from '../../shared/services/bora-score.service';
+import { UserPreferences } from '../preferences/entities/user-preferences.entity';
 import { QueryEventsDto } from './dto/query-events.dto';
 import { Event } from './entities/event.entity';
 import { EventParticipation } from './entities/event-participation.entity';
 
 const BORA_AGORA_WINDOW_HOURS = 6;
+
+export interface EventWithScore extends Event {
+  boraScore: number;
+  distanceKm: number | null;
+}
 
 @Injectable()
 export class EventsService {
@@ -15,6 +23,7 @@ export class EventsService {
     @InjectRepository(Event) private readonly eventsRepository: Repository<Event>,
     @InjectRepository(EventParticipation)
     private readonly participationRepository: Repository<EventParticipation>,
+    private readonly scoreService: BoraScoreService,
   ) {}
 
   async findById(id: string): Promise<Event> {
@@ -23,7 +32,7 @@ export class EventsService {
     return event;
   }
 
-  async search(query: QueryEventsDto): Promise<Event[]> {
+  async search(query: QueryEventsDto, preferences: UserPreferences | null): Promise<EventWithScore[]> {
     const qb = this.eventsRepository
       .createQueryBuilder('event')
       .leftJoinAndSelect('event.venue', 'venue')
@@ -33,13 +42,43 @@ export class EventsService {
     if (query.venueId) qb.andWhere('event.venueId = :venueId', { venueId: query.venueId });
     if (query.category) qb.andWhere('venue.category = :category', { category: query.category });
     if (query.music) qb.andWhere('event.musicGenres LIKE :music', { music: `%${query.music}%` });
+    if (query.q) {
+      qb.andWhere('(event.name ILIKE :q OR venue.name ILIKE :q)', { q: `%${query.q}%` });
+    }
 
     if (query.now) {
       const limit = new Date(Date.now() + BORA_AGORA_WINDOW_HOURS * 60 * 60 * 1000);
       qb.andWhere('event.startsAt <= :limit', { limit });
     }
 
-    return qb.orderBy('event.startsAt', 'ASC').getMany();
+    const events = await qb.orderBy('event.startsAt', 'ASC').getMany();
+
+    return events
+      .map((event) => {
+        const distance =
+          query.lat != null && query.lng != null
+            ? distanceKm(query.lat, query.lng, event.venue.latitude, event.venue.longitude)
+            : null;
+
+        const boraScore = this.scoreService.calculate({
+          userMusicGenres: preferences?.musicGenres ?? [],
+          venueMusicGenres: event.musicGenres,
+          userVibes: preferences?.venueVibes ?? [],
+          venueVibes: event.venue.vibes,
+          userAgeMin: preferences?.ageInterestMin ?? null,
+          userAgeMax: preferences?.ageInterestMax ?? null,
+          venueTargetAge: event.targetAge,
+          userMaxDistanceKm: preferences?.maxDistanceKm ?? 10,
+          distanceKm: distance ?? 0,
+          userPriceRanges: preferences?.priceRanges ?? [],
+          venuePriceRange: event.venue.priceRange,
+          userIntentions: preferences?.intentions ?? [],
+          venueIntentions: [],
+        });
+
+        return { ...event, boraScore, distanceKm: distance };
+      })
+      .sort((a, b) => (query.now ? 0 : b.boraScore - a.boraScore));
   }
 
   private async getOrCreateParticipation(userId: string, eventId: string): Promise<EventParticipation> {

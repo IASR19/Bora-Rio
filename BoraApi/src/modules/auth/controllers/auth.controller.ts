@@ -1,11 +1,13 @@
-import { Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Patch, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { REFRESH_TOKEN_COOKIE } from '../auth.constants';
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from '../auth.cookies';
+import { CurrentUser } from '../decorators/current-user.decorator';
 import { Public } from '../decorators/public.decorator';
 import {
+  ChangePasswordDto,
   ConfirmVerificationDto,
   GoogleLoginDto,
   LoginDto,
@@ -13,6 +15,7 @@ import {
   RequestVerificationDto,
 } from '../dto/auth.dto';
 import { AuthService } from '../services/auth.service';
+import { JwtPayload } from '../types/jwt-payload.type';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -61,6 +64,12 @@ export class AuthController {
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
     clearRefreshTokenCookie(res);
+    return { success: true };
+  }
+
+  @Patch('password')
+  async changePassword(@Body() dto: ChangePasswordDto, @CurrentUser() user: JwtPayload) {
+    await this.authService.changePassword(user.sub, dto.currentPassword, dto.newPassword);
     return { success: true };
   }
 

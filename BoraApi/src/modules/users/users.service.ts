@@ -62,6 +62,14 @@ export class UsersService {
     await this.usersRepository.update({ phone }, { phoneVerified: true });
   }
 
+  async setPasswordHash(userId: string, passwordHash: string): Promise<void> {
+    await this.usersRepository.update({ id: userId }, { passwordHash });
+  }
+
+  async delete(userId: string): Promise<void> {
+    await this.usersRepository.softDelete({ id: userId });
+  }
+
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
 

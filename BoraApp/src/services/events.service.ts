@@ -3,7 +3,16 @@ import type { BoraEvent, EventParticipants } from '@/types/domain';
 
 export const eventsService = {
   search: (
-    params: { now?: boolean; city?: string; venueId?: string; category?: string; music?: string } = {},
+    params: {
+      now?: boolean;
+      city?: string;
+      venueId?: string;
+      category?: string;
+      music?: string;
+      q?: string;
+      lat?: number;
+      lng?: number;
+    } = {},
   ) => {
     const qs = new URLSearchParams();
     if (params.now) qs.set('now', 'true');
@@ -11,6 +20,9 @@ export const eventsService = {
     if (params.venueId) qs.set('venueId', params.venueId);
     if (params.category) qs.set('category', params.category);
     if (params.music) qs.set('music', params.music);
+    if (params.q) qs.set('q', params.q);
+    if (params.lat != null) qs.set('lat', String(params.lat));
+    if (params.lng != null) qs.set('lng', String(params.lng));
     const suffix = qs.toString() ? `?${qs.toString()}` : '';
     return apiFetch<BoraEvent[]>(`/events${suffix}`);
   },

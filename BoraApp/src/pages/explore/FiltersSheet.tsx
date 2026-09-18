@@ -9,6 +9,7 @@ export interface Filters {
   music?: string;
   priceRange?: string;
   maxDistanceKm?: number;
+  q?: string;
 }
 
 const CATEGORIES = ['bar', 'festa', 'restaurante', 'rooftop', 'praia', 'lounge'];

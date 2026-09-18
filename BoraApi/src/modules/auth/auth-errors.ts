@@ -30,3 +30,9 @@ export class GoogleLoginNotConfiguredException extends BusinessException {
     super('Login com Google não está configurado no servidor');
   }
 }
+
+export class NoPasswordSetException extends BusinessException {
+  constructor() {
+    super('Esta conta entra apenas pelo Google e não tem senha para trocar');
+  }
+}

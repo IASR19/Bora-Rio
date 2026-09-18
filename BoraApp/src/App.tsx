@@ -18,11 +18,17 @@ import { CompleteProfile } from './pages/auth/CompleteProfile';
 import { Events } from './pages/events/Events';
 import { Explore } from './pages/explore/Explore';
 import { Home } from './pages/home/Home';
+import { Notifications } from './pages/notifications/Notifications';
 import { HowItWorks } from './pages/onboarding/HowItWorks';
 import { Permissions } from './pages/onboarding/Permissions';
 import { Splash } from './pages/onboarding/Splash';
 import { Welcome } from './pages/onboarding/Welcome';
+import { EditProfile } from './pages/profile/EditProfile';
+import { Payments } from './pages/profile/Payments';
 import { Profile } from './pages/profile/Profile';
+import { Security } from './pages/profile/Security';
+import { Settings } from './pages/profile/Settings';
+import { Support } from './pages/profile/Support';
 import { BoraClub } from './pages/subscription/BoraClub';
 import { VenueDetail } from './pages/venue/VenueDetail';
 
@@ -78,6 +84,12 @@ export default function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/events" element={<Events />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/profile/settings" element={<Settings />} />
+        <Route path="/profile/security" element={<Security />} />
+        <Route path="/profile/support" element={<Support />} />
+        <Route path="/profile/payments" element={<Payments />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
 
       <Route path="/bora" element={<BoraQuickActions />} />

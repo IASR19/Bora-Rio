@@ -18,6 +18,11 @@ export class RewardsController {
     return this.rewardsService.findByEvent(eventId);
   }
 
+  @Get('event/:eventId/redemptions/mine')
+  myRedemptions(@Param('eventId', ParseGuidPipe) eventId: string, @CurrentUser() user: JwtPayload) {
+    return this.rewardsService.myRedemptions(user.sub, eventId);
+  }
+
   @Post(':id/redeem')
   redeem(@Param('id', ParseGuidPipe) id: string, @CurrentUser() user: JwtPayload) {
     return this.rewardsService.redeem(user.sub, id);

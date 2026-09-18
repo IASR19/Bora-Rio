@@ -15,6 +15,7 @@ import {
   InvalidCredentialsException,
   InvalidGoogleTokenException,
   InvalidVerificationCodeException,
+  NoPasswordSetException,
 } from '../auth-errors';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
 import { PhoneVerification } from '../entities/phone-verification.entity';
@@ -118,6 +119,17 @@ export class AuthService {
       googleId: payload.sub,
       avatarUrl: payload.picture,
     });
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+    const user = await this.usersService.findById(userId);
+    if (!user.passwordHash) throw new NoPasswordSetException();
+
+    const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isValid) throw new InvalidCredentialsException();
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await this.usersService.setPasswordHash(userId, newHash);
   }
 
   async requestPhoneVerification(phone: string): Promise<string> {

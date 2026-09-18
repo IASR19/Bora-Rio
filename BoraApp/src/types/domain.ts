@@ -52,6 +52,8 @@ export interface BoraEvent {
   endsAt: string | null;
   targetAge: number | null;
   coverImageUrl: string | null;
+  boraScore?: number;
+  distanceKm?: number | null;
 }
 
 export interface PublicParticipant {

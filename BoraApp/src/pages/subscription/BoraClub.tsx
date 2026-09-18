@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/shared/ui/Button';
@@ -14,6 +15,7 @@ const BENEFITS = [
 
 export function BoraClub() {
   const navigate = useNavigate();
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   return (
     <div className="app-shell flex min-h-dvh flex-col justify-between bg-background px-6 pb-10 pt-14">
@@ -40,7 +42,12 @@ export function BoraClub() {
       </div>
 
       <div className="space-y-3">
-        <Button size="lg" className="w-full" onClick={() => navigate('/home')}>
+        {showComingSoon && (
+          <p className="rounded-xl border border-border bg-surface px-4 py-3 text-center text-sm text-muted">
+            Pagamentos chegando em breve — comece grátis por enquanto.
+          </p>
+        )}
+        <Button size="lg" className="w-full" onClick={() => setShowComingSoon(true)}>
           Assinar agora
         </Button>
         <Button size="lg" variant="ghost" className="w-full" onClick={() => navigate('/home')}>

@@ -17,6 +17,11 @@ export class CheckinsController {
     return this.checkinsService.generateQrToken(eventId);
   }
 
+  @Get('mine/count')
+  myCount(@CurrentUser() user: JwtPayload) {
+    return this.checkinsService.countByUser(user.sub);
+  }
+
   @Post()
   confirm(@Body() dto: ConfirmCheckinDto, @CurrentUser() user: JwtPayload) {
     return this.checkinsService.confirm(user.sub, dto);

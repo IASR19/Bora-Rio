@@ -34,6 +34,7 @@ export class VenuesService {
     if (query.priceRange) qb.andWhere('venue.priceRange = :priceRange', { priceRange: query.priceRange });
     if (query.city) qb.andWhere('venue.city = :city', { city: query.city });
     if (query.music) qb.andWhere('venue.musicGenres LIKE :music', { music: `%${query.music}%` });
+    if (query.q) qb.andWhere('venue.name ILIKE :q', { q: `%${query.q}%` });
 
     const venues = await qb.getMany();
 

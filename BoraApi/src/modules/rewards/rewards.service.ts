@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
@@ -21,9 +21,23 @@ export class RewardsService {
     return this.rewardsRepository.find({ where: { eventId } });
   }
 
+  async myRedemptions(userId: string, eventId: string): Promise<string[]> {
+    const rewards = await this.rewardsRepository.find({ where: { eventId } });
+    if (!rewards.length) return [];
+    const redemptions = await this.redemptionsRepository.find({
+      where: { userId, rewardId: In(rewards.map((r) => r.id)) },
+    });
+    return redemptions.map((r) => r.rewardId);
+  }
+
   async redeem(userId: string, rewardId: string): Promise<RewardRedemption> {
     const reward = await this.rewardsRepository.findOne({ where: { id: rewardId } });
     if (!reward) throw new ResourceNotFoundException('Reward', rewardId);
+
+    const alreadyRedeemed = await this.redemptionsRepository.findOne({ where: { userId, rewardId } });
+    if (alreadyRedeemed) {
+      throw new BusinessException('Você já resgatou este benefício');
+    }
 
     if (reward.quantityRedeemed >= reward.quantityTotal) {
       throw new BusinessException('Benefício esgotado');

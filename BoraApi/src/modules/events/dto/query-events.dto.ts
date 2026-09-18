@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsIn, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 import { MUSIC_GENRES, VENUE_CATEGORIES } from '../../../shared/constants/domain.constants';
 
@@ -7,6 +7,20 @@ export class QueryEventsDto {
   @IsOptional()
   @IsString()
   city?: string;
+
+  @IsOptional()
+  @IsString()
+  q?: string; // busca por nome do evento ou do local (escopo.md #37)
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  lat?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  lng?: number;
 
   @IsOptional()
   @IsUUID()

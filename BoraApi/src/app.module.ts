@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { CheckinsModule } from './modules/checkins/checkins.module';
 import { EventsModule } from './modules/events/events.module';
+import { FavoritesModule } from './modules/favorites/favorites.module';
 import { HealthModule } from './modules/health/health.module';
 import { PreferencesModule } from './modules/preferences/preferences.module';
 import { RewardsModule } from './modules/rewards/rewards.module';
@@ -35,6 +36,7 @@ import { SharedModule } from './shared/shared.module';
     EventsModule,
     CheckinsModule,
     RewardsModule,
+    FavoritesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

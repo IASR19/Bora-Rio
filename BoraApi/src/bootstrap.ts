@@ -22,6 +22,8 @@ export async function createApp(): Promise<NestExpressApplication> {
 
   app.use(helmet());
   app.use(cookieParser());
+  // Avatar enviado como base64 (guardado direto na coluna, sem S3) precisa de mais que o limite padrão de 100kb.
+  app.useBodyParser('json', { limit: '4mb' });
 
   const allowlist = configService.get<string>('CORS_ALLOWLIST', '').split(',').filter(Boolean);
   app.enableCors({ origin: allowlist, credentials: true });

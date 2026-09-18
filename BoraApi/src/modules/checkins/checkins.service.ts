@@ -28,6 +28,10 @@ export class CheckinsService {
    * Simulates the establishment's dynamic QR display (see escopo.md #24).
    * In production this is rendered on a screen/tablet at the venue, not in the guest's app.
    */
+  countByUser(userId: string): Promise<number> {
+    return this.checkinsRepository.count({ where: { userId } });
+  }
+
   generateQrToken(eventId: string): { qrToken: string; expiresInSeconds: number } {
     const qrToken = this.jwtService.sign(
       { eventId, nonce: randomUUID() },

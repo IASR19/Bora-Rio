@@ -11,4 +11,5 @@ export const usersService = {
       >
     >,
   ) => apiFetch<User>('/users/me', { method: 'PATCH', body: data }),
+  deleteMe: () => apiFetch<{ success: boolean }>('/users/me', { method: 'DELETE' }),
 };

@@ -13,6 +13,10 @@ export class QueryVenuesDto {
   music?: string;
 
   @IsOptional()
+  @IsString()
+  q?: string; // busca por nome do local (escopo.md #37)
+
+  @IsOptional()
   @IsIn(PRICE_RANGES)
   priceRange?: string;
 

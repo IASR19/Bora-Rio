@@ -40,4 +40,7 @@ export const authService = {
       body: { phone, code },
       auth: false,
     }),
+
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiFetch<{ success: boolean }>('/auth/password', { method: 'PATCH', body: { currentPassword, newPassword } }),
 };
