@@ -1,20 +1,34 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Heart, MapPin, Share2 } from 'lucide-react';
+import { ArrowLeft, Flag, Heart, MapPin, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { eventsService } from '@/services/events.service';
 import { favoritesService } from '@/services/favorites.service';
+import { reportsService } from '@/services/reports.service';
 import { venuesService } from '@/services/venues.service';
+import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
+import { BottomSheet } from '@/shared/ui/BottomSheet';
+import { Chip } from '@/shared/ui/Chip';
 import { ScoreBadge } from '@/shared/ui/ScoreBadge';
+import type { ReportCategory } from '@/types/domain';
 import { cn } from '@/utils/cn';
 
 import { BenefitsTab } from './tabs/BenefitsTab';
 import { LocationTab } from './tabs/LocationTab';
 import { AboutTab } from './tabs/AboutTab';
 import { WhoIsGoingTab } from './tabs/WhoIsGoingTab';
+
+const REPORT_CATEGORIES: { value: ReportCategory; label: string }[] = [
+  { value: 'fraude', label: 'Fraude / evento falso' },
+  { value: 'spam', label: 'Spam' },
+  { value: 'comportamento_inadequado', label: 'Comportamento inadequado' },
+  { value: 'assedio', label: 'Assédio' },
+  { value: 'perfil_falso', label: 'Perfil falso' },
+  { value: 'outro', label: 'Outro' },
+];
 
 export function VenueDetail() {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +37,12 @@ export function VenueDetail() {
   const [interestState, setInterestState] = useState<'none' | 'interested' | 'confirmed'>('none');
   const [shareCopied, setShareCopied] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportCategory, setReportCategory] = useState<ReportCategory | null>(null);
+  const [reportMessage, setReportMessage] = useState('');
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [reportSent, setReportSent] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
 
   const { data: venue } = useQuery({
     queryKey: ['venue', id],
@@ -82,6 +102,25 @@ export function VenueDetail() {
     navigate(`/checkin/${event.id}`);
   };
 
+  const handleSendReport = async () => {
+    if (!event || !reportCategory) return;
+    setReportLoading(true);
+    setReportError(null);
+    try {
+      await reportsService.create({
+        targetType: 'event',
+        targetId: event.id,
+        category: reportCategory,
+        message: reportMessage.trim() || undefined,
+      });
+      setReportSent(true);
+    } catch (err) {
+      setReportError(err instanceof ApiError ? err.message : 'Não foi possível enviar a denúncia.');
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
   if (!venue) return null;
 
   return (
@@ -108,6 +147,21 @@ export function VenueDetail() {
             >
               <Heart className={cn('h-4 w-4 text-white', isFavorite && 'fill-destaque text-destaque')} />
             </button>
+            {event && (
+              <button
+                onClick={() => {
+                  setReportOpen(true);
+                  setReportSent(false);
+                  setReportCategory(null);
+                  setReportMessage('');
+                  setReportError(null);
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
+                aria-label="Denunciar"
+              >
+                <Flag className="h-4 w-4 text-white" />
+              </button>
+            )}
           </div>
         </div>
         {shareCopied && (
@@ -120,7 +174,14 @@ export function VenueDetail() {
       <div className="px-5 pt-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-extrabold leading-tight">{event?.name ?? venue.name}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-extrabold leading-tight">{event?.name ?? venue.name}</h1>
+              {event?.status && event.status !== 'published' && (
+                <span className="shrink-0 rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-semibold text-muted">
+                  Em análise
+                </span>
+              )}
+            </div>
             <p className="mt-1 flex items-center gap-1 text-sm text-muted">
               <MapPin className="h-3.5 w-3.5" />
               {venue.name} · {venue.distanceKm != null ? `${venue.distanceKm.toFixed(1)} km` : venue.city}
@@ -194,6 +255,33 @@ export function VenueDetail() {
           </Button>
         </div>
       )}
+
+      <BottomSheet open={reportOpen} onOpenChange={setReportOpen} title="Denunciar evento">
+        {reportSent ? (
+          <p className="text-sm text-muted">Denúncia enviada. Obrigado por ajudar a manter o BORA confiável.</p>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              {REPORT_CATEGORIES.map(({ value, label }) => (
+                <Chip key={value} selected={reportCategory === value} onClick={() => setReportCategory(value)}>
+                  {label}
+                </Chip>
+              ))}
+            </div>
+            <textarea
+              value={reportMessage}
+              onChange={(e) => setReportMessage(e.target.value)}
+              placeholder="Detalhes (opcional)"
+              rows={3}
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-destaque"
+            />
+            {reportError && <p className="text-sm text-destaque">{reportError}</p>}
+            <Button className="w-full" onClick={handleSendReport} disabled={!reportCategory || reportLoading}>
+              {reportLoading ? 'Enviando...' : 'Enviar denúncia'}
+            </Button>
+          </div>
+        )}
+      </BottomSheet>
     </div>
   );
 }

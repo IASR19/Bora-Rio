@@ -14,6 +14,7 @@ import { EventsModule } from './modules/events/events.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
 import { HealthModule } from './modules/health/health.module';
 import { PreferencesModule } from './modules/preferences/preferences.module';
+import { ReportsModule } from './modules/reports/reports.module';
 import { RewardsModule } from './modules/rewards/rewards.module';
 import { UsersModule } from './modules/users/users.module';
 import { VenuesModule } from './modules/venues/venues.module';
@@ -37,6 +38,7 @@ import { SharedModule } from './shared/shared.module';
     CheckinsModule,
     RewardsModule,
     FavoritesModule,
+    ReportsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

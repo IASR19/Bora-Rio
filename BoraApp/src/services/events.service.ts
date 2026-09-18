@@ -1,6 +1,20 @@
 import { apiFetch } from '@/shared/api/client';
 import type { BoraEvent, EventParticipants } from '@/types/domain';
 
+import type { CreateVenuePayload } from './venues.service';
+
+export interface CreateEventPayload {
+  venueId?: string;
+  newVenue?: CreateVenuePayload;
+  name: string;
+  description?: string;
+  musicGenres: string[];
+  startsAt: string;
+  endsAt?: string;
+  targetAge?: number;
+  coverImageUrl?: string;
+}
+
 export const eventsService = {
   search: (
     params: {
@@ -33,4 +47,6 @@ export const eventsService = {
   markConfirmed: (id: string) => apiFetch(`/events/${id}/confirmed`, { method: 'POST' }),
   mine: () =>
     apiFetch<{ interested: BoraEvent[]; confirmed: BoraEvent[]; past: BoraEvent[] }>('/events/mine'),
+  createdByMe: () => apiFetch<BoraEvent[]>('/events/created-by-me'),
+  create: (payload: CreateEventPayload) => apiFetch<BoraEvent>('/events', { method: 'POST', body: payload }),
 };

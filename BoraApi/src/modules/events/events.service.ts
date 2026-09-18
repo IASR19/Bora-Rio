@@ -1,16 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
+import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { distanceKm } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
+import { EventTrustService } from '../../shared/services/event-trust.service';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
+import { UsersService } from '../users/users.service';
+import { Venue } from '../venues/entities/venue.entity';
+import { VenuesService } from '../venues/venues.service';
+import { CreateEventDto } from './dto/create-event.dto';
 import { QueryEventsDto } from './dto/query-events.dto';
-import { Event } from './entities/event.entity';
+import { Event, EventStatus } from './entities/event.entity';
 import { EventParticipation } from './entities/event-participation.entity';
 
 const BORA_AGORA_WINDOW_HOURS = 6;
+const DUPLICATE_WINDOW_HOURS = 2;
+const TRUST_SCORE_TO_PUBLISH = 70;
+const CHECKINS_TO_PUBLISH = 3;
 
 export interface EventWithScore extends Event {
   boraScore: number;
@@ -24,6 +33,9 @@ export class EventsService {
     @InjectRepository(EventParticipation)
     private readonly participationRepository: Repository<EventParticipation>,
     private readonly scoreService: BoraScoreService,
+    private readonly trustService: EventTrustService,
+    private readonly venuesService: VenuesService,
+    private readonly usersService: UsersService,
   ) {}
 
   async findById(id: string): Promise<Event> {
@@ -44,6 +56,13 @@ export class EventsService {
     if (query.music) qb.andWhere('event.musicGenres LIKE :music', { music: `%${query.music}%` });
     if (query.q) {
       qb.andWhere('(event.name ILIKE :q OR venue.name ILIKE :q)', { q: `%${query.q}%` });
+    }
+
+    // Buscas gerais (Home/Explorar) só mostram eventos publicados. Uma busca por
+    // venueId específico (ex.: VenueDetail via link direto) traz mesmo os
+    // pending_review — é o "link direto" do modelo de confiança do escopo.md.
+    if (!query.venueId) {
+      qb.andWhere('event.status = :status', { status: EventStatus.PUBLISHED });
     }
 
     if (query.now) {
@@ -79,6 +98,88 @@ export class EventsService {
         return { ...event, boraScore, distanceKm: distance };
       })
       .sort((a, b) => (query.now ? 0 : b.boraScore - a.boraScore));
+  }
+
+  async create(userId: string, dto: CreateEventDto): Promise<Event> {
+    if (!dto.venueId && !dto.newVenue) {
+      throw new BusinessException('Informe um local existente ou os dados de um novo local');
+    }
+
+    const startsAt = new Date(dto.startsAt);
+    if (startsAt.getTime() <= Date.now()) {
+      throw new BusinessException('A data do evento precisa estar no futuro');
+    }
+
+    // Resolve/valida tudo que pode falhar ANTES de criar o local novo (efeito
+    // colateral persistido) — senão uma validação que falha depois de já ter
+    // criado o Venue deixa um local órfão, não verificado, pra trás.
+    let venue: Venue;
+    let hasDuplicate = false;
+
+    if (dto.venueId) {
+      venue = await this.venuesService.findById(dto.venueId);
+      const windowStart = new Date(startsAt.getTime() - DUPLICATE_WINDOW_HOURS * 60 * 60 * 1000);
+      const windowEnd = new Date(startsAt.getTime() + DUPLICATE_WINDOW_HOURS * 60 * 60 * 1000);
+      const duplicate = await this.eventsRepository.findOne({
+        where: { venueId: venue.id, startsAt: Between(windowStart, windowEnd) },
+      });
+      hasDuplicate = Boolean(duplicate);
+    } else {
+      venue = await this.venuesService.createFromUser(dto.newVenue!);
+    }
+
+    const creator = await this.usersService.findById(userId);
+    const accountAgeDays = (Date.now() - creator.createdAt.getTime()) / (24 * 60 * 60 * 1000);
+
+    const trustScore = this.trustService.calculate({
+      phoneVerified: creator.phoneVerified,
+      accountAgeDays,
+      venueVerified: venue.verified,
+      startsAt,
+      hasDuplicate,
+    });
+
+    const status =
+      venue.verified && trustScore >= TRUST_SCORE_TO_PUBLISH ? EventStatus.PUBLISHED : EventStatus.PENDING_REVIEW;
+
+    const event = await this.eventsRepository.save(
+      this.eventsRepository.create({
+        venueId: venue.id,
+        name: dto.name,
+        description: dto.description ?? null,
+        musicGenres: dto.musicGenres,
+        startsAt,
+        endsAt: dto.endsAt ? new Date(dto.endsAt) : null,
+        targetAge: dto.targetAge ?? null,
+        coverImageUrl: dto.coverImageUrl ?? null,
+        status,
+        trustScore,
+      }),
+    );
+
+    event.venue = venue;
+    return event;
+  }
+
+  getCreatedByMe(userId: string): Promise<Event[]> {
+    return this.eventsRepository.find({
+      where: { createdBy: userId },
+      relations: ['venue'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  /** Prova social contínua (ver escopo.md): check-ins reais de gente diferente do
+   * criador promovem um evento pending_review pra published, sem precisar de
+   * revisão manual. */
+  async publishIfTrusted(eventId: string, distinctCheckinCount: number): Promise<void> {
+    if (distinctCheckinCount < CHECKINS_TO_PUBLISH) return;
+    await this.eventsRepository.update({ id: eventId, status: EventStatus.PENDING_REVIEW }, { status: EventStatus.PUBLISHED });
+  }
+
+  /** Denúncias acumuladas derrubam o evento de volta pra revisão (ver ReportsService). */
+  async sendBackToReview(eventId: string): Promise<void> {
+    await this.eventsRepository.update({ id: eventId, status: EventStatus.PUBLISHED }, { status: EventStatus.PENDING_REVIEW });
   }
 
   private async getOrCreateParticipation(userId: string, eventId: string): Promise<EventParticipation> {

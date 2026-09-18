@@ -3,6 +3,12 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Venue } from '../../venues/entities/venue.entity';
 
+export enum EventStatus {
+  PENDING_REVIEW = 'pending_review',
+  PUBLISHED = 'published',
+  REJECTED = 'rejected',
+}
+
 @Entity('events')
 export class Event extends BaseEntity {
   @ManyToOne(() => Venue, { onDelete: 'CASCADE' })
@@ -35,4 +41,12 @@ export class Event extends BaseEntity {
 
   @Column({ name: 'ticket_url', type: 'varchar', nullable: true })
   ticketUrl: string | null;
+
+  /** Eventos do catálogo/seed nascem 'published'; eventos criados por usuário
+   * dependem do local ser confiável e do trust score (ver EventTrustService). */
+  @Column({ type: 'enum', enum: EventStatus, default: EventStatus.PUBLISHED })
+  status: EventStatus;
+
+  @Column({ name: 'trust_score', type: 'int', nullable: true })
+  trustScore: number | null;
 }

@@ -7,36 +7,9 @@ import { usersService } from '@/services/users.service';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
+import { resizeImageToBase64 } from '@/utils/image';
 
 const AVATAR_SIZE = 256;
-
-/** Redimensiona no <canvas> pra caber em base64 direto na coluna do banco (sem S3). */
-function resizeToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error('Não foi possível ler a imagem.'));
-    reader.onload = () => {
-      const img = new Image();
-      img.onerror = () => reject(new Error('Não foi possível ler a imagem.'));
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = AVATAR_SIZE;
-        canvas.height = AVATAR_SIZE;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject(new Error('Canvas indisponível.'));
-
-        const scale = Math.max(AVATAR_SIZE / img.width, AVATAR_SIZE / img.height);
-        const w = img.width * scale;
-        const h = img.height * scale;
-        ctx.drawImage(img, (AVATAR_SIZE - w) / 2, (AVATAR_SIZE - h) / 2, w, h);
-
-        resolve(canvas.toDataURL('image/jpeg', 0.85));
-      };
-      img.src = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
 export function EditProfile() {
   const navigate = useNavigate();
@@ -53,7 +26,7 @@ export function EditProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const base64 = await resizeToBase64(file);
+      const base64 = await resizeImageToBase64(file, AVATAR_SIZE);
       setAvatarUrl(base64);
     } catch {
       setError('Não foi possível processar essa imagem.');

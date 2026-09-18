@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { EventParticipation } from '../events/entities/event-participation.entity';
@@ -78,6 +78,13 @@ export class CheckinsService {
     participation.viewed = true;
     participation.checkedIn = true;
     await this.participationRepository.save(participation);
+
+    // "3 pessoas diferentes, fora o criador" (ver EventsService.publishIfTrusted) —
+    // o check-in do próprio criador não conta como prova social.
+    const checkinCount = await this.checkinsRepository.count({
+      where: { eventId: event.id, ...(event.createdBy ? { userId: Not(event.createdBy) } : {}) },
+    });
+    await this.eventsService.publishIfTrusted(event.id, checkinCount);
 
     return checkin;
   }

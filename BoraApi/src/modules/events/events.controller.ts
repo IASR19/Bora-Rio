@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ParseGuidPipe } from '../../shared/pipes/parse-guid.pipe';
@@ -6,6 +6,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 import { PreferencesService } from '../preferences/preferences.service';
+import { CreateEventDto } from './dto/create-event.dto';
 import { QueryEventsDto } from './dto/query-events.dto';
 import { EventsService } from './events.service';
 
@@ -27,6 +28,16 @@ export class EventsController {
   @Get('mine')
   mine(@CurrentUser() user: JwtPayload) {
     return this.eventsService.getMyEvents(user.sub);
+  }
+
+  @Get('created-by-me')
+  createdByMe(@CurrentUser() user: JwtPayload) {
+    return this.eventsService.getCreatedByMe(user.sub);
+  }
+
+  @Post()
+  create(@Body() dto: CreateEventDto, @CurrentUser() user: JwtPayload) {
+    return this.eventsService.create(user.sub, dto);
   }
 
   @Public()

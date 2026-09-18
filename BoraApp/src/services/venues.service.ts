@@ -21,7 +21,19 @@ function toQueryString(query: VenueQuery): string {
   return qs ? `?${qs}` : '';
 }
 
+export interface CreateVenuePayload {
+  name: string;
+  category: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  city?: string;
+  description?: string;
+  priceRange?: string;
+}
+
 export const venuesService = {
   search: (query: VenueQuery = {}) => apiFetch<Venue[]>(`/venues${toQueryString(query)}`),
   getById: (id: string) => apiFetch<Venue>(`/venues/${id}`),
+  create: (payload: CreateVenuePayload) => apiFetch<Venue>('/venues', { method: 'POST', body: payload }),
 };

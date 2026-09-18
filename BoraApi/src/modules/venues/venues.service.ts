@@ -6,6 +6,7 @@ import { ResourceNotFoundException } from '../../common/exceptions/resource-not-
 import { distanceKm } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
+import { CreateVenueDto } from './dto/create-venue.dto';
 import { QueryVenuesDto } from './dto/query-venues.dto';
 import { Venue } from './entities/venue.entity';
 
@@ -27,8 +28,32 @@ export class VenuesService {
     return venue;
   }
 
+  /** Local cadastrado por um usuário ao criar um evento — nasce não verificado
+   * (ver escopo.md sobre validação de veracidade de evento). */
+  createFromUser(dto: CreateVenueDto): Promise<Venue> {
+    const venue = this.venuesRepository.create({
+      name: dto.name,
+      category: dto.category as Venue['category'],
+      address: dto.address,
+      latitude: dto.latitude,
+      longitude: dto.longitude,
+      city: dto.city ?? null,
+      description: dto.description ?? null,
+      priceRange: (dto.priceRange ?? 'medio') as Venue['priceRange'],
+      musicGenres: [],
+      vibes: [],
+      verified: false,
+    });
+    return this.venuesRepository.save(venue);
+  }
+
   async search(query: QueryVenuesDto, preferences: UserPreferences | null): Promise<VenueWithScore[]> {
     const qb = this.venuesRepository.createQueryBuilder('venue');
+
+    // Locais não verificados (cadastrados por usuário ao criar um evento) não entram
+    // nas listagens gerais — evitam poluir o catálogo antes de qualquer evento neles
+    // ganhar confiança (ver escopo.md sobre validação de veracidade de evento).
+    qb.andWhere('venue.verified = :verified', { verified: true });
 
     if (query.category) qb.andWhere('venue.category = :category', { category: query.category });
     if (query.priceRange) qb.andWhere('venue.priceRange = :priceRange', { priceRange: query.priceRange });

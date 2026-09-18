@@ -39,7 +39,10 @@ export interface Venue {
   coverImageUrl: string | null;
   boraScore?: number;
   distanceKm?: number | null;
+  verified?: boolean;
 }
+
+export type EventStatus = 'pending_review' | 'published' | 'rejected';
 
 export interface BoraEvent {
   id: string;
@@ -54,7 +57,18 @@ export interface BoraEvent {
   coverImageUrl: string | null;
   boraScore?: number;
   distanceKm?: number | null;
+  status?: EventStatus;
 }
+
+export type ReportTargetType = 'event' | 'venue' | 'user';
+
+export type ReportCategory =
+  | 'comportamento_inadequado'
+  | 'perfil_falso'
+  | 'assedio'
+  | 'spam'
+  | 'fraude'
+  | 'outro';
 
 export interface PublicParticipant {
   id: string;

@@ -15,6 +15,7 @@ import { CheckIn } from './pages/checkin/CheckIn';
 import { CheckInConfirmed } from './pages/checkin/CheckInConfirmed';
 import { DeuBora } from './pages/checkin/DeuBora';
 import { CompleteProfile } from './pages/auth/CompleteProfile';
+import { CreateEvent } from './pages/events/CreateEvent';
 import { Events } from './pages/events/Events';
 import { Explore } from './pages/explore/Explore';
 import { Home } from './pages/home/Home';
@@ -83,6 +84,7 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/profile/settings" element={<Settings />} />

@@ -39,4 +39,9 @@ export class Venue extends BaseEntity {
 
   @Column({ name: 'cover_image_url', type: 'varchar', nullable: true })
   coverImageUrl: string | null;
+
+  /** Locais do catálogo/seed nascem true; locais cadastrados por usuário ao criar
+   * um evento nascem false — controla se eventos ali podem se auto-publicar. */
+  @Column({ type: 'boolean', default: true })
+  verified: boolean;
 }

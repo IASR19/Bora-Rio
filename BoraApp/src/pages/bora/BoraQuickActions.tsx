@@ -1,10 +1,11 @@
-import { Compass, MapPin, PartyPopper, QrCode, Sparkles } from 'lucide-react';
+import { Compass, MapPin, PartyPopper, PlusCircle, QrCode, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ACTIONS = [
   { label: 'BORA agora', icon: PartyPopper, to: '/explore' },
   { label: 'Procurar lugar', icon: MapPin, to: '/explore' },
   { label: 'Procurar evento', icon: Compass, to: '/explore' },
+  { label: 'Criar evento', icon: PlusCircle, to: '/events/create' },
   { label: 'Experiências', icon: Sparkles, to: '/explore' },
   { label: 'Check-in', icon: QrCode, to: '/events' },
 ];
