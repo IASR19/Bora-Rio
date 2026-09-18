@@ -7,7 +7,7 @@ export function setRefreshTokenCookie(res: Response, token: string): void {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 10 * 24 * 60 * 60 * 1000,
     path: '/api/auth',
   });
 }

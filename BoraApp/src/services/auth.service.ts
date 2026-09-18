@@ -27,6 +27,10 @@ export const authService = {
 
   logout: () => apiFetch('/auth/logout', { method: 'POST', auth: false }),
 
+  /** Troca o cookie httpOnly de refresh (até 10 dias) por um accessToken novo —
+   * usado pra restaurar a sessão ao abrir o app sem pedir login de novo. */
+  refresh: () => apiFetch<{ accessToken: string }>('/auth/refresh', { method: 'POST', auth: false }),
+
   requestVerification: (phone: string) =>
     apiFetch<{ sent: boolean; devCode?: string }>('/auth/verification/request', {
       method: 'POST',

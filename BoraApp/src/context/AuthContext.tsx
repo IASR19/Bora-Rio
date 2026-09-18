@@ -22,7 +22,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(false);
+    // Restaura a sessão a partir do cookie httpOnly de refresh (até 10 dias) —
+    // sem isso, todo reload de página derrubava o login porque o accessToken
+    // só vive em memória.
+    authService
+      .refresh()
+      .then(({ accessToken }) => {
+        setAccessToken(accessToken);
+        return usersService.me();
+      })
+      .then(setUser)
+      .catch(() => setAccessToken(null))
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (email: string, password: string) => {

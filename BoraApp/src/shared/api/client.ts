@@ -31,7 +31,32 @@ interface RequestOptions {
   auth?: boolean;
 }
 
-export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+// Dedupe: se várias requests tomam 401 ao mesmo tempo (accessToken de 15min expirou
+// no meio do uso), todas esperam o mesmo refresh em vez de disparar um cada.
+let refreshPromise: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+  if (!refreshPromise) {
+    refreshPromise = fetch(`${BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        if (!res.ok) return null;
+        const data = await res.json();
+        accessToken = data.accessToken ?? null;
+        return accessToken;
+      })
+      .catch(() => null)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
+
+async function performRequest<T>(path: string, options: RequestOptions, allowRefresh: boolean): Promise<T> {
   const { method = 'GET', body, auth = true } = options;
 
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -48,6 +73,13 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  // Sessão ainda válida (cookie de refresh, até 10 dias) mas o accessToken de 15min
+  // expirou no meio do uso — renova uma vez e repete a request original.
+  if (response.status === 401 && auth && allowRefresh) {
+    const newToken = await refreshAccessToken();
+    if (newToken) return performRequest<T>(path, options, false);
+  }
+
   if (!response.ok) {
     const payload = await response.json().catch(() => ({ message: response.statusText }));
     throw new ApiError(payload.message ?? 'Erro inesperado', response.status, payload.errorCode, payload.fieldErrors);
@@ -55,4 +87,8 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
   if (response.status === 204) return undefined as T;
   return response.json();
+}
+
+export function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return performRequest<T>(path, options, true);
 }

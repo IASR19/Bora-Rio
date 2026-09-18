@@ -6,7 +6,10 @@
       "Bash(node dist/main.js)",
       "Bash(kill %1)",
       "Bash(wait)",
-      "Bash(pkill -f \"node dist/main.js\")"
+      "Bash(pkill -f \"node dist/main.js\")",
+      "Bash(npx ts-node *)",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"exit:$?\")"
     ]
   }
 }
