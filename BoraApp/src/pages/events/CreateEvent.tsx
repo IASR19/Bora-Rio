@@ -12,6 +12,8 @@ import { Input } from '@/shared/ui/Input';
 import type { Venue } from '@/types/domain';
 import { resizeImageToBase64 } from '@/utils/image';
 
+type CreatorType = 'business' | 'personal';
+
 const MUSIC = ['pagode', 'samba', 'sertanejo', 'eletronico', 'funk', 'pop', 'rock', 'mpb', 'jazz', 'outros'];
 const CATEGORIES = ['bar', 'festa', 'restaurante', 'rooftop', 'praia', 'lounge'];
 const COVER_SIZE = 800;
@@ -41,6 +43,7 @@ function defaultStartsAt() {
 export function CreateEvent() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const creatorTypeRef = useRef<HTMLDivElement>(null);
 
   const [venueQuery, setVenueQuery] = useState('');
   const [venueResults, setVenueResults] = useState<Venue[]>([]);
@@ -49,10 +52,11 @@ export function CreateEvent() {
   const [creatingNewVenue, setCreatingNewVenue] = useState(false);
   const latestVenueQueryRef = useRef('');
 
+  const [creatorType, setCreatorType] = useState<CreatorType | null>(null);
+  const [cnpj, setCnpj] = useState('');
+
   const [newVenueName, setNewVenueName] = useState('');
   const [newVenueCategory, setNewVenueCategory] = useState('bar');
-  const [isBusinessVenue, setIsBusinessVenue] = useState(false);
-  const [cnpj, setCnpj] = useState('');
   const [cep, setCep] = useState('');
   const [cepStatus, setCepStatus] = useState<'idle' | 'loading' | 'found' | 'not-found'>('idle');
   const [address, setAddress] = useState<CepAddress | null>(null);
@@ -140,6 +144,11 @@ export function CreateEvent() {
     e.preventDefault();
     setError(null);
 
+    if (!creatorType) {
+      setError('Diga se o evento é de um estabelecimento comercial ou pessoal.');
+      creatorTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     if (!selectedVenue && !creatingNewVenue) {
       setError('Escolha um local existente ou cadastre um novo.');
       return;
@@ -176,7 +185,8 @@ export function CreateEvent() {
 
       let cnpjVerified = false;
       let cnpjError: string | null = null;
-      if (creatingNewVenue && isBusinessVenue && cnpj) {
+      const venueAlreadyVerified = selectedVenue?.verified ?? false;
+      if (creatorType === 'business' && cnpj && !venueAlreadyVerified) {
         try {
           await venuesService.verifyWithCnpj(event.venueId, cnpj);
           cnpjVerified = true;
@@ -236,6 +246,49 @@ export function CreateEvent() {
       </p>
 
       <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+        <div ref={creatorTypeRef}>
+          <label className="mb-2 block text-sm font-semibold text-muted">
+            Este evento é de... <span className="text-destaque">*</span>
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setCreatorType('business')}
+              className={
+                creatorType === 'business'
+                  ? 'rounded-xl border-2 border-destaque bg-bora-gradient-soft px-3 py-3 text-sm font-semibold'
+                  : 'rounded-xl border border-border bg-surface px-3 py-3 text-sm font-semibold text-muted'
+              }
+            >
+              Estabelecimento comercial
+            </button>
+            <button
+              type="button"
+              onClick={() => setCreatorType('personal')}
+              className={
+                creatorType === 'personal'
+                  ? 'rounded-xl border-2 border-destaque bg-bora-gradient-soft px-3 py-3 text-sm font-semibold'
+                  : 'rounded-xl border border-border bg-surface px-3 py-3 text-sm font-semibold text-muted'
+              }
+            >
+              Pessoa física
+            </button>
+          </div>
+          {creatorType === 'business' && (
+            <p className="mt-2 text-xs text-muted">Informe o CNPJ do local mais abaixo — validado, ele libera o evento na hora.</p>
+          )}
+          {creatorType === 'personal' && (
+            <p className="mt-2 text-xs text-muted">
+              Pra publicar na hora, verifique sua identidade (telefone + CPF + selfie) em{' '}
+              <button type="button" onClick={() => navigate('/profile/security')} className="font-semibold text-destaque">
+                Perfil {'>'} Segurança
+              </button>
+              . Sem isso, o evento fica em análise até 3 check-ins confirmarem que é real.
+            </p>
+          )}
+          {!creatorType && error && <p className="mt-2 text-sm text-destaque">{error}</p>}
+        </div>
+
         <div>
           <label className="mb-2 block text-sm font-semibold text-muted">Local</label>
           {!creatingNewVenue ? (
@@ -264,16 +317,19 @@ export function CreateEvent() {
                   ))}
                 </div>
               )}
-              <button
-                type="button"
-                onClick={() => {
-                  setCreatingNewVenue(true);
-                  setSelectedVenue(null);
-                }}
-                className="mt-2 text-sm font-semibold text-destaque"
-              >
-                Não encontrei o local
-              </button>
+              <p className="mt-2 text-xs text-muted">
+                Não achou?{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCreatingNewVenue(true);
+                    setSelectedVenue(null);
+                  }}
+                  className="font-semibold text-destaque"
+                >
+                  Cadastrar novo local
+                </button>
+              </p>
             </>
           ) : (
             <div className="space-y-3 rounded-2xl border border-border bg-surface p-4">
@@ -300,25 +356,22 @@ export function CreateEvent() {
                   {address.neighborhood} — {address.city}/{address.state}
                 </p>
               )}
+            </div>
+          )}
 
-              <label className="flex items-center gap-2 pt-1 text-sm">
-                <input
-                  type="checkbox"
-                  checked={isBusinessVenue}
-                  onChange={(e) => setIsBusinessVenue(e.target.checked)}
-                  className="h-4 w-4 accent-destaque"
-                />
-                É um estabelecimento comercial
-              </label>
-              {isBusinessVenue && (
+          {creatorType === 'business' && (selectedVenue || creatingNewVenue) && (
+            <div className="mt-3">
+              {selectedVenue?.verified ? (
+                <p className="text-xs text-muted">Esse local já é verificado — não precisa de CNPJ.</p>
+              ) : (
                 <>
+                  <label className="mb-2 block text-sm font-semibold text-muted">CNPJ do local</label>
                   <Input
-                    placeholder="00.000.000/0000-00"
+                    placeholder="00.000.000/0001-00"
                     value={cnpj}
                     onChange={(e) => setCnpj(formatCnpj(e.target.value))}
                     inputMode="numeric"
                   />
-                  <p className="text-xs text-muted">CNPJ válido libera o local pra todo mundo na hora.</p>
                 </>
               )}
             </div>
