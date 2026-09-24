@@ -56,6 +56,51 @@ body {
 }
 
 /*
+ * Landing page — destaque contínuo do CTA principal. Loop lento e discreto (só
+ * o halo, sem escala nem piscada), que pausa no hover/focus. Nunca é a única
+ * pista de que o botão é clicável: contraste e formato de botão continuam de pé
+ * sem animação nenhuma.
+ */
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 28px -6px rgba(255, 45, 149, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 44px -2px rgba(255, 45, 149, 0.62);
+  }
+}
+
+.cta-pulse {
+  animation: cta-pulse 3.2s ease-in-out infinite;
+}
+
+.cta-pulse:hover,
+.cta-pulse:focus-visible {
+  animation-play-state: paused;
+}
+
+/*
+ * Landing page — faixa alternada entre seções. Escopada na landing (nenhuma
+ * tela do app usa), e definida aqui em vez de via modificador de opacidade do
+ * Tailwind porque os tokens de cor do projeto são `hsl(var(--x))` sem canal
+ * alfa declarado.
+ */
+.landing-band {
+  background-color: hsl(var(--surface) / 0.4);
+}
+
+.landing-band-fill {
+  color: hsl(var(--surface) / 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-pulse {
+    animation: none;
+  }
+}
+
+/*
  * Mapa escuro "de graça": inverte só a camada de tiles do OpenStreetMap (que é clara
  * por padrão) via filtro CSS, sem depender de um provedor de tiles escuros pago/com
  * chave. Pins, popups e controles ficam fora do filtro (senão o gradiente da marca

@@ -20,6 +20,7 @@ import { CreateEvent } from './pages/events/CreateEvent';
 import { Events } from './pages/events/Events';
 import { Explore } from './pages/explore/Explore';
 import { Home } from './pages/home/Home';
+import { Landing } from './pages/landing/Landing';
 import { Matches } from './pages/matches/Matches';
 import { Notifications } from './pages/notifications/Notifications';
 import { HowItWorks } from './pages/onboarding/HowItWorks';
@@ -59,7 +60,11 @@ function ProtectedLayout() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Splash />} />
+      {/* "/" é a vitrine pública (landing). O app propriamente dito começa em "/app",
+       * que é também o start_url do PWA — quem já instalou continua abrindo no app,
+       * não na página de marketing. */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/app" element={<Splash />} />
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/how-it-works" element={<HowItWorks />} />
       <Route path="/permissions" element={<Permissions />} />

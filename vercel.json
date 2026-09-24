@@ -19,6 +19,7 @@
     { "src": "/registerSW.js", "dest": "/BoraApp/registerSW.js" },
     { "src": "/manifest.webmanifest", "dest": "/BoraApp/manifest.webmanifest" },
     { "src": "/logo.png", "dest": "/BoraApp/logo.png" },
+    { "src": "/og-cover.png", "dest": "/BoraApp/og-cover.png" },
     { "src": "/sw.js", "dest": "/BoraApp/sw.js" },
     { "src": "/workbox-(.*)", "dest": "/BoraApp/workbox-$1" },
     { "src": "/(.*)", "dest": "/BoraApp/index.html" }
