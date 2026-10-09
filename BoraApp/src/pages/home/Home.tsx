@@ -21,13 +21,14 @@ import {
   Waves,
   Wine,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventCard } from '@/components/EventCard';
 import { LocationSheet } from '@/components/LocationSheet';
 import { VenueListItem } from '@/components/VenueListItem';
 import { useAuth } from '@/context/AuthContext';
+import { useHorizontalScroll } from '@/hooks/useHorizontalScroll';
 import { eventsService } from '@/services/events.service';
 import { venuesService } from '@/services/venues.service';
 import { VENUE_CATEGORY_OPTIONS, type VenueCategory } from '@/shared/constants/venue-categories';
@@ -104,21 +105,7 @@ export function Home() {
     navigate(`/explore?q=${encodeURIComponent(search.trim())}`);
   };
 
-  // Roda do mouse (desktop) também rola o carrossel de atalhos na horizontal, já que ele
-  // não cabe inteiro na largura do telefone. preventDefault evita rolar a página junto, e só
-  // funciona num listener nativo { passive: false }: o onWheel do React é passivo.
-  const shortcutsRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const element = shortcutsRef.current;
-    if (!element) return;
-    const handleWheel = (e: WheelEvent) => {
-      if (e.deltaY === 0) return;
-      e.preventDefault();
-      element.scrollLeft += e.deltaY;
-    };
-    element.addEventListener('wheel', handleWheel, { passive: false });
-    return () => element.removeEventListener('wheel', handleWheel);
-  }, []);
+  const shortcutsRef = useHorizontalScroll<HTMLDivElement>();
 
   return (
     <div className="bg-background px-5 pt-6">
@@ -166,7 +153,7 @@ export function Home() {
       </div>
 
       <div className="relative mt-5">
-        <div ref={shortcutsRef} className="flex gap-2 overflow-x-auto scroll-smooth pb-1">
+        <div ref={shortcutsRef} className="scrollbar-visible flex cursor-grab select-none gap-2 overflow-x-auto scroll-smooth pb-3">
           {SHORTCUTS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
