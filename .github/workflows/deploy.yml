@@ -118,9 +118,15 @@ jobs:
           DATABASE_SSL: ${{ secrets.DATABASE_SSL }}
 
       # Catálogo real de locais (src/seeds/venues.catalog.json): idempotente, numa transação
-      # com lock, não cria eventos nem remove registros. Ver src/seeds/README.md.
+      # com lock, não cria eventos nem remove registros. Só roda com "runOnDeploy": true em
+      # src/seeds/seed.config.json (padrão false). Ver src/seeds/README.md.
       - name: Seed venue catalog
-        run: node dist/seeds/seed.js
+        run: |
+          if [ "$(node -p "require('./src/seeds/seed.config.json').runOnDeploy === true")" = "true" ]; then
+            node dist/seeds/seed.js
+          else
+            echo "Seed skipped: runOnDeploy is false in src/seeds/seed.config.json"
+          fi
         env:
           DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
           DATABASE_PORT: ${{ secrets.DATABASE_PORT }}

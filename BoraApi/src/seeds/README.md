@@ -12,9 +12,11 @@ npm run migration:run
 npm run seed:dev
 ```
 
-Em produção isso é automático: a cada push na `main`, o job `migrate` do
-`.github/workflows/deploy.yml` roda as migrations e depois o seed, antes do deploy na Vercel.
-Para rodar manualmente, após o build:
+Em produção, a cada push na `main` o job `migrate` do `.github/workflows/deploy.yml` roda as
+migrations e, **só se** `"runOnDeploy": true` em `src/seeds/seed.config.json`, o seed (antes do
+deploy na Vercel). O padrão é `false`: ao alterar o catálogo e querer publicar, marque `true` no
+mesmo commit. Como o seed é idempotente, esquecer `true` só faz ele rodar de novo sem duplicar nada.
+Para rodar manualmente (ignora a flag), após o build:
 
 ```sh
 npm run migration:run:prod
