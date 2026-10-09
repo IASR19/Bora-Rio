@@ -4,7 +4,10 @@
     "description": "Vida noturna ao ar livre no Jockey Club, com drinks e programação musical.",
     "category": "festa",
     "musicGenres": [],
-    "vibes": ["animado", "balada"],
+    "vibes": [
+      "animado",
+      "balada"
+    ],
     "priceRange": "premium",
     "address": "Av. Bartolomeu Mitre, 1314 - Gávea, Rio de Janeiro - RJ",
     "latitude": -22.9735,
@@ -15,7 +18,9 @@
       "slug": "bosque-bar",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/bosque-bar/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/bosque-bar/"
+      ],
       "instagramUrl": "https://www.instagram.com/barbosquebar/",
       "openingHours": "Quinta a domingo, a partir das 20h.",
       "coordinatesAccuracy": "approximate",
@@ -35,7 +40,10 @@
     "description": "Restaurante contemporâneo e drinks em Ipanema, com ambiente de noitada.",
     "category": "festa",
     "musicGenres": [],
-    "vibes": ["animado", "balada"],
+    "vibes": [
+      "animado",
+      "balada"
+    ],
     "priceRange": "premium",
     "address": "Rua Aníbal de Mendonça, 112 - Ipanema, Rio de Janeiro - RJ",
     "latitude": -22.9837,
@@ -46,7 +54,9 @@
       "slug": "rocco-ipanema",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://vejario.abril.com.br/estabelecimento/rocco/"],
+      "sourceUrls": [
+        "https://vejario.abril.com.br/estabelecimento/rocco/"
+      ],
       "instagramUrl": "https://www.instagram.com/roccoipanema/",
       "openingHours": "Segunda a quarta e domingo, 19h–0h; quinta a sábado, 19h–2h.",
       "coordinatesAccuracy": "approximate",
@@ -68,7 +78,10 @@
     "description": "Gastronomia asiática e coquetelaria em um casarão no Horto.",
     "category": "festa",
     "musicGenres": [],
-    "vibes": ["animado", "balada"],
+    "vibes": [
+      "animado",
+      "balada"
+    ],
     "priceRange": "premium",
     "address": "Rua Pacheco Leão, 758 - Jardim Botânico, Rio de Janeiro - RJ",
     "latitude": -22.9661,
@@ -79,7 +92,9 @@
       "slug": "elena-horto",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://vejario.abril.com.br/estabelecimento/elena/"],
+      "sourceUrls": [
+        "https://vejario.abril.com.br/estabelecimento/elena/"
+      ],
       "instagramUrl": "https://www.instagram.com/elenahorto/",
       "openingHours": "Segunda a quinta, 19h–1h; sexta e sábado, 19h–2h; domingo fechado.",
       "coordinatesAccuracy": "approximate",
@@ -101,7 +116,10 @@
     "description": "Boteco de frente para a orla, com petiscos, chope e música ao vivo.",
     "category": "bar",
     "musicGenres": [],
-    "vibes": ["casual", "bar"],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
     "priceRange": "medio",
     "address": "Av. Vieira Souto, 110 - Ipanema, Rio de Janeiro - RJ",
     "latitude": -22.9873,
@@ -112,7 +130,9 @@
       "slug": "boa-praca-ipanema",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://bsbflash.com.br/boteco-boa-praca-expande-no-rio-e-abre-unidade-em-ipanema/"],
+      "sourceUrls": [
+        "https://bsbflash.com.br/boteco-boa-praca-expande-no-rio-e-abre-unidade-em-ipanema/"
+      ],
       "instagramUrl": "https://www.instagram.com/bpipanema/",
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -132,7 +152,10 @@
     "description": "Unidade da orla de Ipanema da rede de botecos conhecida pelas empadas e pelo chope.",
     "category": "bar",
     "musicGenres": [],
-    "vibes": ["casual", "bar"],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
     "priceRange": "medio",
     "address": "Av. Vieira Souto, 236 - Ipanema, Rio de Janeiro - RJ",
     "latitude": -22.9865,
@@ -143,7 +166,9 @@
       "slug": "belmonte-ipanema",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://vejario.abril.com.br/comer-e-beber/belmonte-orla-ipanema/"],
+      "sourceUrls": [
+        "https://vejario.abril.com.br/comer-e-beber/belmonte-orla-ipanema/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -163,7 +188,10 @@
     "description": "Boteco tradicional do Leblon, com chope e petiscos de inspiração portuguesa.",
     "category": "bar",
     "musicGenres": [],
-    "vibes": ["casual", "bar"],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
     "priceRange": "medio",
     "address": "Av. Ataulfo de Paiva, 1166, loja B - Leblon, Rio de Janeiro - RJ",
     "latitude": -22.9846,
@@ -174,7 +202,9 @@
       "slug": "jobi",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://vejario.abril.com.br/estabelecimento/jobi/"],
+      "sourceUrls": [
+        "https://vejario.abril.com.br/estabelecimento/jobi/"
+      ],
       "instagramUrl": null,
       "openingHours": "Todos os dias, 11h–3h.",
       "coordinatesAccuracy": "approximate",
@@ -194,7 +224,10 @@
     "description": "Bar e restaurante tradicional com vista para a Baía de Guanabara.",
     "category": "bar",
     "musicGenres": [],
-    "vibes": ["casual", "bar"],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
     "priceRange": "medio",
     "address": "Rua Cândido Gaffrée, 205 - Urca, Rio de Janeiro - RJ",
     "latitude": -22.9194,
@@ -205,7 +238,9 @@
       "slug": "bar-da-urca",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/onde_comer/bar-urca/"],
+      "sourceUrls": [
+        "https://riotur.rio/onde_comer/bar-urca/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -225,7 +260,10 @@
     "description": "Ponto de encontro público na orla da Urca, próximo a bares; não é um estabelecimento.",
     "category": "bar",
     "musicGenres": [],
-    "vibes": ["casual", "bar"],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
     "priceRange": "medio",
     "address": "Rua Cândido Gaffrée, 205 - Urca (referência na orla), Rio de Janeiro - RJ",
     "latitude": -22.9193,
@@ -236,7 +274,9 @@
       "slug": "mureta-da-urca",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/mureta-da-urca/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/mureta-da-urca/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -255,8 +295,13 @@
     "name": "Padano Sertanejo & Bar",
     "description": "Bar na Barra da Tijuca com gastronomia e programação sertaneja.",
     "category": "bar",
-    "musicGenres": ["sertanejo"],
-    "vibes": ["casual", "bar"],
+    "musicGenres": [
+      "sertanejo"
+    ],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
     "priceRange": "medio",
     "address": "Av. Érico Veríssimo, 821 - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.0104,
@@ -267,7 +312,9 @@
       "slug": "padano",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.padano.com.br/"],
+      "sourceUrls": [
+        "https://www.padano.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -286,8 +333,14 @@
     "name": "Pedra do Sal",
     "description": "Patrimônio histórico da Pequena África e ponto de encontro de rodas de samba.",
     "category": "samba",
-    "musicGenres": ["samba", "pagode"],
-    "vibes": ["animado", "casual"],
+    "musicGenres": [
+      "samba",
+      "pagode"
+    ],
+    "vibes": [
+      "animado",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Rua Tia Ciata, s/n - Saúde, Rio de Janeiro - RJ",
     "latitude": -22.8976,
@@ -298,7 +351,9 @@
       "slug": "pedra-do-sal",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/pedra-do-sal/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/pedra-do-sal/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -317,8 +372,14 @@
     "name": "Região dos bares da Lapa",
     "description": "Região boêmia com bares, casas de música e samba; não corresponde a uma única casa.",
     "category": "samba",
-    "musicGenres": ["samba", "pagode"],
-    "vibes": ["animado", "casual"],
+    "musicGenres": [
+      "samba",
+      "pagode"
+    ],
+    "vibes": [
+      "animado",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. Mem de Sá - Lapa (referência nos Arcos da Lapa), Rio de Janeiro - RJ",
     "latitude": -22.9139,
@@ -329,7 +390,9 @@
       "slug": "lapa",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/lapa/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/lapa/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -349,7 +412,10 @@
     "description": "Quiosque e beach club na praia do Leme. Unidade escolhida para identificar a rede.",
     "category": "beach_club",
     "musicGenres": [],
-    "vibes": ["praia", "casual"],
+    "vibes": [
+      "praia",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. Atlântica, s/n - Leme, Rio de Janeiro - RJ",
     "latitude": -22.9634,
@@ -360,7 +426,9 @@
       "slug": "classico",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.orlario.com.br/quiosque/classico-beach-club-2/"],
+      "sourceUrls": [
+        "https://www.orlario.com.br/quiosque/classico-beach-club-2/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -372,7 +440,9 @@
         "credit": "Consultar os créditos da página de origem.",
         "license": "not_confirmed"
       },
-      "notes": ["Rede com diversas unidades; este registro identifica especificamente o Leme."]
+      "notes": [
+        "Rede com diversas unidades; este registro identifica especificamente o Leme."
+      ]
     }
   },
   {
@@ -380,7 +450,10 @@
     "description": "Clube com piscina, day use, gastronomia e espaços para eventos na Ilha da Coroa.",
     "category": "beach_club",
     "musicGenres": [],
-    "vibes": ["praia", "casual"],
+    "vibes": [
+      "praia",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Ilha da Coroa, 81 - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.0034,
@@ -391,7 +464,9 @@
       "slug": "rio-beach-club",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.riobeachclub.com.br/experiencias.html"],
+      "sourceUrls": [
+        "https://www.riobeachclub.com.br/experiencias.html"
+      ],
       "instagramUrl": "https://www.instagram.com/riobeachclub/",
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -411,7 +486,10 @@
     "description": "Quiosque de inspiração tailandesa na orla do Pepê, com drinks e gastronomia.",
     "category": "beach_club",
     "musicGenres": [],
-    "vibes": ["praia", "casual"],
+    "vibes": [
+      "praia",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. do Pepê, em frente ao nº 930 - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.0138,
@@ -422,7 +500,9 @@
       "slug": "krabi",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.orlario.com.br/quiosque/krabi-beach-club/"],
+      "sourceUrls": [
+        "https://www.orlario.com.br/quiosque/krabi-beach-club/"
+      ],
       "instagramUrl": null,
       "openingHours": "Horários divergentes entre as fontes; consultar o canal oficial.",
       "coordinatesAccuracy": "approximate",
@@ -442,7 +522,10 @@
     "description": "Quiosque com gastronomia, esportes de praia e atividades de kitesurf na Praia do Pepê.",
     "category": "beach_club",
     "musicGenres": [],
-    "vibes": ["praia", "casual"],
+    "vibes": [
+      "praia",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. do Pepê, em frente ao nº 890 - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.014,
@@ -453,7 +536,9 @@
       "slug": "k08",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.orlario.com.br/quiosque/k08/"],
+      "sourceUrls": [
+        "https://www.orlario.com.br/quiosque/k08/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -475,7 +560,10 @@
     "description": "Espaço para eventos com acesso à praia e vista para o mar, próximo ao Leblon.",
     "category": "beach_club",
     "musicGenres": [],
-    "vibes": ["praia", "casual"],
+    "vibes": [
+      "praia",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. Niemeyer, 101 - São Conrado, Rio de Janeiro - RJ",
     "latitude": -22.9924,
@@ -486,7 +574,9 @@
       "slug": "faro",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://dev.farobeachclub.com.br/"],
+      "sourceUrls": [
+        "https://dev.farobeachclub.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -506,7 +596,10 @@
     "description": "Conjunto de quiosques da orla do Pepê; consultar cada operador para horários e serviços.",
     "category": "beach_club",
     "musicGenres": [],
-    "vibes": ["praia", "casual"],
+    "vibes": [
+      "praia",
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. do Pepê, s/n - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.0138,
@@ -517,14 +610,18 @@
       "slug": "quiosques-pepe",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.orlario.com.br/quiosque/krabi-beach-club/"],
+      "sourceUrls": [
+        "https://www.orlario.com.br/quiosque/krabi-beach-club/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
       "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
       "priceRangeAccuracy": "estimate",
       "photo": null,
-      "notes": ["Referência geográfica do conjunto; fonte documenta um dos quiosques, o Krabi."]
+      "notes": [
+        "Referência geográfica do conjunto; fonte documenta um dos quiosques, o Krabi."
+      ]
     }
   },
   {
@@ -532,7 +629,9 @@
     "description": "Bar no alto do Vidigal, com gastronomia, samba e vista panorâmica da Zona Sul.",
     "category": "rooftop",
     "musicGenres": [],
-    "vibes": ["rooftop"],
+    "vibes": [
+      "rooftop"
+    ],
     "priceRange": "premium",
     "address": "Rua Armando Almeida Lima, 8 - Vidigal, Rio de Janeiro - RJ",
     "latitude": -22.9941,
@@ -543,7 +642,10 @@
       "slug": "bar-da-laje",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://vejario.abril.com.br/estabelecimento/bar-da-laje/", "https://bardalaje.rio/"],
+      "sourceUrls": [
+        "https://vejario.abril.com.br/estabelecimento/bar-da-laje/",
+        "https://bardalaje.rio/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -563,7 +665,9 @@
     "description": "Hotel, bar e restaurante no alto do Vidigal, com vista para as praias da Zona Sul.",
     "category": "rooftop",
     "musicGenres": [],
-    "vibes": ["rooftop"],
+    "vibes": [
+      "rooftop"
+    ],
     "priceRange": "premium",
     "address": "Rua Armando Almeida Lima, 8 - Vidigal, Rio de Janeiro - RJ",
     "latitude": -22.9942,
@@ -574,7 +678,9 @@
       "slug": "mirante-do-arvrao",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/mirante-do-arvrao/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/mirante-do-arvrao/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -594,7 +700,9 @@
     "description": "Praia urbana com calçadão, quiosques e espaço para lazer e esportes.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Atlântica, s/n - Copacabana, Rio de Janeiro - RJ",
     "latitude": -22.9712,
@@ -605,7 +713,9 @@
       "slug": "copacabana",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/copacabana-e-leme/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/copacabana-e-leme/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -625,7 +735,9 @@
     "description": "Praia da Zona Sul com esportes na areia e vista para o Morro Dois Irmãos.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Vieira Souto, s/n - Ipanema, Rio de Janeiro - RJ",
     "latitude": -22.9868,
@@ -636,7 +748,9 @@
       "slug": "ipanema",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/ipanema/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/ipanema/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -656,7 +770,9 @@
     "description": "Praia próxima à Pedra da Gávea, conhecida pelo surfe e pelo pouso de voo livre.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Prefeito Mendes de Morais, s/n - São Conrado, Rio de Janeiro - RJ",
     "latitude": -23.0014,
@@ -667,7 +783,9 @@
       "slug": "sao-conrado",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/sao-conrado/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/sao-conrado/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -687,7 +805,9 @@
     "description": "Pequena praia no Joá com acesso por pedras; a faixa de areia varia com a maré.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Rua Sargento José da Silva - Joá (acesso pela Estrada do Joá), Rio de Janeiro - RJ",
     "latitude": -23.0147,
@@ -698,7 +818,9 @@
       "slug": "joatinga",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/joatinga/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/joatinga/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -718,7 +840,9 @@
     "description": "Extensa praia com quiosques, surfe e esportes na areia.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Lúcio Costa, s/n - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.0117,
@@ -729,7 +853,9 @@
       "slug": "barra",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/barra-da-tijuca/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/barra-da-tijuca/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -749,7 +875,9 @@
     "description": "Trecho da praia da Barra junto ao Jardim Oceânico, com quiosques e esportes.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. do Pepê, s/n - Barra da Tijuca, Rio de Janeiro - RJ",
     "latitude": -23.0142,
@@ -760,14 +888,18 @@
       "slug": "praia-pepe",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/barra-da-tijuca/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/barra-da-tijuca/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
       "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
       "priceRangeAccuracy": "estimate",
       "photo": null,
-      "notes": ["Trecho da praia da Barra; foto própria do Pepê ainda pendente."]
+      "notes": [
+        "Trecho da praia da Barra; foto própria do Pepê ainda pendente."
+      ]
     }
   },
   {
@@ -775,7 +907,9 @@
     "description": "Trecho entre a Barra e o Recreio, junto à área de proteção de Marapendi.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Lúcio Costa, s/n - Reserva de Marapendi, Rio de Janeiro - RJ",
     "latitude": -23.0201,
@@ -786,7 +920,9 @@
       "slug": "reserva",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/rio-praias/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/rio-praias/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -806,7 +942,9 @@
     "description": "Praia conhecida pelo surfe e pela proximidade com a Pedra do Pontal.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Lúcio Costa, s/n - Recreio dos Bandeirantes, Rio de Janeiro - RJ",
     "latitude": -23.0299,
@@ -817,7 +955,9 @@
       "slug": "recreio",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/recreio-dos-bandeirantes/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/recreio-dos-bandeirantes/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -837,7 +977,9 @@
     "description": "Praia cercada por montanhas e vegetação, procurada para o surfe e lazer.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Estado da Guanabara, s/n - Grumari, Rio de Janeiro - RJ",
     "latitude": -23.0406,
@@ -848,7 +990,9 @@
       "slug": "prainha",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/prainha/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/prainha/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -868,7 +1012,9 @@
     "description": "Praia em área de proteção ambiental, com paisagem natural e restinga.",
     "category": "praia",
     "musicGenres": [],
-    "vibes": ["praia"],
+    "vibes": [
+      "praia"
+    ],
     "priceRange": "economico",
     "address": "Av. Estado da Guanabara, s/n - Grumari, Rio de Janeiro - RJ",
     "latitude": -23.0488,
@@ -879,7 +1025,9 @@
       "slug": "grumari",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/grumari/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/grumari/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -899,7 +1047,9 @@
     "description": "Monumento no alto do Corcovado, com vista panorâmica da cidade.",
     "category": "ponto_turistico",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Morro do Corcovado - Parque Nacional da Tijuca, Rio de Janeiro - RJ",
     "latitude": -22.9519,
@@ -910,7 +1060,9 @@
       "slug": "cristo-redentor",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/cristoredentor/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/cristoredentor/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -930,7 +1082,9 @@
     "description": "Parque de teleféricos que conecta a Praia Vermelha, o Morro da Urca e o Pão de Açúcar.",
     "category": "ponto_turistico",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Av. Pasteur, 520 - Urca, Rio de Janeiro - RJ",
     "latitude": -22.9558,
@@ -941,7 +1095,9 @@
       "slug": "pao-de-acucar",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/paodeacucar/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/paodeacucar/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -961,7 +1117,9 @@
     "description": "Formação rochosa entre Copacabana e Ipanema, conhecida pela vista do pôr do sol.",
     "category": "ponto_turistico",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Rua Francisco Otaviano, s/n - Ipanema, Rio de Janeiro - RJ",
     "latitude": -22.9895,
@@ -972,7 +1130,9 @@
       "slug": "arpoador",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/arpoador/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/arpoador/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -992,7 +1152,9 @@
     "description": "Escadaria revestida de azulejos criada pelo artista Jorge Selarón.",
     "category": "ponto_turistico",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "medio",
     "address": "Rua Manuel Carneiro, s/n - Santa Teresa, Rio de Janeiro - RJ",
     "latitude": -22.9153,
@@ -1003,7 +1165,9 @@
       "slug": "selaron",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/escadariaselaron/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/escadariaselaron/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1023,7 +1187,9 @@
     "description": "Museu dedicado à ciência e às possibilidades para o futuro, na região portuária.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Mauá, 1 - Centro, Rio de Janeiro - RJ",
     "latitude": -22.8947,
@@ -1034,7 +1200,9 @@
       "slug": "museu-do-amanha",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/museudoamanha/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/museudoamanha/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1054,7 +1222,9 @@
     "description": "Museu de arte com exposições e ações educativas na Praça Mauá.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Mauá, 5 - Saúde, Rio de Janeiro - RJ",
     "latitude": -22.8968,
@@ -1065,7 +1235,9 @@
       "slug": "mar",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://museudeartedorio.org.br/"],
+      "sourceUrls": [
+        "https://museudeartedorio.org.br/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1085,7 +1257,9 @@
     "description": "Teatro histórico da Cinelândia, com programação artística e visitas guiadas.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Floriano, s/n - Centro, Rio de Janeiro - RJ",
     "latitude": -22.9081,
@@ -1096,7 +1270,9 @@
       "slug": "theatro-municipal",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/theatromunicipal/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/theatromunicipal/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1116,7 +1292,9 @@
     "description": "Confeitaria histórica conhecida pela arquitetura e pela tradição gastronômica.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Rua Gonçalves Dias, 32 - Centro, Rio de Janeiro - RJ",
     "latitude": -22.9058,
@@ -1127,7 +1305,9 @@
       "slug": "colombo",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/onde_comer/confeitaria-colombo/"],
+      "sourceUrls": [
+        "https://riotur.rio/onde_comer/confeitaria-colombo/"
+      ],
       "instagramUrl": null,
       "openingHours": "Segunda a sábado e feriados, 11h–18h; domingo fechado.",
       "coordinatesAccuracy": "approximate",
@@ -1147,7 +1327,9 @@
     "description": "Antigo Aqueduto da Carioca, marco arquitetônico da região da Lapa.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Cardeal Câmara, s/n - Lapa, Rio de Janeiro - RJ",
     "latitude": -22.9139,
@@ -1158,7 +1340,9 @@
       "slug": "arcos-da-lapa",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/arcosdalapa/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/arcosdalapa/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1178,7 +1362,9 @@
     "description": "Passeio de bonde histórico entre o Centro e Santa Teresa, passando pelos Arcos da Lapa.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Rua Lélio Gama, 2 - Centro (estação Carioca), Rio de Janeiro - RJ",
     "latitude": -22.9107,
@@ -1212,7 +1398,9 @@
     "description": "Fortificação histórica com museu militar e vista para a orla de Copacabana.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Coronel Eugênio Franco, 1 - Copacabana, Rio de Janeiro - RJ",
     "latitude": -22.9865,
@@ -1223,7 +1411,9 @@
       "slug": "forte",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/museu-historico-do-exercito-e-forte-de-copacabana/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/museu-historico-do-exercito-e-forte-de-copacabana/"
+      ],
       "instagramUrl": null,
       "openingHours": "Terça a domingo, 10h–18h.",
       "coordinatesAccuracy": "approximate",
@@ -1243,7 +1433,9 @@
     "description": "Estádio histórico do futebol brasileiro, com visitas e programação esportiva.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Av. Presidente Castelo Branco, s/n - Maracanã, Rio de Janeiro - RJ",
     "latitude": -22.9121,
@@ -1254,7 +1446,9 @@
       "slug": "maracana",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/maracana/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/maracana/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1274,7 +1468,9 @@
     "description": "Jardim histórico com coleções botânicas, alamedas e espaços de contemplação.",
     "category": "parque",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "economico",
     "address": "Rua Jardim Botânico, 1008 - Jardim Botânico, Rio de Janeiro - RJ",
     "latitude": -22.9674,
@@ -1285,7 +1481,9 @@
       "slug": "jardim-botanico",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/jardimbotanico/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/jardimbotanico/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1305,7 +1503,9 @@
     "description": "Parque com jardins e casarão histórico aos pés do Corcovado.",
     "category": "parque",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "economico",
     "address": "Rua Jardim Botânico, 414 - Jardim Botânico, Rio de Janeiro - RJ",
     "latitude": -22.9599,
@@ -1316,7 +1516,9 @@
       "slug": "parque-lage",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/parque-lage/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/parque-lage/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1336,7 +1538,9 @@
     "description": "Parque histórico com jardins e áreas para passeios e lazer em família.",
     "category": "parque",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "economico",
     "address": "Av. Pedro II, s/n - São Cristóvão, Rio de Janeiro - RJ",
     "latitude": -22.9065,
@@ -1347,7 +1551,9 @@
       "slug": "quinta-da-boa-vista",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/quinta-da-boa-vista/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/quinta-da-boa-vista/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1367,7 +1573,9 @@
     "description": "Aquário marinho com exposições e atividades educativas na região portuária.",
     "category": "parque",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "economico",
     "address": "Praça Muhammad Ali, Via Binário do Porto, s/n - Gamboa, Rio de Janeiro - RJ",
     "latitude": -22.8938,
@@ -1378,7 +1586,9 @@
       "slug": "aquario",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/aquario-marinho-do-rio-aquario/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/aquario-marinho-do-rio-aquario/"
+      ],
       "instagramUrl": "https://www.instagram.com/aquariomarinhodorio/",
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1398,7 +1608,9 @@
     "description": "Mirante do Parque Nacional da Tijuca com vista para a Lagoa e a Zona Sul.",
     "category": "aventura",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "economico",
     "address": "Estrada Dona Castorina, s/n - Alto da Boa Vista, Rio de Janeiro - RJ",
     "latitude": -22.9725,
@@ -1409,7 +1621,9 @@
       "slug": "vista-chinesa",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/rio-parques-e-trilhas/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/rio-parques-e-trilhas/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1429,7 +1643,9 @@
     "description": "Trilha e mirante no Parque Nacional da Tijuca, próximos à rampa de voo livre.",
     "category": "aventura",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "economico",
     "address": "Estrada da Pedra Bonita, s/n - São Conrado (acesso à trilha), Rio de Janeiro - RJ",
     "latitude": -22.9893,
@@ -1440,7 +1656,9 @@
       "slug": "pedra-bonita",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/pedra-bonita/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/pedra-bonita/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1460,7 +1678,9 @@
     "description": "Trilha de dificuldade elevada no Parque Nacional da Tijuca, com trechos de escalaminhada.",
     "category": "aventura",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "economico",
     "address": "Estrada do Sorimã, s/n - Barra da Tijuca (acesso à trilha), Rio de Janeiro - RJ",
     "latitude": -23.0009,
@@ -1471,7 +1691,9 @@
       "slug": "pedra-da-gavea",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/pedradagavea/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/pedradagavea/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1491,7 +1713,9 @@
     "description": "Mirante acessado por trilha, conhecido pelas fotos com efeito de ilusão de ótica.",
     "category": "aventura",
     "musicGenres": [],
-    "vibes": ["casual"],
+    "vibes": [
+      "casual"
+    ],
     "priceRange": "economico",
     "address": "Barra de Guaratiba - Parque Estadual da Pedra Branca, Rio de Janeiro - RJ",
     "latitude": -23.0689,
@@ -1502,7 +1726,9 @@
       "slug": "pedra-do-telegrafo",
       "state": "RJ",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://riotur.rio/que_fazer/rio-parques-e-trilhas/"],
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/rio-parques-e-trilhas/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1522,7 +1748,9 @@
     "description": "Santuário e referência do patrimônio religioso de Santa Rita do Sapucaí.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Santa Rita, s/n - Centro, Santa Rita do Sapucaí - MG",
     "latitude": -22.2521,
@@ -1533,7 +1761,9 @@
       "slug": "srs-santuario",
       "state": "MG",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.visitesrs.com.br/"],
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1553,7 +1783,9 @@
     "description": "Praça arborizada do Centro, com coreto e espaços de convivência.",
     "category": "parque",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "economico",
     "address": "Praça Santa Rita, s/n - Centro, Santa Rita do Sapucaí - MG",
     "latitude": -22.2524,
@@ -1589,7 +1821,9 @@
     "description": "Museu municipal instalado na antiga residência de Delfim Moreira.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Praça Doutor Delfim Moreira, 42 - Centro, Santa Rita do Sapucaí - MG",
     "latitude": -22.2509,
@@ -1600,7 +1834,9 @@
       "slug": "srs-museu",
       "state": "MG",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.visitesrs.com.br/"],
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": "Segunda a sexta, 8h30–16h30; sábado sob agendamento.",
       "coordinatesAccuracy": "approximate",
@@ -1620,7 +1856,9 @@
     "description": "Galeria ao ar livre com intervenções artísticas às margens do Rio Sapucaí.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Rua Vitor de Souza Pinto (Av. Beira Rio) - Centro, Santa Rita do Sapucaí - MG",
     "latitude": -22.2494,
@@ -1631,7 +1869,9 @@
       "slug": "srs-gaau",
       "state": "MG",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.visitesrs.com.br/"],
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": null,
       "coordinatesAccuracy": "approximate",
@@ -1651,7 +1891,9 @@
     "description": "Mercado municipal com comércio local e produtos da região.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Alameda José Cleto Duarte, s/n - Centro, Santa Rita do Sapucaí - MG",
     "latitude": -22.2511,
@@ -1662,7 +1904,9 @@
       "slug": "srs-mercado",
       "state": "MG",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.visitesrs.com.br/"],
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": "Segunda a sábado, 7h–18h; domingo, 7h–12h.",
       "coordinatesAccuracy": "approximate",
@@ -1682,7 +1926,9 @@
     "description": "Campus do Instituto Nacional de Telecomunicações, parte do roteiro de inovação da cidade. Visitas sob agendamento.",
     "category": "cultura",
     "musicGenres": [],
-    "vibes": ["tranquilo"],
+    "vibes": [
+      "tranquilo"
+    ],
     "priceRange": "medio",
     "address": "Av. João de Camargo, 510 - Centro, Santa Rita do Sapucaí - MG",
     "latitude": -22.2575,
@@ -1693,7 +1939,9 @@
       "slug": "srs-inatel",
       "state": "MG",
       "researchedAt": "2026-10-09",
-      "sourceUrls": ["https://www.visitesrs.com.br/"],
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/"
+      ],
       "instagramUrl": null,
       "openingHours": "Visitas sob agendamento.",
       "coordinatesAccuracy": "approximate",
@@ -1706,6 +1954,1988 @@
         "license": "not_confirmed"
       },
       "notes": []
+    }
+  },
+  {
+    "name": "D-EDGE Rio",
+    "description": "Clube de música eletrônica no Centro Cultural D-EDGE Rio, na zona portuária, irmão do D-EDGE de São Paulo.",
+    "category": "festa",
+    "musicGenres": [
+      "eletronico"
+    ],
+    "vibes": [
+      "balada",
+      "animado"
+    ],
+    "priceRange": "medio",
+    "address": "Av. Rodrigues Alves, 293 - Saúde, Rio de Janeiro - RJ",
+    "latitude": -22.8957,
+    "longitude": -43.1872,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://www.whenwedip.com/wp-content/uploads/2024/01/D-Edge-Rio.jpeg",
+    "catalogMetadata": {
+      "slug": "d-edge-rio",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.technoairlines.com/club/d-edge-rio-rio-de-janeiro",
+        "https://electronicgroove.com/dedge-returns-rio-hot-beats-conference-program/",
+        "https://www.whenwedip.com/2024/01/event-d-edge-rio-sao-paulo-2024/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://www.whenwedip.com/wp-content/uploads/2024/01/D-Edge-Rio.jpeg",
+        "sourceUrl": "https://www.whenwedip.com/2024/01/event-d-edge-rio-sao-paulo-2024/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Inaugurado em novembro de 2023; festas em datas específicas (sem horário fixo publicado). Programação em set/2026 confirmada pelo Technoairlines.",
+        "Foto legendada como D-Edge Rio na página de origem."
+      ]
+    }
+  },
+  {
+    "name": "Fundição Progresso",
+    "description": "Casa de shows e eventos em antiga fundição ao lado dos Arcos da Lapa.",
+    "category": "festa",
+    "musicGenres": [
+      "samba",
+      "pop",
+      "rock",
+      "outros"
+    ],
+    "vibes": [
+      "balada",
+      "animado"
+    ],
+    "priceRange": "medio",
+    "address": "Rua dos Arcos, 24 - Lapa, Rio de Janeiro - RJ",
+    "latitude": -22.9127,
+    "longitude": -43.1812,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Fundi%C3%A7%C3%A3o_Progresso_in_Lapa%2C_Rio_de_Janeiro_%2821493360574%29.jpg/1280px-Fundi%C3%A7%C3%A3o_Progresso_in_Lapa%2C_Rio_de_Janeiro_%2821493360574%29.jpg",
+    "catalogMetadata": {
+      "slug": "fundicao-progresso",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.fundicaoprogresso.com.br/",
+        "https://commons.wikimedia.org/wiki/File:Fundi%C3%A7%C3%A3o_Progresso_in_Lapa,_Rio_de_Janeiro_(21493360574).jpg"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Fundi%C3%A7%C3%A3o_Progresso_in_Lapa%2C_Rio_de_Janeiro_%2821493360574%29.jpg/1280px-Fundi%C3%A7%C3%A3o_Progresso_in_Lapa%2C_Rio_de_Janeiro_%2821493360574%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fundi%C3%A7%C3%A3o_Progresso_in_Lapa,_Rio_de_Janeiro_(21493360574).jpg",
+        "credit": "Janko Hoener / Wikimedia Commons",
+        "license": "CC BY-SA 2.0"
+      },
+      "notes": [
+        "Funciona por evento; site oficial lista agenda de out/2026 a abr/2027.",
+        "Bilheteria seg-sex 13h-17h segundo o site oficial."
+      ]
+    }
+  },
+  {
+    "name": "Circo Voador",
+    "description": "Casa de shows sob lona na Lapa, ao lado dos Arcos, com capacidade para cerca de 2.200 pessoas.",
+    "category": "festa",
+    "musicGenres": [
+      "rock",
+      "pop",
+      "samba",
+      "outros"
+    ],
+    "vibes": [
+      "balada",
+      "animado"
+    ],
+    "priceRange": "medio",
+    "address": "Rua dos Arcos, s/n - Lapa, Rio de Janeiro - RJ",
+    "latitude": -22.9134,
+    "longitude": -43.1801,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/O_Terno_no_Circo_Voador_em_2024.jpg/1280px-O_Terno_no_Circo_Voador_em_2024.jpg",
+    "catalogMetadata": {
+      "slug": "circo-voador",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.riotimesonline.com/black-pantera-circo-voador-show-rio-2026/",
+        "https://www.riotimesonline.com/maro-rio-de-janeiro-2026/",
+        "https://commons.wikimedia.org/wiki/File:O_Terno_no_Circo_Voador_em_2024.jpg"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/O_Terno_no_Circo_Voador_em_2024.jpg/1280px-O_Terno_no_Circo_Voador_em_2024.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:O_Terno_no_Circo_Voador_em_2024.jpg",
+        "credit": "Leonardo Martinelli / Wikimedia Commons",
+        "license": "CC BY 2.0"
+      },
+      "notes": [
+        "Funciona por evento; shows anunciados para out/nov 2026.",
+        "Foto: show da banda O Terno no Circo Voador (2024)."
+      ]
+    }
+  },
+  {
+    "name": "Rio Scenarium",
+    "description": "Casarão na Rua do Lavradio com samba ao vivo e decoração de antiquário.",
+    "category": "samba",
+    "musicGenres": [
+      "samba",
+      "mpb"
+    ],
+    "vibes": [
+      "animado",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Rua do Lavradio, 20 - Centro, Rio de Janeiro - RJ",
+    "latitude": -22.9087,
+    "longitude": -43.1829,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Rio_Scenarium_fachada.jpg/1280px-Rio_Scenarium_fachada.jpg",
+    "catalogMetadata": {
+      "slug": "rio-scenarium",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.rioscenarium.com.br/",
+        "https://commons.wikimedia.org/wiki/File:Rio_Scenarium_fachada.jpg"
+      ],
+      "instagramUrl": "https://www.instagram.com/rioscenarium/",
+      "openingHours": "Qua-Qui 19h-01h; Sex 19h-02h; Sáb 20h-03h; Sáb (feijoada) 12h-18h",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Rio_Scenarium_fachada.jpg/1280px-Rio_Scenarium_fachada.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rio_Scenarium_fachada.jpg",
+        "credit": "Grupo Scenarium / Wikimedia Commons",
+        "license": "CC BY-SA 4.0"
+      },
+      "notes": []
+    }
+  },
+  {
+    "name": "Carioca da Gema",
+    "description": "Casa de samba na Lapa com shows ao vivo de terça a domingo.",
+    "category": "samba",
+    "musicGenres": [
+      "samba"
+    ],
+    "vibes": [
+      "animado",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Av. Mem de Sá, 79 - Lapa, Rio de Janeiro - RJ",
+    "latitude": -22.9129,
+    "longitude": -43.1822,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://static.wixstatic.com/media/e8323b_3b3c0ef6f409431c9a4ac1b07f4311fc~mv2.jpg/v1/fill/w_1600,h_1068,al_c,q_85/e8323b_3b3c0ef6f409431c9a4ac1b07f4311fc~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "carioca-da-gema",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.barcariocadagema.com.br/"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Ter-Qui portas 19h30 (show 20h30); Sex portas 19h30; Sáb portas 20h30 (show 22h)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/e8323b_3b3c0ef6f409431c9a4ac1b07f4311fc~mv2.jpg/v1/fill/w_1600,h_1068,al_c,q_85/e8323b_3b3c0ef6f409431c9a4ac1b07f4311fc~mv2.jpg",
+        "sourceUrl": "https://www.barcariocadagema.com.br/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Couvert de R$30 (ter-qui) e R$35 (sex, sáb e vésperas) segundo o site oficial; agenda de out/2026 publicada."
+      ]
+    }
+  },
+  {
+    "name": "Cacique de Ramos",
+    "description": "Quadra do tradicional bloco de Olaria, com rodas de samba aos domingos e feijoadas mensais.",
+    "category": "samba",
+    "musicGenres": [
+      "samba",
+      "pagode"
+    ],
+    "vibes": [
+      "animado",
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Rua Uranos, 1326 - Olaria, Rio de Janeiro - RJ",
+    "latitude": -22.8458,
+    "longitude": -43.2643,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Quadra_Cacique_de_Ramos.jpg",
+    "catalogMetadata": {
+      "slug": "cacique-de-ramos",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://caciquederamos.com.br/",
+        "https://caciquederamos.com.br/contato/",
+        "https://commons.wikimedia.org/wiki/File:Quadra_Cacique_de_Ramos.jpg"
+      ],
+      "instagramUrl": "https://www.instagram.com/cacique_de_ramos/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Quadra_Cacique_de_Ramos.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Quadra_Cacique_de_Ramos.jpg",
+        "credit": "Vianna2019 / Wikimedia Commons",
+        "license": "CC BY-SA 4.0"
+      },
+      "notes": [
+        "Site oficial lista rodas de samba aos domingos e feijoadas mensais em 2026; horário fixo não publicado.",
+        "Foto com 700px de largura."
+      ]
+    }
+  },
+  {
+    "name": "Bip Bip",
+    "description": "Pequeno bar de Copacabana conhecido pelas rodas de samba e choro sem palco, ao redor das mesas.",
+    "category": "samba",
+    "musicGenres": [
+      "samba"
+    ],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
+    "priceRange": "economico",
+    "address": "Rua Almirante Gonçalves, 50 - Copacabana, Rio de Janeiro - RJ",
+    "latitude": -22.9801,
+    "longitude": -43.1926,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Show_no_Bip_Bip_-_Copacabana_-_RJ.jpg/1280px-Show_no_Bip_Bip_-_Copacabana_-_RJ.jpg",
+    "catalogMetadata": {
+      "slug": "bip-bip-copacabana",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://ua.news/en/podorozhi/u-rio-de-zhaneiro-23-serpnia-vidbudetsia-samba-vechir-u-bip-bip",
+        "https://commons.wikimedia.org/wiki/File:Show_no_Bip_Bip_-_Copacabana_-_RJ.jpg"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Show_no_Bip_Bip_-_Copacabana_-_RJ.jpg/1280px-Show_no_Bip_Bip_-_Copacabana_-_RJ.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Show_no_Bip_Bip_-_Copacabana_-_RJ.jpg",
+        "credit": "Lgjunior / Wikimedia Commons",
+        "license": "CC BY-SA 4.0"
+      },
+      "notes": [
+        "Fonte de ago/2026 cita rodas principais às quintas e domingos, a partir de ~20h; entrada gratuita."
+      ]
+    }
+  },
+  {
+    "name": "Samba do Trabalhador (Renascença Clube)",
+    "description": "Roda de samba de segunda-feira comandada por Moacyr Luz no Renascença Clube, no Andaraí.",
+    "category": "samba",
+    "musicGenres": [
+      "samba"
+    ],
+    "vibes": [
+      "animado",
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Rua Barão de São Francisco, 54 - Andaraí, Rio de Janeiro - RJ",
+    "latitude": -22.9256,
+    "longitude": -43.2468,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Samba_do_Trabalhador.jpg/1280px-Samba_do_Trabalhador.jpg",
+    "catalogMetadata": {
+      "slug": "samba-do-trabalhador-renascenca",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/musica/samba-do-trabalhador",
+        "https://www.tribunadosertao.com.br/rj-em-foco/2026/06/15/921368-samba-do-trabalhador-e-pedra-do-sal-estao-entre-as-rodas-do-rio-que-agitam-as-segundas-feiras",
+        "https://commons.wikimedia.org/wiki/File:Samba_do_Trabalhador.jpg"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Seg 16h30-21h (Time Out)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Samba_do_Trabalhador.jpg/1280px-Samba_do_Trabalhador.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Samba_do_Trabalhador.jpg",
+        "credit": "Lgjunior / Wikimedia Commons",
+        "license": "CC BY-SA 4.0"
+      },
+      "notes": [
+        "Entrada paga (Time Out cita R$30)."
+      ]
+    }
+  },
+  {
+    "name": "Liz Cocktails & Co",
+    "description": "Bar de coquetelaria autoral no Leblon, presente no ranking Top 500 Bars de 2025.",
+    "category": "lounge",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "lounge"
+    ],
+    "priceRange": "premium",
+    "address": "Rua Dias Ferreira, 679A - Leblon, Rio de Janeiro - RJ",
+    "latitude": -22.9828,
+    "longitude": -43.2266,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106190614/image.jpg",
+    "catalogMetadata": {
+      "slug": "liz-cocktails-leblon",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/editorial/bares-cariocas-estao-entre-os-500-melhores-do-mundo-em-2025/",
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/liz-cocktails-co",
+        "https://www.enprimeurclub.com/bars/liz-cocktail-wine-rio-de-janeiro-bar"
+      ],
+      "instagramUrl": "https://www.instagram.com/lizcocktails/",
+      "openingHours": "Ter-Sáb 18h-01h; Dom 17h-00h (Riotur, nov/2025)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106190614/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/bares/liz-cocktails-co",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": []
+    }
+  },
+  {
+    "name": "Nosso Ipanema",
+    "description": "Bar de coquetelaria em Ipanema, presente no ranking Top 500 Bars de 2025.",
+    "category": "lounge",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "lounge"
+    ],
+    "priceRange": "premium",
+    "address": "Rua Maria Quitéria, 91 - Ipanema, Rio de Janeiro - RJ",
+    "latitude": -22.9836,
+    "longitude": -43.2087,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106137020/image.jpg",
+    "catalogMetadata": {
+      "slug": "nosso-ipanema",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/editorial/bares-cariocas-estao-entre-os-500-melhores-do-mundo-em-2025/",
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/nosso",
+        "https://diariodorio.com/gastronomia/2026/08/27/rio-ganha-roteiro-de-drinks-com-8-bares-e-brindes-para-colecionar.html"
+      ],
+      "instagramUrl": "https://www.instagram.com/nossoipanema/",
+      "openingHours": "Ter-Sáb 18h30-00h30; Dom 18h30-23h (exceto último domingo do mês)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106137020/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/bares/nosso",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": []
+    }
+  },
+  {
+    "name": "Blue Blazer",
+    "description": "Bar de coquetelaria em estilo speakeasy em Botafogo, do bartender Lelo Forti.",
+    "category": "lounge",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "lounge"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Álvaro Ramos, 11 - Botafogo, Rio de Janeiro - RJ",
+    "latitude": -22.9531,
+    "longitude": -43.1839,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://sopacultural.com/wp-content/uploads/2025/04/@nubrafasari-1-1-scaled.jpg",
+    "catalogMetadata": {
+      "slug": "blue-blazer-botafogo",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://sopacultural.com/blue-blazer-entra-em-nova-fase-e-aterriza-em-botafogo/",
+        "https://www.portaltela.com/entretenimento/lazer/2025/08/25/lelo-forti-inaugura-bar-de-coquetelaria-blue-blazer-em-botafogo/"
+      ],
+      "instagramUrl": "https://www.instagram.com/blueblazeroficial/",
+      "openingHours": "Qua-Sex 17h-00h; Sáb 18h-01h",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://sopacultural.com/wp-content/uploads/2025/04/@nubrafasari-1-1-scaled.jpg",
+        "sourceUrl": "https://sopacultural.com/blue-blazer-entra-em-nova-fase-e-aterriza-em-botafogo/",
+        "credit": "Foto: @nubrafasari (conforme página de origem).",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Funciona em sobreloja; durante o dia o espaço também funciona como escola de mixologia."
+      ]
+    }
+  },
+  {
+    "name": "Vian Cocktail Bar",
+    "description": "Bar de coquetelaria em casarão de Botafogo, com drinques do mixologista Frederico Vian.",
+    "category": "lounge",
+    "musicGenres": [
+      "jazz"
+    ],
+    "vibes": [
+      "sofisticado",
+      "lounge"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Visconde de Silva, 21 - Botafogo, Rio de Janeiro - RJ",
+    "latitude": -22.9547,
+    "longitude": -43.1958,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106161200/image.jpg",
+    "catalogMetadata": {
+      "slug": "vian-cocktail-bar",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/vian-cocktail-bar",
+        "https://www.portaltela.com/entretenimento/lazer/2025/05/18/bares-do-rio-oferecem-drinques-especiais-para-celebrar-o-dia-mundial-do-coquetel/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106161200/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/bares/vian-cocktail-bar",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Horários divergem entre fontes (Time Out 2024: Qua-Sáb 19h-01h, Dom 17h-23h; matéria de mai/2025: Ter-Qui 19h-01h, Sex-Sáb 19h-02h).",
+        "Evidência mais recente de funcionamento: mai/2025."
+      ]
+    }
+  },
+  {
+    "name": "Baretto-Londra",
+    "description": "Bar do Hotel Fasano em Ipanema, com ambientação inspirada em Londres.",
+    "category": "lounge",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "lounge"
+    ],
+    "priceRange": "premium",
+    "address": "Av. Vieira Souto, 80 - Ipanema, Rio de Janeiro - RJ",
+    "latitude": -22.9867,
+    "longitude": -43.1977,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://cdn.enprimeurclub.com/storage/v1/object/public/images/bars/d63b43b1-d0ce-434d-acc2-0b24828a4945/hero1.jpg",
+    "catalogMetadata": {
+      "slug": "baretto-londra-fasano",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://fasano.com.br/hotel/fasano-rio-de-janeiro/",
+        "https://www.enprimeurclub.com/bars/barettolondra-rio-de-janeiro-bar"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://cdn.enprimeurclub.com/storage/v1/object/public/images/bars/d63b43b1-d0ce-434d-acc2-0b24828a4945/hero1.jpg",
+        "sourceUrl": "https://www.enprimeurclub.com/bars/barettolondra-rio-de-janeiro-bar",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Dentro do Hotel Fasano Rio de Janeiro."
+      ]
+    }
+  },
+  {
+    "name": "Xian Rio",
+    "description": "Restaurante de cozinha asiática com bar no rooftop do Bossa Nova Mall, ao lado do Aeroporto Santos Dumont, com vista para a Baía de Guanabara e o Pão de Açúcar.",
+    "category": "rooftop",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "rooftop",
+      "restaurante"
+    ],
+    "priceRange": "premium",
+    "address": "Av. Almirante Sílvio de Noronha, 365 - Centro, Rio de Janeiro - RJ",
+    "latitude": -22.9105,
+    "longitude": -43.166,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/Bilder/xian-rio-600-1.jpg",
+    "catalogMetadata": {
+      "slug": "xian-rio-rooftop",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/xian-rio.html",
+        "https://jornaldobras.com.br/noticia/132460/dia-dos-pais-no-bossa"
+      ],
+      "instagramUrl": "https://www.instagram.com/xianrio/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/Bilder/xian-rio-600-1.jpg",
+        "sourceUrl": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/xian-rio.html",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Entrada pelo Bossa Nova Mall. Citado como em funcionamento em matéria de jul/2026 (Jornal do Brás).",
+        "Horários do The Rooftop Guide são de 2023; não incluídos.",
+        "Foto com 600px de largura."
+      ]
+    }
+  },
+  {
+    "name": "Sky Leme Rooftop",
+    "description": "Rooftop com piscina e bar no 21º andar do Novotel Rio de Janeiro Leme, com vista para as praias do Leme e de Copacabana.",
+    "category": "rooftop",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "rooftop",
+      "animado"
+    ],
+    "priceRange": "premium",
+    "address": "Rua Gustavo Sampaio, 320 - Leme, Rio de Janeiro - RJ",
+    "latitude": -22.9637,
+    "longitude": -43.1694,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/Bilder/sky-leme-rj-600-1.jpg",
+    "catalogMetadata": {
+      "slug": "sky-leme-rooftop",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/sky-leme-rj.html",
+        "https://all.accor.com/hotel/B205/index.pt-br.shtml"
+      ],
+      "instagramUrl": "https://www.instagram.com/skylemerj/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/Bilder/sky-leme-rj-600-1.jpg",
+        "sourceUrl": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/sky-leme-rj.html",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Página oficial do hotel (Accor) cita o rooftop Sky Leme.",
+        "Confirmar regras de acesso e uso da piscina para não hóspedes.",
+        "Foto com 600px de largura."
+      ]
+    }
+  },
+  {
+    "name": "The Rooftop - Yoo2 Rio de Janeiro",
+    "description": "Bar no terraço do hotel Yoo2, em Botafogo, com piscina e vista para o Pão de Açúcar, a Enseada de Botafogo e o Cristo Redentor.",
+    "category": "rooftop",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "rooftop",
+      "tranquilo"
+    ],
+    "priceRange": "premium",
+    "address": "Praia de Botafogo, 242 - Botafogo, Rio de Janeiro - RJ",
+    "latitude": -22.944,
+    "longitude": -43.1822,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/Bilder/yoo-2-rio-600-1.jpg",
+    "catalogMetadata": {
+      "slug": "yoo2-the-rooftop-botafogo",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/yoo2-rio-de-janeiro.html",
+        "https://www.metropoles.com/vida-e-estilo/turismo/bar-em-botafogo-e-eleito-melhor-vista-do-rio-de-janeiro-saiba-qual"
+      ],
+      "instagramUrl": "https://www.instagram.com/yoo2rio/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/Bilder/yoo-2-rio-600-1.jpg",
+        "sourceUrl": "https://www.therooftopguide.com/rooftop-bars-in-rio-de-janeiro/yoo2-rio-de-janeiro.html",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Fontes indicam acesso de não hóspedes mediante reserva; confirmar.",
+        "Fontes consultadas são de 2019-2023; hotel segue listado como Yoo2 Rio de Janeiro (Tapestry Collection by Hilton).",
+        "Foto com 600px de largura."
+      ]
+    }
+  },
+  {
+    "name": "Rooftop Intercity Porto Maravilha",
+    "description": "Rooftop aberto ao público no hotel Intercity Porto Maravilha, com vista panorâmica da região portuária e cardápio de petiscos, drinques e cervejas.",
+    "category": "rooftop",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "rooftop",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Cordeiro da Graça, 598 - Santo Cristo, Rio de Janeiro - RJ",
+    "latitude": -22.8985,
+    "longitude": -43.2045,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://diariodoturismo.com.br/wp-content/uploads/2025/02/Intercity-Porto-Maravilha.jpg",
+    "catalogMetadata": {
+      "slug": "rooftop-intercity-porto-maravilha",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://diariodoturismo.com.br/intercity-porto-maravilha-sofisticacao-e-localizacao-privilegiada-no-rio/"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Quinta a domingo, 11h às 22h (informado em fev/2025)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://diariodoturismo.com.br/wp-content/uploads/2025/02/Intercity-Porto-Maravilha.jpg",
+        "sourceUrl": "https://diariodoturismo.com.br/intercity-porto-maravilha-sofisticacao-e-localizacao-privilegiada-no-rio/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Rooftop inaugurado no início de 2025; fonte é conteúdo de marca (Diário do Turismo, 19/02/2025).",
+        "Foto mostra a fachada do hotel (divulgação), não o terraço."
+      ]
+    }
+  },
+  {
+    "name": "Aprazível",
+    "description": "Restaurante de cozinha brasileira em Santa Teresa, instalado em casa com jardim e vista para a cidade.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "restaurante",
+      "tranquilo"
+    ],
+    "priceRange": "premium",
+    "address": "Rua Aprazível, 62 - Santa Teresa, Rio de Janeiro - RJ",
+    "latitude": -22.9238,
+    "longitude": -43.1902,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://www.aprazivel.com.br/assets_apraz/img/banner/05052025_1.jpg",
+    "catalogMetadata": {
+      "slug": "aprazivel-santa-teresa",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.aprazivel.com.br/"
+      ],
+      "instagramUrl": "https://www.instagram.com/aprazivel",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://www.aprazivel.com.br/assets_apraz/img/banner/05052025_1.jpg",
+        "sourceUrl": "https://www.aprazivel.com.br/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Site oficial ativo com banner datado de 2025."
+      ]
+    }
+  },
+  {
+    "name": "Oro",
+    "description": "Restaurante do chef Felipe Bronze no Leblon, com duas estrelas no Guia Michelin 2025 e menus-degustação de cozinha brasileira contemporânea.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "restaurante"
+    ],
+    "priceRange": "premium",
+    "address": "Rua General San Martin, 889 - Leblon, Rio de Janeiro - RJ",
+    "latitude": -22.9861,
+    "longitude": -43.2248,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106063430/image.jpg",
+    "catalogMetadata": {
+      "slug": "oro-leblon",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/rio-de-janeiro/restaurants/oro",
+        "https://www.timeout.com/pt/rio-de-janeiro/noticias/guia-michelin-brasil-2025-ainda-sem-a-terceira-estrela-mas-com-quatro-novas-casas-051325"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Ter-Sex 19h-23h; Sáb 13h-15h e 19h-23h (Time Out, 2023)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106063430/image.jpg",
+        "sourceUrl": "https://www.timeout.com/rio-de-janeiro/restaurants/oro",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Somente com reserva, segundo a Time Out.",
+        "Horário publicado em 2023; confirmar."
+      ]
+    }
+  },
+  {
+    "name": "Nova Capela",
+    "description": "Restaurante tradicional da Lapa, aberto desde 1903, conhecido pelo cabrito assado.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "restaurante",
+      "animado"
+    ],
+    "priceRange": "medio",
+    "address": "Av. Mem de Sá, 96 - Lapa, Rio de Janeiro - RJ",
+    "latitude": -22.9129,
+    "longitude": -43.1823,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106112965/image.jpg",
+    "catalogMetadata": {
+      "slug": "nova-capela-lapa",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/nova-capela",
+        "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/os-bares-e-restaurantes-historicos-do-rio-de-janeiro"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Ter-Qua 11h-0h; Qui 11h-1h; Sex-Sáb 11h-2h; Dom 11h-1h (Time Out, 2024)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106112965/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/nova-capela",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Horário publicado pela Time Out em 2024; confirmar."
+      ]
+    }
+  },
+  {
+    "name": "Fogo de Chão Botafogo",
+    "description": "Churrascaria em sistema de rodízio na Enseada de Botafogo, com vista para o Pão de Açúcar.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "restaurante"
+    ],
+    "priceRange": "premium",
+    "address": "Av. Repórter Nestor Moreira, s/n - Botafogo, Rio de Janeiro - RJ",
+    "latitude": -22.9494,
+    "longitude": -43.1788,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2016/08/fdc3.jpg",
+    "catalogMetadata": {
+      "slug": "fogo-de-chao-botafogo",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/onde_comer/fogodechao/",
+        "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/fogo-de-chao"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2016/08/fdc3.jpg",
+        "sourceUrl": "https://riotur.rio/onde_comer/fogodechao/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Foto da página da Riotur dedicada à unidade de Botafogo (mostra o buffet de saladas).",
+        "Horários divergem entre fontes; não incluídos."
+      ]
+    }
+  },
+  {
+    "name": "Pobre Juan - VillageMall",
+    "description": "Restaurante de carnes de inspiração argentina no terraço do shopping VillageMall, na Barra da Tijuca.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "sofisticado",
+      "restaurante"
+    ],
+    "priceRange": "premium",
+    "address": "Av. das Américas, 3900 (terraço do VillageMall) - Barra da Tijuca, Rio de Janeiro - RJ",
+    "latitude": -22.9994,
+    "longitude": -43.3515,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106076644/image.jpg",
+    "catalogMetadata": {
+      "slug": "pobre-juan-villagemall-barra",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/pobre-juan",
+        "https://www.pobrejuan.com.br/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106076644/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/pobre-juan",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Unidade listada no site oficial da rede (Shopping VillageMall - Terraço).",
+        "Horário da Time Out é de 2023; não incluído."
+      ]
+    }
+  },
+  {
+    "name": "Galeto Sat's - Barra",
+    "description": "Unidade na Estrada do Joá do tradicional galeto carioca fundado em 1962 em Copacabana.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "restaurante"
+    ],
+    "priceRange": "economico",
+    "address": "Estrada do Joá, 3962 - Joá, Rio de Janeiro - RJ",
+    "latitude": -23.0005,
+    "longitude": -43.29,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106104223/image.jpg",
+    "catalogMetadata": {
+      "slug": "galeto-sats-barra",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/galeto-sats",
+        "https://sopacultural.com/arraia-do-galeto-sats-da-barra-promete-forro-e-comidas-tipicas-no-proximo-sabado/"
+      ],
+      "instagramUrl": "https://www.instagram.com/galetosats/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106104223/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/galeto-sats",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Evento na unidade em jun/2026 (Sopa Cultural) confirma funcionamento.",
+        "Foto (Time Out) mostra a placa 'Galeto Sat's Barra da Tijuca'.",
+        "Coordenadas especialmente aproximadas; confirme pelo endereço.",
+        "Instagram citado pela Riotur."
+      ]
+    }
+  },
+  {
+    "name": "Armazém Senado",
+    "description": "Botequim aberto em 1907 no Centro, na esquina da Rua do Senado, que conserva prateleiras do antigo armazém e recebe rodas de samba aos fins de semana.",
+    "category": "bar",
+    "musicGenres": [
+      "samba"
+    ],
+    "vibes": [
+      "casual",
+      "bar",
+      "animado"
+    ],
+    "priceRange": "economico",
+    "address": "Av. Gomes Freire, 256 - Centro, Rio de Janeiro - RJ",
+    "latitude": -22.9092,
+    "longitude": -43.1846,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106045352/image.jpg",
+    "catalogMetadata": {
+      "slug": "armazem-senado-centro",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/armazem-senado",
+        "https://www.timeout.com/pt/rio-de-janeiro/restaurantes/os-bares-e-restaurantes-historicos-do-rio-de-janeiro"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106045352/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/bares/armazem-senado",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Página da Time Out atualizada em jan/2025.",
+        "Horários divergem entre versões PT/EN da Time Out; não incluídos."
+      ]
+    }
+  },
+  {
+    "name": "Bar do Momo",
+    "description": "Boteco tradicional da Tijuca, reconhecido como Patrimônio Cultural Carioca, conhecido por petiscos como o bolinho de arroz.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
+    "priceRange": "economico",
+    "address": "Rua General Espírito Santo Cardoso, 50 - Tijuca, Rio de Janeiro - RJ",
+    "latitude": -22.9298,
+    "longitude": -43.2433,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106113619/image.jpg",
+    "catalogMetadata": {
+      "slug": "bar-do-momo-tijuca",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/bar-do-momo"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Seg 12h30-22h; Qua-Sáb 12h30-22h; Dom 12h30-17h30 (Time Out, 2024)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106113619/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/bares/bar-do-momo",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Horário publicado em 2024; confirmar."
+      ]
+    }
+  },
+  {
+    "name": "Adega Pérola",
+    "description": "Bar português fundado em 1957 em Copacabana, conhecido pelos petiscos vendidos a peso na vitrine.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar",
+      "animado"
+    ],
+    "priceRange": "economico",
+    "address": "Rua Siqueira Campos, 138 - Copacabana, Rio de Janeiro - RJ",
+    "latitude": -22.9662,
+    "longitude": -43.1873,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://media.timeout.com/images/106112465/image.jpg",
+    "catalogMetadata": {
+      "slug": "adega-perola-copacabana",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/adega-perola"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Seg-Sáb 11h-1h (Time Out)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://media.timeout.com/images/106112465/image.jpg",
+        "sourceUrl": "https://www.timeout.com/pt/rio-de-janeiro/bares/adega-perola",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Horário da Time Out; confirmar."
+      ]
+    }
+  },
+  {
+    "name": "Bar Lagoa",
+    "description": "Bar e restaurante de 1934 às margens da Lagoa Rodrigo de Freitas, em prédio art déco, com cardápio de pratos alemães.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar",
+      "restaurante"
+    ],
+    "priceRange": "medio",
+    "address": "Av. Epitácio Pessoa, 1674 - Lagoa, Rio de Janeiro - RJ",
+    "latitude": -22.9801,
+    "longitude": -43.2034,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2015/11/Bar-Lagoa-Foto-Alexandre-Macieira-Riotur-6ab_o-scaled.jpg",
+    "catalogMetadata": {
+      "slug": "bar-lagoa",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.timeout.com/pt/rio-de-janeiro/bares/bar-lagoa",
+        "https://riotur.rio/onde_comer/bar-lagoa/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2015/11/Bar-Lagoa-Foto-Alexandre-Macieira-Riotur-6ab_o-scaled.jpg",
+        "sourceUrl": "https://riotur.rio/onde_comer/bar-lagoa/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Foto da Riotur (placa interna do bar).",
+        "Horários divergem entre fontes; não incluídos."
+      ]
+    }
+  },
+  {
+    "name": "Lagoa Rodrigo de Freitas",
+    "description": "Lagoa com ciclovia e pista de caminhada de cerca de 8 km no entorno, quiosques e prática de remo e canoagem.",
+    "category": "ponto_turistico",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo",
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Lagoa Rodrigo de Freitas - Lagoa, Rio de Janeiro - RJ",
+    "latitude": -22.9711,
+    "longitude": -43.2105,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2016/02/51536142818_18b238038a_c.jpg",
+    "catalogMetadata": {
+      "slug": "lagoa-rodrigo-de-freitas",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/lagoa-rodrigo-de-freitas/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2016/02/51536142818_18b238038a_c.jpg",
+        "sourceUrl": "https://riotur.rio/que_fazer/lagoa-rodrigo-de-freitas/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Área pública aberta; coordenada aponta o espelho d'água, não um acesso específico."
+      ]
+    }
+  },
+  {
+    "name": "Orla Conde (Boulevard Olímpico)",
+    "description": "Passeio público de 3,5 km na Região Portuária, entre o Armazém 8 do Cais do Porto e a Praça da Misericórdia, passando pela Praça Mauá.",
+    "category": "ponto_turistico",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo",
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Orla Conde - Região Portuária / Centro, Rio de Janeiro - RJ",
+    "latitude": -22.8966,
+    "longitude": -43.181,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2016/07/28802901435_d57d5124ab_k-1.jpg",
+    "catalogMetadata": {
+      "slug": "orla-conde-boulevard-olimpico",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/orla-conde/",
+        "https://riotur.rio/boulevardolimpico/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2016/07/28802901435_d57d5124ab_k-1.jpg",
+        "sourceUrl": "https://riotur.rio/que_fazer/orla-conde/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Trecho conhecido como Boulevard Olímpico desde a Rio 2016; Museu do Amanhã e AquaRio ficam no percurso e já estão no catálogo.",
+        "Foto mostra veleiros atracados no trecho portuário da orla."
+      ]
+    }
+  },
+  {
+    "name": "Mirante Dona Marta",
+    "description": "Mirante no Parque Nacional da Tijuca com vista simultânea do Pão de Açúcar, Maracanã, Baía de Guanabara e Corcovado.",
+    "category": "ponto_turistico",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo"
+    ],
+    "priceRange": "economico",
+    "address": "Estrada do Corcovado (Mirante Dona Marta) - Parque Nacional da Tijuca, Rio de Janeiro - RJ",
+    "latitude": -22.9455,
+    "longitude": -43.1985,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://parquenacionaldatijuca.rio/wp-content/uploads/2020/02/imagem141023-10_53_36.jpg",
+    "catalogMetadata": {
+      "slug": "mirante-dona-marta",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://parquenacionaldatijuca.rio/locais/mirante-dona-marta/"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Diariamente das 8h às 17h (pernoite proibido)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://parquenacionaldatijuca.rio/wp-content/uploads/2020/02/imagem141023-10_53_36.jpg",
+        "sourceUrl": "https://parquenacionaldatijuca.rio/locais/mirante-dona-marta/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Setor Serra da Carioca do Parque Nacional da Tijuca."
+      ]
+    }
+  },
+  {
+    "name": "Parque Nacional da Tijuca - Floresta da Tijuca",
+    "description": "Uma das maiores florestas urbanas do mundo, com trilhas, cachoeiras, Cascatinha Taunay e Centro de Visitantes no Alto da Boa Vista.",
+    "category": "parque",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo",
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Estrada da Cascatinha, 850 - Alto da Boa Vista, Rio de Janeiro - RJ, 20531-590",
+    "latitude": -22.9615,
+    "longitude": -43.279,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://parquenacionaldatijuca.rio/wp-content/uploads/2020/02/imagem141023-11_02_06.jpg",
+    "catalogMetadata": {
+      "slug": "parque-nacional-da-tijuca-floresta",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://parquenacionaldatijuca.rio/visite-o-parque/",
+        "https://riotur.rio/que_fazer/florestadatijuca/",
+        "https://parquenacionaldatijuca.rio/locais/centro-de-visitantes/"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Diariamente das 8h às 17h (Centro de Visitantes / setor Floresta)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://parquenacionaldatijuca.rio/wp-content/uploads/2020/02/imagem141023-11_02_06.jpg",
+        "sourceUrl": "https://parquenacionaldatijuca.rio/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Entrada do setor Floresta pela Praça Afonso Viseu. Cristo Redentor, Vista Chinesa, Pedra Bonita e Pedra da Gávea (já no catálogo) ficam em outros setores do mesmo parque.",
+        "Parque gerido pelo ICMBio."
+      ]
+    }
+  },
+  {
+    "name": "BioParque do Rio",
+    "description": "Antigo zoológico do Rio reformulado com foco em bem-estar animal, conservação e educação ambiental, dentro da Quinta da Boa Vista.",
+    "category": "parque",
+    "musicGenres": [],
+    "vibes": [
+      "casual"
+    ],
+    "priceRange": "medio",
+    "address": "Parque Quinta da Boa Vista, s/n - São Cristóvão, Rio de Janeiro - RJ, 20940-040",
+    "latitude": -22.9057,
+    "longitude": -43.2236,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2021/10/51170657806_528fcc31b5_c.jpg",
+    "catalogMetadata": {
+      "slug": "bioparque-do-rio",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/bioparque-do-rio/",
+        "https://www.bioparquedorio.com.br/"
+      ],
+      "instagramUrl": "https://www.instagram.com/bioparquedorio/",
+      "openingHours": "Quarta a domingo, 9h às 17h (última entrada às 16h); sujeito a alteração",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2021/10/51170657806_528fcc31b5_c.jpg",
+        "sourceUrl": "https://riotur.rio/que_fazer/bioparque-do-rio/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Atração paga; fica dentro da Quinta da Boa Vista (já no catálogo) mas é atração distinta com ingresso próprio."
+      ]
+    }
+  },
+  {
+    "name": "Parque Madureira",
+    "description": "Terceiro maior parque da cidade, com quadras, pista de skate, fontes, brinquedos, Arena Carioca e Praça do Samba.",
+    "category": "parque",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "animado"
+    ],
+    "priceRange": "economico",
+    "address": "Rua Soares Caldeira, 115 - Madureira, Rio de Janeiro - RJ, 21351-080",
+    "latitude": -22.8706,
+    "longitude": -43.3398,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2015/12/8318601517_4d47a18356_c.jpg",
+    "catalogMetadata": {
+      "slug": "parque-madureira",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/parque-madureira/"
+      ],
+      "instagramUrl": "https://www.instagram.com/parquedemadureira/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2015/12/8318601517_4d47a18356_c.jpg",
+        "sourceUrl": "https://riotur.rio/que_fazer/parque-madureira/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Parque linear de mais de 3 km ao longo da linha férrea; coordenada aproximada do endereço citado."
+      ]
+    }
+  },
+  {
+    "name": "Trilha do Morro da Urca (Pista Cláudio Coutinho)",
+    "description": "Trilha de cerca de 1,5 km que parte da Praia Vermelha pela Pista Cláudio Coutinho até o cume do Morro da Urca, com vista da Baía de Guanabara.",
+    "category": "aventura",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo",
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Praça General Tibúrcio, Praia Vermelha - Urca, Rio de Janeiro - RJ",
+    "latitude": -22.9547,
+    "longitude": -43.165,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2015/09/7972355632_6ef2219cdf_k.jpg",
+    "catalogMetadata": {
+      "slug": "trilha-morro-da-urca",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/morro-da-urca/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2015/09/7972355632_6ef2219cdf_k.jpg",
+        "sourceUrl": "https://riotur.rio/que_fazer/morro-da-urca/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Trilha gratuita (cerca de 40 min, nível leve); o Bondinho Pão de Açúcar, já no catálogo, é atração separada.",
+        "Coordenada aponta o início da trilha na Praia Vermelha."
+      ]
+    }
+  },
+  {
+    "name": "Trilha Dois Irmãos",
+    "description": "Trilha de nível moderado pelo Vidigal até o topo do Morro Dois Irmãos (533 m), com vista da Zona Sul, Pedra da Gávea e Cristo Redentor.",
+    "category": "aventura",
+    "musicGenres": [],
+    "vibes": [
+      "casual"
+    ],
+    "priceRange": "economico",
+    "address": "Vidigal, Rio de Janeiro - RJ",
+    "latitude": -22.9905,
+    "longitude": -43.237,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://riotur.rio/wp-content/uploads/2015/12/3758578182_7697fe5c82_k.jpg",
+    "catalogMetadata": {
+      "slug": "trilha-dois-irmaos",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://riotur.rio/que_fazer/trilha-dois-irmaos/",
+        "https://trilhadoisirmaos.com.br/"
+      ],
+      "instagramUrl": "https://www.instagram.com/trilhadoisirmaos/",
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://riotur.rio/wp-content/uploads/2015/12/3758578182_7697fe5c82_k.jpg",
+        "sourceUrl": "https://riotur.rio/que_fazer/trilha-dois-irmaos/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Riotur recomenda ir com guias locais do Vidigal (empresa Trilha Dois Irmãos); sem endereço exato de início publicado.",
+        "Foto mostra o Morro Dois Irmãos visto do mar/Leblon."
+      ]
+    }
+  },
+  {
+    "name": "Pico da Tijuca",
+    "description": "Ponto mais alto do Parque Nacional da Tijuca (1.022 m), com trilha de cerca de 1h30 e degraus esculpidos na rocha até a vista 360° da cidade.",
+    "category": "aventura",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo"
+    ],
+    "priceRange": "economico",
+    "address": "Praça Afonso Viseu (entrada do setor Floresta) - Alto da Boa Vista, Rio de Janeiro - RJ",
+    "latitude": -22.9405,
+    "longitude": -43.285,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://parquenacionaldatijuca.rio/wp-content/uploads/2020/02/imagem141209-16_10_34.jpg",
+    "catalogMetadata": {
+      "slug": "pico-da-tijuca",
+      "state": "RJ",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://parquenacionaldatijuca.rio/locais/pico-da-tijuca/",
+        "https://riotur.rio/que_fazer/pico-da-tijuca/"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Diariamente das 8h às 17h; início da trilha permitido até 14h",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://parquenacionaldatijuca.rio/wp-content/uploads/2020/02/imagem141209-16_10_34.jpg",
+        "sourceUrl": "https://parquenacionaldatijuca.rio/locais/pico-da-tijuca/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Coordenada aproximada do cume; o acesso é pela entrada do setor Floresta."
+      ]
+    }
+  },
+  {
+    "name": "Pós-Doc Brewpub",
+    "description": "Cervejaria artesanal com brewpub instalada em um casarão histórico no centro.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Coronel Antônio Moreira da Costa, 312 - Centro, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2509,
+    "longitude": -45.7027,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_92c74404c62e4fb59ae59e5aaf48b127~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-pos-doc-brewpub",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://www.visitesrs.com.br/experiencias",
+        "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_92c74404c62e4fb59ae59e5aaf48b127~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "Também citado como 'Casarão Pós-Doc' no miniguia do The Summer Hunter (HackTown 2025).",
+        "A foto de capa tem o logotipo da cervejaria sobreposto à fachada."
+      ]
+    }
+  },
+  {
+    "name": "Beer House",
+    "description": "Bar com petiscos, drinks e cervejas artesanais no centro.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Praça Delfim Moreira Júnior, 54 - Centro, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2509,
+    "longitude": -45.7096,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_a4e91ec963e845019e7f8d02464f53a4~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-beer-house",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_a4e91ec963e845019e7f8d02464f53a4~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "A foto do portal mostra um prato e um drink servidos na casa, não a fachada."
+      ]
+    }
+  },
+  {
+    "name": "Maria Maria Gastrobar",
+    "description": "Gastrobar com drinks e petiscos na região central.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Coronel Francisco Moreira da Costa, 274 - Centro, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2513,
+    "longitude": -45.7056,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_361c25e7de4b40e98c614ec183dbc38e~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-maria-maria-gastrobar",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://parquetecnologicosrs.com.br/restaurantes/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_361c25e7de4b40e98c614ec183dbc38e~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "A foto do portal mostra drinks da casa."
+      ]
+    }
+  },
+  {
+    "name": "The Town Bar e Café",
+    "description": "Bar e café com pé-direito alto e ambiente industrial, servindo petiscos, hambúrgueres e saladas.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Genoveva da Fonseca, 214 - Santa Rita do Sapucaí - MG",
+    "latitude": -22.2412,
+    "longitude": -45.706,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": null,
+    "catalogMetadata": {
+      "slug": "srs-the-town-bar-e-cafe",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/",
+        "https://www.tripadvisor.com/Restaurants-g2347089-zfg11776-Santa_Rita_Do_Sapucai_State_of_Minas_Gerais.html"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": null,
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "A foto do portal parece imagem genérica de prato (possível banco de imagens), então não foi usada.",
+        "Horários só foram encontrados numa matéria de 2020 e foram omitidos."
+      ]
+    }
+  },
+  {
+    "name": "No Trabalho Bar",
+    "description": "Bar rural com comida mineira e vista para as montanhas, em uma fazenda no bairro Fortaleza.",
+    "category": "bar",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "tranquilo",
+      "bar"
+    ],
+    "priceRange": "medio",
+    "address": "Fazenda São José - Bairro Fortaleza, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2504,
+    "longitude": -45.6905,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_813f2d565440443585f05912e5e83fbb~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-no-trabalho-bar",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Centróide aproximado do bairro Fortaleza (zona rural); o bar fica em fazenda. Confirme o acesso pelo endereço.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_813f2d565440443585f05912e5e83fbb~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "Funcionamento concentrado nos fins de semana segundo perfis sociais; confirme antes de ir."
+      ]
+    }
+  },
+  {
+    "name": "Bar e Restaurante do Bá",
+    "description": "Bar e restaurante de comida mineira e petiscos no bairro Boa Vista.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "restaurante"
+    ],
+    "priceRange": "economico",
+    "address": "Av. Sapucaí, 77 - Boa Vista, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2373,
+    "longitude": -45.709,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_cbeb123e7bee4e239cd5a9ce7a414e1d~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-bar-e-restaurante-do-ba",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://inatel.br/foreigners/restaurants",
+        "https://www.tripadvisor.com/Restaurants-g2347089-Santa_Rita_Do_Sapucai_State_of_Minas_Gerais.html"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_cbeb123e7bee4e239cd5a9ce7a414e1d~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "Outras fontes indicam o bairro como Jardim das Palmeiras.",
+        "A foto do portal mostra um prato da casa com texto sobreposto."
+      ]
+    }
+  },
+  {
+    "name": "Don Rafoni - Smoke House",
+    "description": "Hamburgueria e casa de defumados conhecida pelo burger Angus defumado.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "restaurante"
+    ],
+    "priceRange": "medio",
+    "address": "Av. João de Camargo, 120 - Vista Alegre, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2551,
+    "longitude": -45.6993,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_c725d5442df54e77a08e84ddb1433fd5~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-don-rafoni-smoke-house",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/",
+        "https://www.tripadvisor.com/Restaurants-g2347089-Santa_Rita_Do_Sapucai_State_of_Minas_Gerais.html"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_c725d5442df54e77a08e84ddb1433fd5~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "A foto do portal mostra hambúrgueres da casa."
+      ]
+    }
+  },
+  {
+    "name": "La Fornalha",
+    "description": "Restaurante e pizzaria no centro, na Avenida Sinhá Moreira.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "restaurante"
+    ],
+    "priceRange": "medio",
+    "address": "Av. Sinhá Moreira, 176 - Centro, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2549,
+    "longitude": -45.7043,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_59957e1b20944ed4a750d39142d512bb~mv2.png",
+    "catalogMetadata": {
+      "slug": "srs-la-fornalha",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://inatel.br/foreigners/restaurants",
+        "https://www.tripadvisor.com/Restaurants-g2347089-Santa_Rita_Do_Sapucai_State_of_Minas_Gerais.html"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_59957e1b20944ed4a750d39142d512bb~mv2.png",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "Foto disponível em baixa resolução (506 px de largura)."
+      ]
+    }
+  },
+  {
+    "name": "Dullê Pizzaria e Trattoria",
+    "description": "Pizzaria e trattoria no bairro Família Andrade.",
+    "category": "restaurante",
+    "musicGenres": [],
+    "vibes": [
+      "casual",
+      "restaurante"
+    ],
+    "priceRange": "medio",
+    "address": "Rua Maria Andrade Moreira, 180 - Família Andrade, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2545,
+    "longitude": -45.7092,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_c8b8daa275f74e3ebd8023cfd5fc41cc~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-dulle-pizzaria-e-trattoria",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/gastronomia",
+        "https://inatel.br/foreigners/restaurants",
+        "https://www.tripadvisor.com/Restaurants-g2347089-Santa_Rita_Do_Sapucai_State_of_Minas_Gerais.html"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_c8b8daa275f74e3ebd8023cfd5fc41cc~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
+        "A foto do portal mostra uma pizza da casa, não o salão."
+      ]
+    }
+  },
+  {
+    "name": "Centro Municipal de Eventos",
+    "description": "Parque de eventos que recebe a Festa de Santa Rita, shows de Carnaval e outros grandes eventos da cidade.",
+    "category": "festa",
+    "musicGenres": [
+      "sertanejo",
+      "pagode",
+      "pop"
+    ],
+    "vibes": [
+      "animado",
+      "balada"
+    ],
+    "priceRange": "economico",
+    "address": "Rua Maria Conceição Ribeiro - Jardim das Palmeiras, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2411,
+    "longitude": -45.7127,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_c747b202fa75493a99acde3ee2c67129~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_85/39e28b_c747b202fa75493a99acde3ee2c67129~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-centro-municipal-de-eventos",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/",
+        "https://www.buser.com.br/destinos/pontos-turisticos/mg/santa-rita-do-sapucai-mg/parque-de-eventos-de-santa-rita-do-sapucai",
+        "https://terradomandu.com.br/index.php/2026/05/21/festa-de-santa-rita-tera-shows-com-katinguele-paralamas-edson-e-hudson-e-clayton-e-romario/"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_c747b202fa75493a99acde3ee2c67129~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_85/39e28b_c747b202fa75493a99acde3ee2c67129~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Não é casa noturna fixa: funciona por evento (Festa de Santa Rita em maio, Carnaval, shows).",
+        "O Visite SRS informa horário 07:00-21:00 para o espaço; a programação noturna depende do evento.",
+        "Também chamado de Parque de Eventos / Parque de Exposições.",
+        "Coordenada do centróide do bairro Jardim das Palmeiras."
+      ]
+    }
+  },
+  {
+    "name": "Parque Municipal Natural Dr. Cyro de Luna Dias (Horto)",
+    "description": "Parque natural municipal com trilhas e área verde no bairro Piedade.",
+    "category": "parque",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo"
+    ],
+    "priceRange": "economico",
+    "address": "Bairro Piedade, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2193,
+    "longitude": -45.7473,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_3a36388c7e3b4b3fb6a5a7fd365f9c9c~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_85/39e28b_3a36388c7e3b4b3fb6a5a7fd365f9c9c~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-parque-municipal-cyro-de-luna-dias",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/",
+        "https://www.visitesrs.com.br/rota-da-natureza"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_3a36388c7e3b4b3fb6a5a7fd365f9c9c~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_85/39e28b_3a36388c7e3b4b3fb6a5a7fd365f9c9c~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Visitação mediante agendamento, segundo o Visite SRS.",
+        "Coordenada aproximada da região da Piedade; não é a entrada do parque."
+      ]
+    }
+  },
+  {
+    "name": "Morro do Cruzeiro",
+    "description": "Morro com mirante no meio da cidade, procurado para ver o pôr do sol.",
+    "category": "aventura",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo"
+    ],
+    "priceRange": "economico",
+    "address": "Bairro Vila das Fontes, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2429,
+    "longitude": -45.6978,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_a29c3b79ff5a486da5d1a7304dbbc7b0~mv2.jpg/v1/fill/w_1600,h_899,al_c,q_85/39e28b_a29c3b79ff5a486da5d1a7304dbbc7b0~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-morro-do-cruzeiro",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/",
+        "https://www.visitesrs.com.br/rota-da-natureza",
+        "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/"
+      ],
+      "instagramUrl": null,
+      "openingHours": "Aberto 24 horas (sem infraestrutura)",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_a29c3b79ff5a486da5d1a7304dbbc7b0~mv2.jpg/v1/fill/w_1600,h_899,al_c,q_85/39e28b_a29c3b79ff5a486da5d1a7304dbbc7b0~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Sem infraestrutura no local, segundo o Visite SRS."
+      ]
+    }
+  },
+  {
+    "name": "Reserva Biológica Prof.ª Dra. Mitzi Brandão (Rebio)",
+    "description": "Reserva biológica municipal com trilhas em mata no bairro Piedade.",
+    "category": "aventura",
+    "musicGenres": [],
+    "vibes": [
+      "tranquilo"
+    ],
+    "priceRange": "economico",
+    "address": "Bairro Piedade, Santa Rita do Sapucaí - MG",
+    "latitude": -22.2193,
+    "longitude": -45.7473,
+    "city": "Santa Rita do Sapucaí",
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_69feb80dcbbc41c09fcf2fcac9da2938~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_85/39e28b_69feb80dcbbc41c09fcf2fcac9da2938~mv2.jpg",
+    "catalogMetadata": {
+      "slug": "srs-rebio-mitzi-brandao",
+      "state": "MG",
+      "researchedAt": "2026-10-09",
+      "sourceUrls": [
+        "https://www.visitesrs.com.br/",
+        "https://www.visitesrs.com.br/rota-da-natureza"
+      ],
+      "instagramUrl": null,
+      "openingHours": null,
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_69feb80dcbbc41c09fcf2fcac9da2938~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_85/39e28b_69feb80dcbbc41c09fcf2fcac9da2938~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Visitação mediante agendamento, segundo o Visite SRS.",
+        "Coordenada aproximada da região da Piedade; não é a entrada da reserva."
+      ]
     }
   }
 ]

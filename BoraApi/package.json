@@ -25,7 +25,7 @@
     "seed:dev": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts",
     "seed": "node dist/seeds/seed.js",
     "seed:check": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts --dry-run",
-    "test:seed": "npm run build && node --test scripts/seed-catalog.test.cjs"
+    "test:seed": "npm run build && node --test \"scripts/*.test.cjs\""
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",

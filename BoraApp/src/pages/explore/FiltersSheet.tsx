@@ -1,6 +1,7 @@
-import { VENUE_CATEGORY_OPTIONS } from '@/shared/constants/venue-categories';
 import { useState } from 'react';
 
+import { DISTANCE_OPTIONS } from '@/shared/constants/distance-options';
+import { VENUE_CATEGORY_OPTIONS } from '@/shared/constants/venue-categories';
 import { BottomSheet } from '@/shared/ui/BottomSheet';
 import { Button } from '@/shared/ui/Button';
 import { Chip } from '@/shared/ui/Chip';
@@ -25,11 +26,14 @@ export function FiltersSheet({
   onOpenChange,
   value,
   onApply,
+  hasPreferences,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   value: Filters;
   onApply: (filters: Filters) => void;
+  /** Sem usuário não há raio salvo: "sem escolha" equivale a qualquer distância. */
+  hasPreferences: boolean;
 }) {
   const [draft, setDraft] = useState<Filters>(value);
   const [wasOpen, setWasOpen] = useState(open);
@@ -93,15 +97,28 @@ export function FiltersSheet({
 
         <div>
           <p className="mb-2 text-sm font-semibold text-muted">Distância máxima</p>
-          <input
-            type="range"
-            min={1}
-            max={20}
-            value={draft.maxDistanceKm ?? 10}
-            onChange={(e) => setDraft((d) => ({ ...d, maxDistanceKm: Number(e.target.value) }))}
-            className="w-full accent-destaque"
-          />
-          <p className="mt-1 text-xs text-muted">Até {draft.maxDistanceKm ?? 10} km</p>
+          <div className="flex flex-wrap gap-2">
+            {/* Sem escolha aqui, a API usa o raio salvo em Minhas preferências. */}
+            {hasPreferences && (
+              <Chip
+                selected={draft.maxDistanceKm === undefined}
+                onClick={() => setDraft((d) => ({ ...d, maxDistanceKm: undefined }))}
+              >
+                Minha preferência
+              </Chip>
+            )}
+            {DISTANCE_OPTIONS.map(({ value, label }) => (
+              <Chip
+                key={value}
+                selected={
+                  draft.maxDistanceKm === value || (!hasPreferences && value === 0 && draft.maxDistanceKm === undefined)
+                }
+                onClick={() => setDraft((d) => ({ ...d, maxDistanceKm: value }))}
+              >
+                {label}
+              </Chip>
+            ))}
+          </div>
         </div>
 
         <Button

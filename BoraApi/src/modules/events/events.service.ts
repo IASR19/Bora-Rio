@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
-import { distanceKm } from '../../shared/helpers/geo.helper';
+import { distanceKm, isWithinRadius } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
 import { UsersService } from '../users/users.service';
@@ -66,13 +66,19 @@ export class EventsService {
     }
 
     const events = await qb.orderBy('event.startsAt', 'ASC').getMany();
+    const maxDistanceKm = query.maxDistanceKm ?? preferences?.maxDistanceKm ?? null;
 
     return events
-      .map((event) => {
-        const distance =
+      .map((event) => ({
+        event,
+        distance:
           query.lat != null && query.lng != null
             ? distanceKm(query.lat, query.lng, event.venue.latitude, event.venue.longitude)
-            : null;
+            : null,
+      }))
+      // Busca por venueId (página do local) não corta por distância.
+      .filter(({ distance }) => query.venueId != null || isWithinRadius(distance, maxDistanceKm))
+      .map(({ event, distance }) => {
 
         const boraScore = this.scoreService.calculate({
           userMusicGenres: preferences?.musicGenres ?? [],
@@ -82,7 +88,7 @@ export class EventsService {
           userAgeMin: preferences?.ageInterestMin ?? null,
           userAgeMax: preferences?.ageInterestMax ?? null,
           venueTargetAge: event.targetAge,
-          userMaxDistanceKm: preferences?.maxDistanceKm ?? 10,
+          userMaxDistanceKm: query.maxDistanceKm ?? preferences?.maxDistanceKm ?? 10,
           distanceKm: distance ?? 0,
           userPriceRanges: preferences?.priceRanges ?? [],
           venuePriceRange: event.venue.priceRange,

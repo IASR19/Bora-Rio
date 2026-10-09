@@ -9,6 +9,12 @@ export function distanceKm(lat1: number, lng1: number, lat2: number, lng2: numbe
   return R * c;
 }
 
+/** Raio de busca: sem localização conhecida ou com raio 0 ("qualquer distância"), não corta nada. */
+export function isWithinRadius(distance: number | null, maxDistanceKm: number | null | undefined): boolean {
+  if (distance == null || !maxDistanceKm) return true;
+  return distance <= maxDistanceKm;
+}
+
 function toRad(deg: number): number {
   return (deg * Math.PI) / 180;
 }

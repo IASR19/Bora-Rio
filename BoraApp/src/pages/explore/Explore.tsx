@@ -3,6 +3,7 @@ import { ListFilter, Map as MapIcon, MapPin, Rows3, X } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { useAuth } from '@/context/AuthContext';
 import { venuesService } from '@/services/venues.service';
 import { isVenueCategory, venueCategoryLabel } from '@/shared/constants/venue-categories';
 import { CoverImage } from '@/shared/ui/CoverImage';
@@ -16,6 +17,7 @@ const VenueMap = lazy(() => import('@/components/VenueMap').then((m) => ({ defau
 
 export function Explore() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<'list' | 'map'>('list');
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -25,9 +27,11 @@ export function Explore() {
     return { q: searchParams.get('q') ?? undefined, category: isVenueCategory(category) ? category : undefined };
   });
 
+  const lat = user?.latitude ?? undefined;
+  const lng = user?.longitude ?? undefined;
   const { data: venues, isLoading } = useQuery({
-    queryKey: ['venues', filters],
-    queryFn: () => venuesService.search(filters),
+    queryKey: ['venues', filters, lat, lng],
+    queryFn: () => venuesService.search({ ...filters, lat, lng }),
   });
 
   return (
@@ -99,6 +103,36 @@ export function Explore() {
       ) : (
         <div className="mt-5 space-y-3 pb-6">
           {isLoading && <p className="text-sm text-muted">Carregando...</p>}
+          {venues?.length === 0 && (
+            <div className="rounded-2xl border border-border bg-surface p-6 text-center">
+              {/* Só há corte por raio quando a localização é conhecida (ver isWithinRadius na API). */}
+              {lat != null && filters.maxDistanceKm !== 0 ? (
+                <>
+                  <p className="font-semibold">Nada encontrado nesse raio.</p>
+                  <p className="mt-1 text-sm text-muted">Aumente a distância para ver o que fica mais longe.</p>
+                  <button
+                    onClick={() => setFilters((f) => ({ ...f, maxDistanceKm: 0 }))}
+                    className="mt-3 text-sm font-semibold text-destaque"
+                  >
+                    Ver qualquer distância
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="font-semibold">Nada encontrado.</p>
+                  <p className="mt-1 text-sm text-muted">Tente limpar a busca ou os filtros.</p>
+                </>
+              )}
+            </div>
+          )}
+          {user && lat == null && (
+            <button
+              onClick={() => navigate('/profile/edit')}
+              className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-left text-sm text-muted"
+            >
+              Sem sua localização, a lista não é ordenada pela distância. <strong>Definir localização</strong>
+            </button>
+          )}
           {venues?.map((venue) => (
             <button
               key={venue.id}
@@ -122,7 +156,13 @@ export function Explore() {
         </div>
       )}
 
-      <FiltersSheet open={filtersOpen} onOpenChange={setFiltersOpen} value={filters} onApply={setFilters} />
+      <FiltersSheet
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        value={filters}
+        onApply={setFilters}
+        hasPreferences={Boolean(user)}
+      />
     </div>
   );
 }

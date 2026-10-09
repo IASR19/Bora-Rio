@@ -42,7 +42,7 @@ export type VenueVibe = (typeof VENUE_VIBES)[number];
 export const PRICE_RANGES = ['economico', 'medio', 'premium'] as const;
 export type PriceRange = (typeof PRICE_RANGES)[number];
 
-export const DISTANCE_OPTIONS_KM = [3, 5, 10, 20, 0] as const; // 0 = qualquer distância
+export const DISTANCE_OPTIONS_KM = [3, 5, 10, 20, 50, 0] as const; // 0 = qualquer distância
 
 export const VENUE_CATEGORIES = [
   'bar',

@@ -40,7 +40,10 @@ export function AboutTab({ venue }: { venue: Venue }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Fonte e créditos da foto
+          {/* Licenças CC exigem atribuição visível (autor + licença). */}
+          {venue.catalogMetadata.photo.license.startsWith('CC')
+            ? `Foto: ${venue.catalogMetadata.photo.credit} · ${venue.catalogMetadata.photo.license}`
+            : 'Fonte e créditos da foto'}
         </a>
       )}
     </div>

@@ -4,7 +4,10 @@
     "category": "festa",
     "city": "Rio de Janeiro",
     "reason": "Endereço histórico: Av. Armando Lombardi, 421. Operação atual ainda precisa de confirmação direta; não publicar como ativo.",
-    "sourceUrls": ["https://mapcarta.com/pt/W475359144", "https://vitrinnilounge.com/"]
+    "sourceUrls": [
+      "https://mapcarta.com/pt/W475359144",
+      "https://vitrinnilounge.com/"
+    ]
   },
   {
     "name": "Villa, Planetário",
@@ -26,5 +29,26 @@
     "city": "Rio de Janeiro",
     "reason": "Confirmar perfil oficial e endereço da roda de samba/casa citada.",
     "sourceUrls": []
+  },
+  {
+    "name": "Casa do Pi - Bistrô",
+    "category": "restaurante",
+    "city": "Santa Rita do Sapucaí",
+    "reason": "Bem avaliado no TripAdvisor, mas ausente da lista de gastronomia 2025 do Visite SRS e sem foto verificável. Confirmar funcionamento antes de publicar.",
+    "sourceUrls": [
+      "https://inatel.br/foreigners/restaurants",
+      "https://www.tripadvisor.com/Restaurants-g2347089-Santa_Rita_Do_Sapucai_State_of_Minas_Gerais.html"
+    ]
+  },
+  {
+    "name": "Rampa de Voo Livre (Serra do Paredão)",
+    "category": "aventura",
+    "city": "Santa Rita do Sapucaí",
+    "reason": "Fica na divisa com São Sebastião da Bela Vista (o OpenStreetMap posiciona a rampa do lado vizinho) e o endereço encontrado é o da Rebio. Confirmar município e acesso.",
+    "sourceUrls": [
+      "https://www.visitesrs.com.br/",
+      "https://www.visitesrs.com.br/rota-da-natureza",
+      "https://thesummerhunter.com/santa-rita-do-sapucai-hacktown-miniguia/"
+    ]
   }
 ]

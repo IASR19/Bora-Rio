@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsIn, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsIn, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 
 import { MUSIC_GENRES, VENUE_CATEGORIES } from '../../../shared/constants/domain.constants';
 
@@ -21,6 +21,12 @@ export class QueryEventsDto {
   @Type(() => Number)
   @IsNumber()
   lng?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  maxDistanceKm?: number; // 0 = qualquer distância; ausente = preferência do usuário
 
   @IsOptional()
   @IsUUID()

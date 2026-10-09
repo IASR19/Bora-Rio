@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { isValidCnpj } from '../../shared/helpers/document.helper';
-import { distanceKm } from '../../shared/helpers/geo.helper';
+import { distanceKm, isWithinRadius } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
 import { Event, EventStatus } from '../events/entities/event.entity';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
@@ -90,11 +90,18 @@ export class VenuesService {
     if (query.q) qb.andWhere('venue.name ILIKE :q', { q: `%${query.q}%` });
 
     const venues = await qb.getMany();
+    const maxDistanceKm = query.maxDistanceKm ?? preferences?.maxDistanceKm ?? null;
 
     return venues
-      .map((venue) => {
-        const distance =
-          query.lat != null && query.lng != null ? distanceKm(query.lat, query.lng, venue.latitude, venue.longitude) : null;
+      .map((venue) => ({
+        venue,
+        distance:
+          query.lat != null && query.lng != null
+            ? distanceKm(query.lat, query.lng, venue.latitude, venue.longitude)
+            : null,
+      }))
+      .filter(({ distance }) => isWithinRadius(distance, maxDistanceKm))
+      .map(({ venue, distance }) => {
 
         const boraScore = this.scoreService.calculate({
           userMusicGenres: preferences?.musicGenres ?? [],

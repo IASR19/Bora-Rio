@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 import { PRICE_RANGES, VENUE_CATEGORIES } from '../../../shared/constants/domain.constants';
 
@@ -33,6 +33,7 @@ export class QueryVenuesDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
+  @Min(0)
   maxDistanceKm?: number;
 
   @IsOptional()

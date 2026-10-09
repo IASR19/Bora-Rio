@@ -1,17 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 
 import { usePreferencesDraft } from '@/hooks/usePreferencesDraft';
+import { DISTANCE_OPTIONS } from '@/shared/constants/distance-options';
 import { Chip } from '@/shared/ui/Chip';
 
 import { PreferencesLayout } from './PreferencesLayout';
-
-const DISTANCES = [
-  { value: 3, label: '3 km' },
-  { value: 5, label: '5 km' },
-  { value: 10, label: '10 km' },
-  { value: 20, label: '20 km' },
-  { value: 0, label: 'Qualquer distância' },
-];
 
 export function AgeDistanceStep() {
   const navigate = useNavigate();
@@ -47,7 +40,7 @@ export function AgeDistanceStep() {
 
       <p className="mt-8 text-sm font-semibold text-muted">Distância máxima</p>
       <div className="mt-3 flex flex-wrap gap-2">
-        {DISTANCES.map((option) => (
+        {DISTANCE_OPTIONS.map((option) => (
           <Chip
             key={option.value}
             selected={draft.maxDistanceKm === option.value}

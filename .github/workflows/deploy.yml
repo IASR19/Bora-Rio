@@ -49,8 +49,8 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Validate venue catalog seed
-        run: node --test scripts/seed-catalog.test.cjs
+      - name: Validate venue catalog seed and distance filter
+        run: node --test "scripts/*.test.cjs"
 
   build-and-test-app:
     name: Build App
