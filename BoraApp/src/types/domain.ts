@@ -26,6 +26,20 @@ export interface UserPreferences {
   priceRanges: string[];
 }
 
+export interface VenueCatalogMetadata {
+  slug: string;
+  state: string;
+  researchedAt: string;
+  sourceUrls: string[];
+  instagramUrl: string | null;
+  openingHours: string | null;
+  coordinatesAccuracy: 'approximate' | 'verified';
+  coordinatesNote: string;
+  priceRangeAccuracy: 'estimate' | 'verified';
+  photo: { url: string; sourceUrl: string; credit: string; license: string } | null;
+  notes: string[];
+}
+
 export interface Venue {
   id: string;
   name: string;
@@ -39,6 +53,7 @@ export interface Venue {
   longitude: number;
   city: string | null;
   coverImageUrl: string | null;
+  catalogMetadata?: VenueCatalogMetadata | null;
   boraScore?: number;
   distanceKm?: number | null;
   verified?: boolean;

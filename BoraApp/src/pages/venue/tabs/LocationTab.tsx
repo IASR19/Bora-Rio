@@ -19,6 +19,17 @@ export function LocationTab({ venue }: { venue: Venue }) {
         <VenueMap venues={[venue]} zoom={15} heightClassName="h-56" interactive={false} />
       </Suspense>
       <p className="mt-3 text-sm text-foreground">{venue.address}</p>
+      {venue.catalogMetadata?.coordinatesAccuracy === 'approximate' && (
+        <p className="mt-1 text-xs text-muted">Localização aproximada. Confirme o acesso pelo endereço.</p>
+      )}
+      <a
+        className="mt-2 inline-block text-sm underline"
+        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue.name}, ${venue.address}`)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Abrir no Google Maps
+      </a>
     </div>
   );
 }

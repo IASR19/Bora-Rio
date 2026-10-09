@@ -3,6 +3,20 @@ import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { PriceRange, VenueCategory, VenueVibe } from '../../../shared/constants/domain.constants';
 
+export interface VenueCatalogMetadata {
+  slug: string;
+  state: string;
+  researchedAt: string;
+  sourceUrls: string[];
+  instagramUrl: string | null;
+  openingHours: string | null;
+  coordinatesAccuracy: 'approximate' | 'verified';
+  coordinatesNote: string;
+  priceRangeAccuracy: 'estimate' | 'verified';
+  photo: { url: string; sourceUrl: string; credit: string; license: string } | null;
+  notes: string[];
+}
+
 @Entity('venues')
 export class Venue extends BaseEntity {
   @Column({ length: 160 })
@@ -39,6 +53,9 @@ export class Venue extends BaseEntity {
 
   @Column({ name: 'cover_image_url', type: 'varchar', nullable: true })
   coverImageUrl: string | null;
+
+  @Column({ name: 'catalog_metadata', type: 'jsonb', nullable: true })
+  catalogMetadata: VenueCatalogMetadata | null;
 
   /** Locais do catálogo/seed nascem true; locais cadastrados por usuário ao criar
    * um evento nascem false — controla se eventos ali podem se auto-publicar. */

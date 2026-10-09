@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 
+import { venueCategoryLabel } from '@/shared/constants/venue-categories';
 import { cn } from '@/utils/cn';
 import type { Venue } from '@/types/domain';
 
@@ -72,7 +73,7 @@ export function VenueMap({
           >
             <Popup>
               <p className="font-bold">{venue.name}</p>
-              <p className="text-xs text-muted">{venue.category} · {venue.priceRange}</p>
+              <p className="text-xs text-muted">{venueCategoryLabel(venue.category)} · {venue.priceRange}</p>
             </Popup>
           </Marker>
         ))}

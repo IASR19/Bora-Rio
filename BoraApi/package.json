@@ -23,7 +23,9 @@
     "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/data-source.ts",
     "migration:run:prod": "node ./node_modules/typeorm/cli.js migration:run -d dist/data-source.js",
     "seed:dev": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts",
-    "seed": "node dist/seeds/seed.js"
+    "seed": "node dist/seeds/seed.js",
+    "seed:check": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts --dry-run",
+    "test:seed": "npm run build && node --test scripts/seed-catalog.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",

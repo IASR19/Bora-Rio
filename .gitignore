@@ -36,3 +36,17 @@ coverage/
 # TypeORM
 *.tsbuildinfo
 /htmls*
+
+# Temporary source snapshots and photo verification sheets
+BoraApi/src/seeds/research/
+
+# Local business/design materials
+/PITCH/
+/IDENTIDADE VISUAL/
+
+# One-off catalog research tools and legacy demo backup
+/BoraApi/scripts/research-catalog.py
+/BoraApi/scripts/verify-catalog-photos.py
+/BoraApi/scripts/build-catalog.py
+/BoraApi/scripts/catalog-sources.json
+/BoraApi/src/seeds/seed-demo.ts

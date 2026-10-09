@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { eventsService } from '@/services/events.service';
 import { geocodeAddress, lookupCep, type CepAddress } from '@/services/cep.service';
 import { venuesService } from '@/services/venues.service';
+import { VENUE_CATEGORY_OPTIONS } from '@/shared/constants/venue-categories';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Chip } from '@/shared/ui/Chip';
@@ -15,7 +16,6 @@ import { resizeImageToBase64 } from '@/utils/image';
 type CreatorType = 'business' | 'personal';
 
 const MUSIC = ['pagode', 'samba', 'sertanejo', 'eletronico', 'funk', 'pop', 'rock', 'mpb', 'jazz', 'outros'];
-const CATEGORIES = ['bar', 'festa', 'restaurante', 'rooftop', 'praia', 'lounge'];
 const COVER_SIZE = 800;
 const VENUE_SEARCH_DEBOUNCE_MS = 300;
 
@@ -341,9 +341,9 @@ export function CreateEvent() {
               </div>
               <Input placeholder="Nome do local" value={newVenueName} onChange={(e) => setNewVenueName(e.target.value)} />
               <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map((c) => (
+                {VENUE_CATEGORY_OPTIONS.map(({ value: c, label }) => (
                   <Chip key={c} selected={newVenueCategory === c} onClick={() => setNewVenueCategory(c)}>
-                    {c}
+                    {label}
                   </Chip>
                 ))}
               </div>

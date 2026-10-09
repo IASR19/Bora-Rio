@@ -49,6 +49,9 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Validate venue catalog seed
+        run: node --test scripts/seed-catalog.test.cjs
+
   build-and-test-app:
     name: Build App
     runs-on: ubuntu-latest
@@ -113,8 +116,18 @@ jobs:
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           DATABASE_SSL: ${{ secrets.DATABASE_SSL }}
-      # Seed (dados de exemplo) roda só local/manual — nunca em produção.
-      # Ver src/seeds/seed.ts e README para rodar sob demanda.
+
+      # Catálogo real de locais (src/seeds/venues.catalog.json): idempotente, numa transação
+      # com lock, não cria eventos nem remove registros. Ver src/seeds/README.md.
+      - name: Seed venue catalog
+        run: node dist/seeds/seed.js
+        env:
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_SSL: ${{ secrets.DATABASE_SSL }}
 
   deploy-preview:
     name: Deploy Preview

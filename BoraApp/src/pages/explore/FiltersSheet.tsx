@@ -1,3 +1,4 @@
+import { VENUE_CATEGORY_OPTIONS } from '@/shared/constants/venue-categories';
 import { useState } from 'react';
 
 import { BottomSheet } from '@/shared/ui/BottomSheet';
@@ -12,7 +13,6 @@ export interface Filters {
   q?: string;
 }
 
-const CATEGORIES = ['bar', 'festa', 'restaurante', 'rooftop', 'praia', 'lounge'];
 const MUSIC = ['pagode', 'eletronico', 'sertanejo', 'funk', 'pop', 'rock'];
 const PRICES = [
   { value: 'economico', label: 'Econômico' },
@@ -39,13 +39,13 @@ export function FiltersSheet({
         <div>
           <p className="mb-2 text-sm font-semibold text-muted">Categoria</p>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((category) => (
+            {VENUE_CATEGORY_OPTIONS.map(({ value: category, label }) => (
               <Chip
                 key={category}
                 selected={draft.category === category}
                 onClick={() => setDraft((d) => ({ ...d, category: d.category === category ? undefined : category }))}
               >
-                {category}
+                {label}
               </Chip>
             ))}
           </div>

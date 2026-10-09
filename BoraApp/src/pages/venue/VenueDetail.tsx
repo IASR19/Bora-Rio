@@ -10,6 +10,7 @@ import { reportsService } from '@/services/reports.service';
 import { venuesService } from '@/services/venues.service';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
+import { CoverImage } from '@/shared/ui/CoverImage';
 import { BottomSheet } from '@/shared/ui/BottomSheet';
 import { Chip } from '@/shared/ui/Chip';
 import { ScoreBadge } from '@/shared/ui/ScoreBadge';
@@ -126,7 +127,7 @@ export function VenueDetail() {
   return (
     <div className="app-shell min-h-dvh bg-background pb-28">
       <div className="relative h-64 w-full bg-bora-gradient-soft">
-        {venue.coverImageUrl && <img src={venue.coverImageUrl} className="h-full w-full object-cover" alt={venue.name} />}
+        <CoverImage src={venue.coverImageUrl} alt={venue.name} />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
           <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur">
             <ArrowLeft className="h-5 w-5 text-white" />

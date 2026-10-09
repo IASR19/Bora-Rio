@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Vitrinni Lounge Beer",
+    "category": "festa",
+    "city": "Rio de Janeiro",
+    "reason": "Endereço histórico: Av. Armando Lombardi, 421. Operação atual ainda precisa de confirmação direta; não publicar como ativo.",
+    "sourceUrls": ["https://mapcarta.com/pt/W475359144", "https://vitrinnilounge.com/"]
+  },
+  {
+    "name": "Villa, Planetário",
+    "category": "festa",
+    "city": "Rio de Janeiro",
+    "reason": "Nome ambíguo: confirmar se é uma casa, produtora ou festa no Planetário da Gávea. Não confundir com a instituição Planetário.",
+    "sourceUrls": []
+  },
+  {
+    "name": "Bar da Lapa",
+    "category": "bar",
+    "city": "Rio de Janeiro",
+    "reason": "Confirmar nome oficial, unidade ou perfil. Existem vários bares na região da Lapa.",
+    "sourceUrls": []
+  },
+  {
+    "name": "Porta Aberta",
+    "category": "samba",
+    "city": "Rio de Janeiro",
+    "reason": "Confirmar perfil oficial e endereço da roda de samba/casa citada.",
+    "sourceUrls": []
+  }
+]

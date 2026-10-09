@@ -44,7 +44,20 @@ export type PriceRange = (typeof PRICE_RANGES)[number];
 
 export const DISTANCE_OPTIONS_KM = [3, 5, 10, 20, 0] as const; // 0 = qualquer distância
 
-export const VENUE_CATEGORIES = ['bar', 'festa', 'restaurante', 'rooftop', 'praia', 'lounge'] as const;
+export const VENUE_CATEGORIES = [
+  'bar',
+  'festa',
+  'samba',
+  'beach_club',
+  'rooftop',
+  'praia',
+  'ponto_turistico',
+  'cultura',
+  'parque',
+  'aventura',
+  'restaurante',
+  'lounge',
+] as const;
 export type VenueCategory = (typeof VENUE_CATEGORIES)[number];
 
 /** Score weights — see escopo.md #10 and #38 */
