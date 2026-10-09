@@ -10,6 +10,7 @@ import { BusinessVerificationStatus, User } from '../modules/users/entities/user
  *   npm run business:review -- --list
  *   npm run business:review -- --email dono@bar.com --approve
  *   npm run business:review -- --email dono@bar.com --reject --note "Contrato de outra empresa"
+ *   npm run business:review -- --email dono@bar.com --reset   (apaga a validação: o usuário reenvia do zero)
  *
  * Aprovar publica os eventos que esse usuário criou como ponto comercial e estavam em análise.
  */
@@ -33,10 +34,38 @@ async function reviewBusiness(): Promise<void> {
     }
 
     const email = arg('email');
+    if (email && process.argv.includes('--reset')) {
+      const user = await users.findOne({ where: { email } });
+      if (!user) throw new Error(`Usuário ${email} não encontrado`);
+      await dataSource.transaction(async (manager) => {
+        await manager.update(
+          User,
+          { id: user.id },
+          {
+            businessCnpj: null,
+            businessName: null,
+            businessVerificationStatus: null,
+            businessVerificationNote: null,
+            businessContractFile: null,
+            businessVerifiedAt: null,
+          },
+        );
+        // Eventos comerciais ainda em análise eram do CNPJ apagado: deixam de ser "comerciais" pra
+        // não serem publicados por engano quando um CNPJ novo for aprovado. Seguem em análise.
+        const detached = await manager.update(
+          Event,
+          { createdBy: user.id, createdAsBusiness: true, status: EventStatus.PENDING_REVIEW },
+          { createdAsBusiness: false },
+        );
+        console.log(`Eventos comerciais em análise desvinculados: ${detached.affected ?? 0}`);
+      });
+      console.log(`${email}: validação de CNPJ apagada; pode reenviar o contrato social.`);
+      return;
+    }
     const approve = process.argv.includes('--approve');
     const reject = process.argv.includes('--reject');
     if (!email || approve === reject) {
-      throw new Error('Use --list, ou --email <email> com --approve ou --reject [--note "motivo"]');
+      throw new Error('Use --list, ou --email <email> com --approve, --reject [--note "motivo"] ou --reset');
     }
 
     const user = await users.findOne({ where: { email } });

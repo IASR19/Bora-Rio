@@ -29,7 +29,6 @@ test('without verified identity (CPF) it never auto-approves', () => {
 
 test('any doubt goes to manual review, never auto-rejected', () => {
   const pending = [
-    decideBusinessStatus(null, MATCH, true),
     decideBusinessStatus({ ...COMPANY, active: false }, MATCH, true),
     decideBusinessStatus(COMPANY, null, true),
     decideBusinessStatus(COMPANY, { ...MATCH, confidence: 'medium' }, true),
@@ -81,4 +80,52 @@ test('approved business publishes and verifies the new venue it creates', async 
   assert.equal(saved[0].status, 'published');
   assert.equal(event.venue.verified, true);
   assert.equal(event.venue.cnpj, '11222333000181');
+});
+
+test('CNPJ lookup falls back to the next public source when one is down', async (t) => {
+  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
+  const service = new BusinessVerificationService({}, { get: () => undefined });
+  t.mock.method(console, 'warn', () => {});
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (url) => {
+    calls.push(url);
+    if (calls.length === 1) return new Response('{"message":"503"}', { status: 500 });
+    return Response.json({ razao_social: 'BAR DO ZE LTDA', situacao_cadastral: 'Ativa', QSA: [{ nome_socio: 'JOSE' }] });
+  });
+  const company = await service.fetchCompany('11222333000181');
+  assert.equal(calls.length, 2);
+  assert.deepEqual(company, { legalName: 'BAR DO ZE LTDA', tradeName: null, active: true, partners: ['JOSE'] });
+});
+
+test('404 from a monthly-snapshot source falls through: a newly opened company is still found', async (t) => {
+  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
+  const service = new BusinessVerificationService({}, { get: () => undefined });
+  t.mock.method(console, 'warn', () => {});
+  let calls = 0;
+  t.mock.method(globalThis, 'fetch', async () => {
+    calls += 1;
+    if (calls < 3) return new Response('{}', { status: 404 });
+    return Response.json({ razao_social: 'BAR NOVO LTDA', descricao_situacao_cadastral: 'ATIVA', qsa: [] });
+  });
+  const company = await service.fetchCompany('11222333000181');
+  assert.equal(company.legalName, 'BAR NOVO LTDA');
+});
+
+test('CNPJ is "not found" only when every source answers 404', async (t) => {
+  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
+  const service = new BusinessVerificationService({}, { get: () => undefined });
+  t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 404 }));
+  await assert.rejects(service.fetchCompany('11222333000181'), /não encontrado/);
+});
+
+test('404 mixed with an outage is not "not found": user can retry', async (t) => {
+  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
+  const service = new BusinessVerificationService({}, { get: () => undefined });
+  t.mock.method(console, 'warn', () => {});
+  let calls = 0;
+  t.mock.method(globalThis, 'fetch', async () => {
+    calls += 1;
+    return new Response('{}', { status: calls === 1 ? 404 : 503 });
+  });
+  assert.equal(await service.fetchCompany('11222333000181'), null);
 });

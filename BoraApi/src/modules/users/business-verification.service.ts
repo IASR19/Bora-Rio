@@ -13,8 +13,9 @@ import { BusinessVerificationStatus, User } from './entities/user.entity';
  * e precisa caber no body JSON da API (4mb, ver bootstrap) e no limite da Vercel (~4,5mb). */
 const ALLOWED_CONTRACT_MIME = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'] as const;
 const MAX_CONTRACT_BYTES = 2.5 * 1024 * 1024;
-/** As duas chamadas rodam na mesma requisição: somadas, cabem num maxDuration de 30 s. */
-const CNPJ_LOOKUP_TIMEOUT_MS = 8_000;
+/** As duas etapas rodam na mesma requisição: somadas, cabem num maxDuration de 30 s. */
+const CNPJ_PROVIDER_TIMEOUT_MS = 4_000;
+const CNPJ_LOOKUP_BUDGET_MS = 9_000;
 const AI_ANALYSIS_TIMEOUT_MS = 20_000;
 /** Faixa intermediária da OpenAI: lê PDF como texto + imagem das páginas (modelo com visão),
  * com desempenho perto do topo de linha (gpt-6-astra) a uma fração do preço. */
@@ -52,13 +53,10 @@ export interface BusinessDecision {
  * nome do perfil, que o próprio usuário edita: sem identidade verificada, nunca aprova sozinho.
  */
 export function decideBusinessStatus(
-  company: CompanyData | null,
+  company: CompanyData,
   analysis: ContractAnalysis | null,
   identityVerified: boolean,
 ): BusinessDecision {
-  if (!company) {
-    return { status: BusinessVerificationStatus.PENDING, note: 'Não conseguimos consultar o CNPJ agora. Vamos revisar manualmente.' };
-  }
   if (!company.active) {
     return { status: BusinessVerificationStatus.PENDING, note: 'O CNPJ não está com situação ATIVA na Receita. Vamos revisar manualmente.' };
   }
@@ -104,6 +102,93 @@ const ANALYSIS_SCHEMA = {
   },
 } as const;
 
+interface CnpjProvider {
+  name: string;
+  url: (cnpj: string) => string;
+  parse: (data: unknown) => CompanyData | null;
+}
+
+const isActive = (situation: string | undefined) => situation?.trim().toUpperCase() === 'ATIVA';
+
+/** Ordem: as que responderam mais rápido e estável nos testes primeiro; ReceitaWS por último
+ * (limite de 3 consultas/min no plano gratuito). */
+const CNPJ_PROVIDERS: CnpjProvider[] = [
+  {
+    name: 'CNPJ.ws',
+    url: (cnpj) => `https://publica.cnpj.ws/cnpj/${cnpj}`,
+    parse: (data) => {
+      const d = data as {
+        razao_social?: string;
+        estabelecimento?: { nome_fantasia?: string; situacao_cadastral?: string };
+        socios?: { nome?: string }[];
+      };
+      return d.razao_social
+        ? {
+            legalName: d.razao_social,
+            tradeName: d.estabelecimento?.nome_fantasia || null,
+            active: isActive(d.estabelecimento?.situacao_cadastral),
+            partners: (d.socios ?? []).map((p) => p.nome ?? '').filter(Boolean),
+          }
+        : null;
+    },
+  },
+  {
+    name: 'OpenCNPJ',
+    url: (cnpj) => `https://api.opencnpj.org/${cnpj}`,
+    parse: (data) => {
+      const d = data as {
+        razao_social?: string;
+        nome_fantasia?: string;
+        situacao_cadastral?: string;
+        QSA?: { nome_socio?: string }[];
+      };
+      return d.razao_social
+        ? {
+            legalName: d.razao_social,
+            tradeName: d.nome_fantasia || null,
+            active: isActive(d.situacao_cadastral),
+            partners: (d.QSA ?? []).map((p) => p.nome_socio ?? '').filter(Boolean),
+          }
+        : null;
+    },
+  },
+  {
+    name: 'BrasilAPI',
+    url: (cnpj) => `https://brasilapi.com.br/api/cnpj/v1/${cnpj}`,
+    parse: (data) => {
+      const d = data as {
+        razao_social?: string;
+        nome_fantasia?: string;
+        descricao_situacao_cadastral?: string;
+        qsa?: { nome_socio?: string }[];
+      };
+      return d.razao_social
+        ? {
+            legalName: d.razao_social,
+            tradeName: d.nome_fantasia || null,
+            active: isActive(d.descricao_situacao_cadastral),
+            partners: (d.qsa ?? []).map((p) => p.nome_socio ?? '').filter(Boolean),
+          }
+        : null;
+    },
+  },
+  {
+    name: 'ReceitaWS',
+    url: (cnpj) => `https://receitaws.com.br/v1/cnpj/${cnpj}`,
+    parse: (data) => {
+      const d = data as { status?: string; nome?: string; fantasia?: string; situacao?: string; qsa?: { nome?: string }[] };
+      return d.status !== 'ERROR' && d.nome
+        ? {
+            legalName: d.nome,
+            tradeName: d.fantasia || null,
+            active: isActive(d.situacao),
+            partners: (d.qsa ?? []).map((p) => p.nome ?? '').filter(Boolean),
+          }
+        : null;
+    },
+  },
+];
+
 @Injectable()
 export class BusinessVerificationService {
   private readonly logger = new Logger(BusinessVerificationService.name);
@@ -132,14 +217,17 @@ export class BusinessVerificationService {
     const file = this.parseContractFile(dto.contractFile);
 
     const company = await this.fetchCompany(cnpj);
+    // Falha de consulta é problema nosso/de fora, não do documento: não gasta a tentativa do
+    // usuário (nada é salvo) e ele pode reenviar em seguida.
+    if (!company) {
+      throw new BusinessException('Não conseguimos consultar o CNPJ agora. Tente novamente em alguns minutos.');
+    }
     const identityVerified = user.phoneVerified && Boolean(user.cpf) && Boolean(user.selfieUrl);
-    const analysis = company
-      ? await this.analyzeContract(file, cnpj, company, identityVerified ? user.cpf : null)
-      : null;
+    const analysis = await this.analyzeContract(file, cnpj, company, identityVerified ? user.cpf : null);
     const decision = decideBusinessStatus(company, analysis, identityVerified);
 
     user.businessCnpj = cnpj;
-    user.businessName = company?.legalName ?? null;
+    user.businessName = company.legalName || null;
     user.businessVerificationStatus = decision.status;
     user.businessVerificationNote = decision.note;
     user.businessContractFile = dto.contractFile;
@@ -161,33 +249,44 @@ export class BusinessVerificationService {
     return { mime, dataUrl };
   }
 
-  /** Consulta pública (BrasilAPI, sem chave). Falha de rede vira null → revisão manual. */
+  /**
+   * Consulta pública do CNPJ (Receita Federal) em fontes gratuitas, sem chave, uma após a outra
+   * até alguma responder: elas caem com frequência (ex.: BrasilAPI devolvendo 500 quando a fonte
+   * dela está fora).
+   *
+   * 404 numa fonte não é definitivo: várias usam a base pública da Receita, atualizada uma vez por
+   * mês, e empresa aberta há poucas semanas ainda não está lá. Só é "não encontrado" quando TODAS
+   * as fontes respondem 404; se alguma só falhou, devolve null (o usuário tenta de novo).
+   */
   private async fetchCompany(cnpj: string): Promise<CompanyData | null> {
-    try {
-      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`, {
-        // Sem User-Agent a BrasilAPI responde 403.
-        headers: { 'User-Agent': 'BoraApp/1.0' },
-        signal: AbortSignal.timeout(CNPJ_LOOKUP_TIMEOUT_MS),
-      });
-      if (response.status === 404) throw new BusinessException('CNPJ não encontrado na Receita Federal.');
-      if (!response.ok) return null;
-      const data = (await response.json()) as {
-        razao_social?: string;
-        nome_fantasia?: string;
-        descricao_situacao_cadastral?: string;
-        qsa?: { nome_socio?: string }[];
-      };
-      return {
-        legalName: data.razao_social ?? '',
-        tradeName: data.nome_fantasia || null,
-        active: data.descricao_situacao_cadastral?.toUpperCase() === 'ATIVA',
-        partners: (data.qsa ?? []).map((p) => p.nome_socio ?? '').filter(Boolean),
-      };
-    } catch (err) {
-      if (err instanceof BusinessException) throw err;
-      this.logger.warn(`CNPJ lookup failed: ${(err as Error).message}`);
-      return null;
+    const deadline = Date.now() + CNPJ_LOOKUP_BUDGET_MS;
+    let notFound = 0;
+    for (const provider of CNPJ_PROVIDERS) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
+      try {
+        const response = await fetch(provider.url(cnpj), {
+          // Sem User-Agent algumas (BrasilAPI) respondem 403.
+          headers: { 'User-Agent': 'BoraApp/1.0', Accept: 'application/json' },
+          signal: AbortSignal.timeout(Math.min(CNPJ_PROVIDER_TIMEOUT_MS, remaining)),
+        });
+        if (response.status === 404) {
+          notFound += 1;
+          continue;
+        }
+        if (!response.ok) {
+          this.logger.warn(`CNPJ lookup via ${provider.name} failed: HTTP ${response.status}`);
+          continue;
+        }
+        const company = provider.parse(await response.json());
+        if (company?.legalName) return company;
+        this.logger.warn(`CNPJ lookup via ${provider.name} returned no company`);
+      } catch (err) {
+        this.logger.warn(`CNPJ lookup via ${provider.name} failed: ${(err as Error).message}`);
+      }
     }
+    if (notFound === CNPJ_PROVIDERS.length) throw new BusinessException('CNPJ não encontrado na Receita Federal.');
+    return null;
   }
 
   /** OpenAI Responses API com saída em JSON Schema. Sem chave, timeout ou erro → null (revisão manual). */
