@@ -16,7 +16,9 @@ const MAX_CONTRACT_BYTES = 2.5 * 1024 * 1024;
 /** As duas chamadas rodam na mesma requisição: somadas, cabem num maxDuration de 30 s. */
 const CNPJ_LOOKUP_TIMEOUT_MS = 8_000;
 const AI_ANALYSIS_TIMEOUT_MS = 20_000;
-const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini';
+/** Faixa intermediária da OpenAI: lê PDF como texto + imagem das páginas (modelo com visão),
+ * com desempenho perto do topo de linha (gpt-6-astra) a uma fração do preço. */
+const DEFAULT_OPENAI_MODEL = 'gpt-6.1-sol';
 
 export interface CompanyData {
   legalName: string;
@@ -218,16 +220,21 @@ export class BusinessVerificationService {
 
     const fileContent =
       file.mime === 'application/pdf'
-        ? { type: 'input_file', filename: 'contrato-social.pdf', file_data: file.dataUrl }
-        : { type: 'input_image', image_url: file.dataUrl };
+        ? // detail high: páginas em alta resolução, pra letra miúda, CNPJ e CPF de contrato escaneado.
+          { type: 'input_file', filename: 'contrato-social.pdf', file_data: file.dataUrl, detail: 'high' }
+        : { type: 'input_image', image_url: file.dataUrl, detail: 'high' };
 
+    const model = this.configService.get<string>('OPENAI_MODEL') || DEFAULT_OPENAI_MODEL;
     try {
       const response = await fetch('https://api.openai.com/v1/responses', {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         signal: AbortSignal.timeout(AI_ANALYSIS_TIMEOUT_MS),
         body: JSON.stringify({
-          model: this.configService.get<string>('OPENAI_MODEL') || DEFAULT_OPENAI_MODEL,
+          model,
+          // Modelos de raciocínio (GPT-5+) pensam antes de responder; "low" (o menor que o
+          // gpt-6.1-sol aceita) mantém a análise dentro do timeout. Modelos antigos não aceitam o parâmetro.
+          ...(/^gpt-[56]/.test(model) ? { reasoning: { effort: 'low' } } : {}),
           input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }, fileContent] }],
           text: { format: { type: 'json_schema', name: 'contract_check', strict: true, schema: ANALYSIS_SCHEMA } },
         }),
