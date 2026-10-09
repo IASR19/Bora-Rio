@@ -32,6 +32,14 @@ export function FiltersSheet({
   onApply: (filters: Filters) => void;
 }) {
   const [draft, setDraft] = useState<Filters>(value);
+  const [wasOpen, setWasOpen] = useState(open);
+
+  // Ao abrir, o rascunho parte dos filtros atuais: eles podem ter mudado por fora
+  // (ex.: limpar busca/categoria nos banners do Explorar).
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setDraft(value);
+  }
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Filtros">

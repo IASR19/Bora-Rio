@@ -2,14 +2,23 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Beer,
   Bell,
+  Building2,
+  Landmark,
+  type LucideIcon,
   MapPin,
+  MicVocal,
+  Mountain,
   Music,
+  Palette,
   PartyPopper,
   Search,
   Sunrise,
+  Trees,
+  Umbrella,
   UtensilsCrossed,
   Volume2,
   Waves,
+  Wine,
 } from 'lucide-react';
 import { useState, type WheelEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,24 +26,55 @@ import { useNavigate } from 'react-router-dom';
 import { EventCard } from '@/components/EventCard';
 import { useAuth } from '@/context/AuthContext';
 import { eventsService } from '@/services/events.service';
+import { VENUE_CATEGORY_OPTIONS, type VenueCategory } from '@/shared/constants/venue-categories';
 import { Input } from '@/shared/ui/Input';
 import { cn } from '@/utils/cn';
 
+interface Shortcut {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  now: boolean;
+  category?: VenueCategory;
+  music?: string;
+  /** Categoria de lugar (praia, museu, parque...): quase nunca tem evento, então abre o
+   * Explorar com os locais da categoria em vez de filtrar a lista de eventos. */
+  opensPlaces: boolean;
+}
+
+/** Record tipado: uma categoria nova em VENUE_CATEGORY_OPTIONS sem atalho aqui quebra o build. */
+const CATEGORY_SHORTCUTS: Record<VenueCategory, Pick<Shortcut, 'label' | 'icon' | 'opensPlaces'>> = {
+  festa: { label: 'Festas', icon: Music, opensPlaces: false },
+  bar: { label: 'Bares', icon: Beer, opensPlaces: false },
+  samba: { label: 'Roda de samba', icon: MicVocal, opensPlaces: false },
+  beach_club: { label: 'Beach clubs', icon: Umbrella, opensPlaces: false },
+  rooftop: { label: 'Rooftops', icon: Building2, opensPlaces: false },
+  praia: { label: 'Praias', icon: Waves, opensPlaces: true },
+  ponto_turistico: { label: 'Pontos turísticos', icon: Landmark, opensPlaces: true },
+  cultura: { label: 'Cultura', icon: Palette, opensPlaces: true },
+  parque: { label: 'Parques', icon: Trees, opensPlaces: true },
+  aventura: { label: 'Aventura', icon: Mountain, opensPlaces: true },
+  restaurante: { label: 'Jantar', icon: UtensilsCrossed, opensPlaces: false },
+  lounge: { label: 'Lounges', icon: Wine, opensPlaces: false },
+};
+
 /** Cada atalho mapeia pra um filtro real de busca (escopo.md #8 e #12 "outras categorias"). */
-const SHORTCUTS = [
-  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true, category: undefined, music: undefined },
-  { key: 'bares', label: 'Bares', icon: Beer, now: false, category: 'bar', music: undefined },
-  { key: 'festas', label: 'Festas', icon: Music, now: false, category: 'festa', music: undefined },
-  { key: 'jantar', label: 'Jantar', icon: UtensilsCrossed, now: false, category: 'restaurante', music: undefined },
-  { key: 'pagode', label: 'Pagode', icon: Volume2, now: false, category: undefined, music: 'pagode' },
-  { key: 'eletronico', label: 'Eletrônico', icon: Sunrise, now: false, category: undefined, music: 'eletronico' },
-  { key: 'praia', label: 'Praia', icon: Waves, now: false, category: 'praia', music: undefined },
-] as const;
+const SHORTCUTS: Shortcut[] = [
+  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true, opensPlaces: false },
+  { key: 'pagode', label: 'Pagode', icon: Volume2, now: false, music: 'pagode', opensPlaces: false },
+  { key: 'eletronico', label: 'Eletrônico', icon: Sunrise, now: false, music: 'eletronico', opensPlaces: false },
+  ...VENUE_CATEGORY_OPTIONS.map(({ value }) => ({
+    key: value,
+    now: false,
+    category: value,
+    ...CATEGORY_SHORTCUTS[value],
+  })),
+];
 
 export function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeShortcut, setActiveShortcut] = useState<(typeof SHORTCUTS)[number]['key']>('agora');
+  const [activeShortcut, setActiveShortcut] = useState('agora');
   const [search, setSearch] = useState('');
   const shortcut = SHORTCUTS.find((s) => s.key === activeShortcut) ?? SHORTCUTS[0];
 
@@ -97,10 +137,12 @@ export function Home() {
 
       <div className="relative mt-5">
         <div className="flex gap-2 overflow-x-auto scroll-smooth pb-1" onWheel={handleShortcutsWheel}>
-          {SHORTCUTS.map(({ key, label, icon: Icon }) => (
+          {SHORTCUTS.map(({ key, label, icon: Icon, category, opensPlaces }) => (
             <button
               key={key}
-              onClick={() => setActiveShortcut(key)}
+              onClick={() =>
+                opensPlaces && category ? navigate(`/explore?category=${category}`) : setActiveShortcut(key)
+              }
               className={cn(
                 'flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors',
                 activeShortcut === key

@@ -3,8 +3,8 @@ import { ListFilter, Map as MapIcon, MapPin, Rows3, X } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { venueCategoryLabel } from '@/shared/constants/venue-categories';
 import { venuesService } from '@/services/venues.service';
+import { isVenueCategory, venueCategoryLabel } from '@/shared/constants/venue-categories';
 import { CoverImage } from '@/shared/ui/CoverImage';
 import { ScoreBadge } from '@/shared/ui/ScoreBadge';
 import { cn } from '@/utils/cn';
@@ -19,7 +19,11 @@ export function Explore() {
   const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<'list' | 'map'>('list');
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filters, setFilters] = useState<Filters>({ q: searchParams.get('q') ?? undefined });
+  // Atalhos de categoria da Home chegam como ?category=; valor desconhecido é ignorado (a API rejeitaria).
+  const [filters, setFilters] = useState<Filters>(() => {
+    const category = searchParams.get('category');
+    return { q: searchParams.get('q') ?? undefined, category: isVenueCategory(category) ? category : undefined };
+  });
 
   const { data: venues, isLoading } = useQuery({
     queryKey: ['venues', filters],
@@ -34,6 +38,16 @@ export function Explore() {
             Buscando por <strong>&ldquo;{filters.q}&rdquo;</strong>
           </span>
           <button onClick={() => setFilters((f) => ({ ...f, q: undefined }))} aria-label="Limpar busca">
+            <X className="h-4 w-4 text-muted" />
+          </button>
+        </div>
+      )}
+      {filters.category && (
+        <div className="mb-3 flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
+          <span>
+            Categoria: <strong>{venueCategoryLabel(filters.category)}</strong>
+          </span>
+          <button onClick={() => setFilters((f) => ({ ...f, category: undefined }))} aria-label="Limpar categoria">
             <X className="h-4 w-4 text-muted" />
           </button>
         </div>

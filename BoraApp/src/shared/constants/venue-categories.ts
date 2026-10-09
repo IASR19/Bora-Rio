@@ -13,6 +13,12 @@ export const VENUE_CATEGORY_OPTIONS = [
   { value: 'lounge', label: 'Lounges' },
 ] as const;
 
+export type VenueCategory = (typeof VENUE_CATEGORY_OPTIONS)[number]['value'];
+
+export function isVenueCategory(value: string | null): value is VenueCategory {
+  return VENUE_CATEGORY_OPTIONS.some((option) => option.value === value);
+}
+
 export function venueCategoryLabel(category: string): string {
   return VENUE_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ?? category;
 }
