@@ -16,6 +16,14 @@ export enum SubscriptionStatus {
   CANCELED = 'canceled',
 }
 
+/** Validação do "ponto comercial": feita uma vez por usuário (contrato social analisado por IA).
+ * PENDING também cobre "a IA não teve certeza" — fica pra revisão manual. */
+export enum BusinessVerificationStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
+
 @Entity('users')
 export class User extends BaseEntity {
   @Column({ length: 120 })
@@ -25,7 +33,9 @@ export class User extends BaseEntity {
   @Column({ length: 160 })
   email: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', nullable: true })
+  /** `select: false`: nunca sai em respostas (GET /users/me, login, cadastro). Só o fluxo de
+   * senha lê, via UsersService.findByEmailWithPassword / findByIdWithPassword. */
+  @Column({ name: 'password_hash', type: 'varchar', nullable: true, select: false })
   passwordHash: string | null;
 
   @Index({ unique: true })
@@ -72,6 +82,30 @@ export class User extends BaseEntity {
 
   @Column({ name: 'selfie_url', type: 'varchar', nullable: true })
   selfieUrl: string | null;
+
+  /** CNPJ informado na primeira vez que o usuário criou evento como ponto comercial;
+   * reaproveitado nas próximas (ver BusinessVerificationService). */
+  @Column({ name: 'business_cnpj', type: 'varchar', length: 14, nullable: true })
+  businessCnpj: string | null;
+
+  /** Razão social segundo a consulta pública do CNPJ. */
+  @Column({ name: 'business_name', type: 'varchar', nullable: true })
+  businessName: string | null;
+
+  @Column({ name: 'business_verification_status', type: 'enum', enum: BusinessVerificationStatus, nullable: true })
+  businessVerificationStatus: BusinessVerificationStatus | null;
+
+  /** Motivo da decisão (IA ou revisão manual), mostrado ao usuário quando fica em análise. */
+  @Column({ name: 'business_verification_note', type: 'text', nullable: true })
+  businessVerificationNote: string | null;
+
+  /** Contrato social enviado (data URL base64), guardado pra revisão manual. `select: false`:
+   * documento sensível e pesado, nunca vai junto no GET /users/me. */
+  @Column({ name: 'business_contract_file', type: 'text', nullable: true, select: false })
+  businessContractFile: string | null;
+
+  @Column({ name: 'business_verified_at', type: 'timestamptz', nullable: true })
+  businessVerifiedAt: Date | null;
 
   @OneToOne(() => UserPreferences, (preferences) => preferences.user)
   preferences: UserPreferences;

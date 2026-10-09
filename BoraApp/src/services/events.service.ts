@@ -13,6 +13,7 @@ export interface CreateEventPayload {
   endsAt?: string;
   targetAge?: number;
   coverImageUrl?: string;
+  asBusiness?: boolean;
 }
 
 export const eventsService = {

@@ -11,12 +11,15 @@ function formatDistance(km?: number | null) {
 
 export function EventCard({ event, score, distanceKm }: { event: BoraEvent; score?: number; distanceKm?: number | null }) {
   const navigate = useNavigate();
-  const time = new Date(event.startsAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const startsAt = new Date(event.startsAt);
+  const time = startsAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const isToday = startsAt.toDateString() === new Date().toDateString();
+  const day = isToday ? 'Hoje' : startsAt.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
 
   return (
     <button
       type="button"
-      onClick={() => navigate(`/venue/${event.venueId}`, { state: { eventId: event.id } })}
+      onClick={() => navigate(`/event/${event.id}`)}
       className="block w-full overflow-hidden rounded-2xl border border-border bg-surface text-left"
     >
       <div className="relative h-36 w-full bg-bora-gradient-soft">
@@ -38,7 +41,7 @@ export function EventCard({ event, score, distanceKm }: { event: BoraEvent; scor
               {genre}
             </span>
           ))}
-          <span className="rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-medium text-muted">Hoje · {time}</span>
+          <span className="rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-medium text-muted">{day} · {time}</span>
         </div>
       </div>
     </button>

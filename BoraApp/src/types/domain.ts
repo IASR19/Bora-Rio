@@ -14,6 +14,11 @@ export interface User {
   subscriptionStatus: 'free' | 'active' | 'canceled';
   cpf: string | null;
   selfieUrl: string | null;
+  /** Ponto comercial: validado uma vez (CNPJ + contrato social) e reaproveitado depois. */
+  businessCnpj: string | null;
+  businessName: string | null;
+  businessVerificationStatus: 'pending' | 'approved' | 'rejected' | null;
+  businessVerificationNote: string | null;
 }
 
 export interface UserPreferences {

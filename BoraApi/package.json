@@ -25,6 +25,7 @@
     "seed:dev": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts",
     "seed": "node dist/seeds/seed.js",
     "seed:check": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts --dry-run",
+    "business:review": "ts-node -r tsconfig-paths/register ./src/scripts/review-business.ts",
     "test:seed": "npm run build && node --test \"scripts/*.test.cjs\""
   },
   "dependencies": {

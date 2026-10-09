@@ -27,6 +27,7 @@ import { HowItWorks } from './pages/onboarding/HowItWorks';
 import { Permissions } from './pages/onboarding/Permissions';
 import { Splash } from './pages/onboarding/Splash';
 import { Welcome } from './pages/onboarding/Welcome';
+import { EventDetail } from './pages/event/EventDetail';
 import { EditProfile } from './pages/profile/EditProfile';
 import { Payments } from './pages/profile/Payments';
 import { Profile } from './pages/profile/Profile';
@@ -105,6 +106,7 @@ export default function App() {
 
       <Route path="/bora" element={<BoraQuickActions />} />
       <Route path="/venue/:id" element={<VenueDetail />} />
+      <Route path="/event/:id" element={<EventDetail />} />
       <Route path="/checkin/:eventId" element={<CheckIn />} />
       <Route path="/checkin/:eventId/confirmed" element={<CheckInConfirmed />} />
       <Route path="/deu-bora/:eventId" element={<DeuBora />} />

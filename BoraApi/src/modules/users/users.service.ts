@@ -20,6 +20,23 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  /** Inclui o passwordHash (coluna `select: false`): só pra conferir senha. */
+  findByEmailWithPassword(email: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
+  findByIdWithPassword(id: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
+
   findByGoogleId(googleId: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { googleId } });
   }
@@ -48,7 +65,7 @@ export class UsersService {
     return user;
   }
 
-  create(data: RegisterDto & { passwordHash: string }): Promise<User> {
+  async create(data: RegisterDto & { passwordHash: string }): Promise<User> {
     const user = this.usersRepository.create({
       name: data.name,
       email: data.email,
@@ -58,7 +75,9 @@ export class UsersService {
       passwordHash: data.passwordHash,
       avatarUrl: data.avatarUrl ?? null,
     });
-    return this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(user);
+    // Recarrega sem o passwordHash, que o save devolveria na resposta do cadastro.
+    return this.findById(saved.id);
   }
 
   async markPhoneVerified(phone: string): Promise<void> {

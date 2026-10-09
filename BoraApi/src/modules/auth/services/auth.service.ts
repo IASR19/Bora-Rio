@@ -46,13 +46,14 @@ export class AuthService {
   }
 
   async validateCredentials(dto: LoginDto): Promise<User> {
-    const user = await this.usersService.findByEmail(dto.email);
+    const user = await this.usersService.findByEmailWithPassword(dto.email);
     if (!user?.passwordHash) throw new InvalidCredentialsException();
 
     const isValid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isValid) throw new InvalidCredentialsException();
 
-    return user;
+    // Devolve o usuário sem o passwordHash (vai na resposta do login).
+    return this.usersService.findById(user.id);
   }
 
   issueTokens(user: User): TokenPair {
@@ -122,8 +123,8 @@ export class AuthService {
   }
 
   async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
-    const user = await this.usersService.findById(userId);
-    if (!user.passwordHash) throw new NoPasswordSetException();
+    const user = await this.usersService.findByIdWithPassword(userId);
+    if (!user?.passwordHash) throw new NoPasswordSetException();
 
     const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!isValid) throw new InvalidCredentialsException();

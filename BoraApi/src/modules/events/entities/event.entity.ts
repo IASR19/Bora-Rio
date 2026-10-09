@@ -48,4 +48,8 @@ export class Event extends BaseEntity {
    * Senão ficam pending_review até 3 check-ins reais promoverem sozinho. */
   @Column({ type: 'enum', enum: EventStatus, default: EventStatus.PUBLISHED })
   status: EventStatus;
+
+  /** Criado como ponto comercial: publica quando o CNPJ do criador for aprovado. */
+  @Column({ name: 'created_as_business', type: 'boolean', default: false })
+  createdAsBusiness: boolean;
 }

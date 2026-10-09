@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsIn,
   IsInt,
@@ -50,4 +51,9 @@ export class CreateEventDto {
   @IsOptional()
   @IsString()
   coverImageUrl?: string;
+
+  /** Criado como ponto comercial: exige o CNPJ do criador validado (ou em análise). */
+  @IsOptional()
+  @IsBoolean()
+  asBusiness?: boolean;
 }

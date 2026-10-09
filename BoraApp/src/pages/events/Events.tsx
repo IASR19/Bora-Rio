@@ -16,7 +16,7 @@ function EventRow({ event }: { event: BoraEvent }) {
   const navigate = useNavigate();
   return (
     <button
-      onClick={() => navigate(`/venue/${event.venueId}`)}
+      onClick={() => navigate(`/event/${event.id}`)}
       className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface p-3 text-left"
     >
       <div className="h-14 w-14 shrink-0 rounded-xl bg-bora-gradient-soft" />

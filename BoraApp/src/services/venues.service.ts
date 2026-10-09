@@ -36,6 +36,4 @@ export const venuesService = {
   search: (query: VenueQuery = {}) => apiFetch<Venue[]>(`/venues${toQueryString(query)}`),
   getById: (id: string) => apiFetch<Venue>(`/venues/${id}`),
   create: (payload: CreateVenuePayload) => apiFetch<Venue>('/venues', { method: 'POST', body: payload }),
-  verifyWithCnpj: (venueId: string, cnpj: string) =>
-    apiFetch<Venue>(`/venues/${venueId}/cnpj`, { method: 'POST', body: { cnpj } }),
 };

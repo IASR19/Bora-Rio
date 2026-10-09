@@ -23,7 +23,7 @@ function queryBuilder(rows) {
 }
 
 function venuesService() {
-  return new VenuesService({ createQueryBuilder: () => queryBuilder([NEAR, FAR]) }, {}, new BoraScoreService());
+  return new VenuesService({ createQueryBuilder: () => queryBuilder([NEAR, FAR]) }, new BoraScoreService());
 }
 
 function eventsService() {
