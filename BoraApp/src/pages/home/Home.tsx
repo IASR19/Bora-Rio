@@ -21,7 +21,7 @@ import {
   Waves,
   Wine,
 } from 'lucide-react';
-import { useState, type WheelEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventCard } from '@/components/EventCard';
@@ -105,12 +105,20 @@ export function Home() {
   };
 
   // Roda do mouse (desktop) também rola o carrossel de atalhos na horizontal, já que ele
-  // não cabe inteiro na largura do telefone. preventDefault evita rolar a página junto.
-  const handleShortcutsWheel = (e: WheelEvent<HTMLDivElement>) => {
-    if (e.deltaY === 0) return;
-    e.preventDefault();
-    e.currentTarget.scrollLeft += e.deltaY;
-  };
+  // não cabe inteiro na largura do telefone. preventDefault evita rolar a página junto, e só
+  // funciona num listener nativo { passive: false }: o onWheel do React é passivo.
+  const shortcutsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const element = shortcutsRef.current;
+    if (!element) return;
+    const handleWheel = (e: WheelEvent) => {
+      if (e.deltaY === 0) return;
+      e.preventDefault();
+      element.scrollLeft += e.deltaY;
+    };
+    element.addEventListener('wheel', handleWheel, { passive: false });
+    return () => element.removeEventListener('wheel', handleWheel);
+  }, []);
 
   return (
     <div className="bg-background px-5 pt-6">
@@ -158,7 +166,7 @@ export function Home() {
       </div>
 
       <div className="relative mt-5">
-        <div className="flex gap-2 overflow-x-auto scroll-smooth pb-1" onWheel={handleShortcutsWheel}>
+        <div ref={shortcutsRef} className="flex gap-2 overflow-x-auto scroll-smooth pb-1">
           {SHORTCUTS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
