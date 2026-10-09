@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { ListFilter, Map as MapIcon, MapPin, Rows3, X } from 'lucide-react';
+import { ListFilter, Map as MapIcon, Rows3, X } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { VenueListItem } from '@/components/VenueListItem';
 import { useAuth } from '@/context/AuthContext';
 import { venuesService } from '@/services/venues.service';
 import { isVenueCategory, venueCategoryLabel } from '@/shared/constants/venue-categories';
-import { CoverImage } from '@/shared/ui/CoverImage';
-import { ScoreBadge } from '@/shared/ui/ScoreBadge';
 import { cn } from '@/utils/cn';
 
 import { FiltersSheet, type Filters } from './FiltersSheet';
@@ -134,24 +133,7 @@ export function Explore() {
             </button>
           )}
           {venues?.map((venue) => (
-            <button
-              key={venue.id}
-              onClick={() => navigate(`/venue/${venue.id}`)}
-              className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface p-3 text-left"
-            >
-              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-bora-gradient-soft">
-                <CoverImage src={venue.coverImageUrl} alt="" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-bold">{venue.name}</p>
-                <p className="flex items-center gap-1 text-xs text-muted">
-                  <MapPin className="h-3 w-3" />
-                  {venue.distanceKm != null ? `${venue.distanceKm.toFixed(1)} km` : venue.city}
-                </p>
-                <p className="mt-1 text-xs text-muted">{venueCategoryLabel(venue.category)} · {venue.priceRange}</p>
-              </div>
-              {venue.boraScore != null && <ScoreBadge score={venue.boraScore} className="h-11 w-11" />}
-            </button>
+            <VenueListItem key={venue.id} venue={venue} onClick={() => navigate(`/venue/${venue.id}`)} />
           ))}
         </div>
       )}

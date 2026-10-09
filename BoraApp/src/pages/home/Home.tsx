@@ -24,8 +24,10 @@ import { useState, type WheelEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventCard } from '@/components/EventCard';
+import { VenueListItem } from '@/components/VenueListItem';
 import { useAuth } from '@/context/AuthContext';
 import { eventsService } from '@/services/events.service';
+import { venuesService } from '@/services/venues.service';
 import { VENUE_CATEGORY_OPTIONS, type VenueCategory } from '@/shared/constants/venue-categories';
 import { Input } from '@/shared/ui/Input';
 import { cn } from '@/utils/cn';
@@ -71,6 +73,8 @@ const SHORTCUTS: Shortcut[] = [
   })),
 ];
 
+const HOME_PLACES_LIMIT = 8;
+
 export function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -78,17 +82,22 @@ export function Home() {
   const [search, setSearch] = useState('');
   const shortcut = SHORTCUTS.find((s) => s.key === activeShortcut) ?? SHORTCUTS[0];
 
+  const lat = user?.latitude ?? undefined;
+  const lng = user?.longitude ?? undefined;
+
   const { data: events, isLoading } = useQuery({
-    queryKey: ['events', 'recommended', activeShortcut, user?.latitude, user?.longitude],
+    queryKey: ['events', 'recommended', activeShortcut, lat, lng],
     queryFn: () =>
-      eventsService.search({
-        now: shortcut.now,
-        category: shortcut.category,
-        music: shortcut.music,
-        lat: user?.latitude ?? undefined,
-        lng: user?.longitude ?? undefined,
-      }),
+      eventsService.search({ now: shortcut.now, category: shortcut.category, music: shortcut.music, lat, lng }),
   });
+
+  // O catálogo tem locais reais mesmo onde ninguém publicou evento ainda (ex.: cidades menores):
+  // a Home mostra os lugares do mesmo atalho, no mesmo raio, pra nunca ficar vazia.
+  const { data: venues, isLoading: venuesLoading } = useQuery({
+    queryKey: ['venues', 'home', activeShortcut, lat, lng],
+    queryFn: () => venuesService.search({ category: shortcut.category, music: shortcut.music, lat, lng }),
+  });
+  const placesLink = shortcut.category ? `/explore?category=${shortcut.category}` : '/explore';
 
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter' || !search.trim()) return;
@@ -169,13 +178,33 @@ export function Home() {
       <div className="mt-4 space-y-4 pb-6">
         {isLoading && <p className="text-sm text-muted">Carregando...</p>}
         {events?.length === 0 && (
-          <div className="rounded-2xl border border-border bg-surface p-6 text-center">
-            <p className="font-semibold">Ainda não encontramos algo perto de você.</p>
-            <p className="mt-1 text-sm text-muted">Experimente aumentar sua distância ou explorar outra cidade.</p>
+          <div className="rounded-2xl border border-border bg-surface p-4 text-center">
+            <p className="text-sm font-semibold">Nenhum evento marcado por aqui ainda.</p>
+            <p className="mt-1 text-xs text-muted">Veja abaixo lugares para ir ou crie um evento no botão +.</p>
           </div>
         )}
         {events?.map((event) => (
           <EventCard key={event.id} event={event} score={event.boraScore} distanceKm={event.distanceKm} />
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold">Lugares perto de você</h2>
+        <button className="text-sm font-semibold text-destaque" onClick={() => navigate(placesLink)}>
+          Ver todos
+        </button>
+      </div>
+
+      <div className="mt-4 space-y-3 pb-6">
+        {venuesLoading && <p className="text-sm text-muted">Carregando...</p>}
+        {venues?.length === 0 && (
+          <div className="rounded-2xl border border-border bg-surface p-6 text-center">
+            <p className="font-semibold">Nenhum lugar desse tipo no seu raio.</p>
+            <p className="mt-1 text-sm text-muted">Aumente a distância em Minhas preferências ou veja outra categoria.</p>
+          </div>
+        )}
+        {venues?.slice(0, HOME_PLACES_LIMIT).map((venue) => (
+          <VenueListItem key={venue.id} venue={venue} onClick={() => navigate(`/venue/${venue.id}`)} />
         ))}
       </div>
     </div>
