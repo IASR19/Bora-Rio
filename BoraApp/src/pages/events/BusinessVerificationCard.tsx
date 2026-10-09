@@ -1,6 +1,5 @@
 import { BadgeCheck, Clock, FileUp } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
 import { usersService } from '@/services/users.service';
@@ -69,7 +68,6 @@ function readAsDataUrl(file: File): Promise<string> {
  */
 export function BusinessVerificationCard() {
   const { user, refreshUser } = useAuth();
-  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cnpj, setCnpj] = useState(user?.businessCnpj ? formatCnpj(user.businessCnpj) : '');
   const [file, setFile] = useState<File | null>(null);
@@ -84,8 +82,6 @@ export function BusinessVerificationCard() {
   }, [sending]);
 
   const status = user?.businessVerificationStatus;
-  // Aprovação automática confere o CPF da identidade verificada no contrato (ver BusinessVerificationService).
-  const identityVerified = Boolean(user?.phoneVerified && user.cpf && user.selfieUrl);
 
   if (status === 'approved') {
     return (
@@ -153,17 +149,8 @@ export function BusinessVerificationCard() {
       <p className="text-xs text-muted">
         {status === 'rejected'
           ? `Validação anterior reprovada: ${user?.businessVerificationNote ?? 'envie um novo documento.'}`
-          : 'Só na primeira vez: informe o CNPJ e anexe o contrato social. Conferimos se o documento bate com o CNPJ e se seu CPF aparece como sócio, e depois reaproveitamos nos próximos eventos.'}
+          : 'Só na primeira vez: informe o CNPJ e anexe o contrato social. Conferimos se o documento bate com o CNPJ e depois reaproveitamos nos próximos eventos.'}
       </p>
-      {!identityVerified && (
-        <p className="text-xs text-muted">
-          Sem identidade verificada a validação vai pra revisão manual.{' '}
-          <button type="button" onClick={() => navigate('/profile/security')} className="font-semibold text-destaque">
-            Verificar identidade
-          </button>{' '}
-          antes deixa a aprovação automática.
-        </p>
-      )}
       <div>
         <label className="mb-2 block text-sm font-semibold text-muted">CNPJ</label>
         <Input

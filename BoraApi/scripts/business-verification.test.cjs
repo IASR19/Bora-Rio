@@ -11,31 +11,32 @@ const MATCH = {
   cnpjFound: '11222333000181',
   cnpjMatches: true,
   companyNameMatches: true,
-  userCpfIsPartner: true,
+  partnersMatch: true,
   confidence: 'high',
   reason: 'Contrato social da empresa, assinado pelo sócio.',
 };
 
 test('approves only when everything matches with high confidence', () => {
-  assert.equal(decideBusinessStatus(COMPANY, MATCH, true).status, 'approved');
+  assert.equal(decideBusinessStatus(COMPANY, MATCH).status, 'approved');
   // Contrato de constituição anterior ao CNPJ: sem CNPJ no documento, vale a razão social.
-  assert.equal(decideBusinessStatus(COMPANY, { ...MATCH, cnpjFound: '', cnpjMatches: false }, true).status, 'approved');
+  assert.equal(decideBusinessStatus(COMPANY, { ...MATCH, cnpjFound: '', cnpjMatches: false }).status, 'approved');
 });
 
-test('without verified identity (CPF) it never auto-approves', () => {
-  // O nome do perfil é editável pelo próprio usuário: só o CPF verificado prova quem envia.
-  assert.equal(decideBusinessStatus(COMPANY, MATCH, false).status, 'pending');
+test('without an official partner list (MEI/individual), partners are not required to match', () => {
+  assert.equal(decideBusinessStatus({ ...COMPANY, partners: [] }, { ...MATCH, partnersMatch: false }).status, 'approved');
 });
 
 test('any doubt goes to manual review, never auto-rejected', () => {
   const pending = [
-    decideBusinessStatus({ ...COMPANY, active: false }, MATCH, true),
-    decideBusinessStatus(COMPANY, null, true),
-    decideBusinessStatus(COMPANY, { ...MATCH, confidence: 'medium' }, true),
-    decideBusinessStatus(COMPANY, { ...MATCH, companyNameMatches: false }, true),
-    decideBusinessStatus(COMPANY, { ...MATCH, cnpjMatches: false }, true),
-    decideBusinessStatus(COMPANY, { ...MATCH, userCpfIsPartner: false }, true),
-    decideBusinessStatus(COMPANY, { ...MATCH, isCompanyDocument: false }, true),
+    decideBusinessStatus({ ...COMPANY, active: false }, MATCH),
+    decideBusinessStatus(COMPANY, null),
+    decideBusinessStatus(COMPANY, { ...MATCH, confidence: 'medium' }),
+    decideBusinessStatus(COMPANY, { ...MATCH, companyNameMatches: false }),
+    decideBusinessStatus(COMPANY, { ...MATCH, cnpjMatches: false }),
+    decideBusinessStatus(COMPANY, { ...MATCH, isCompanyDocument: false }),
+    decideBusinessStatus(COMPANY, { ...MATCH, partnersMatch: false }),
+    // CNPJ já aprovado em outra conta: tentativa de se passar pela empresa → nunca aprova sozinho.
+    decideBusinessStatus(COMPANY, MATCH, true),
   ];
   for (const decision of pending) assert.equal(decision.status, 'pending');
 });
