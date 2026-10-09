@@ -883,7 +883,7 @@
     "latitude": -23.0142,
     "longitude": -43.3092,
     "city": "Rio de Janeiro",
-    "coverImageUrl": null,
+    "coverImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Por_do_sol_encantado_Pep%C3%AA_-_Praia_da_Barra_da_Tijuca.jpg/1280px-Por_do_sol_encantado_Pep%C3%AA_-_Praia_da_Barra_da_Tijuca.jpg",
     "catalogMetadata": {
       "slug": "praia-pepe",
       "state": "RJ",
@@ -896,7 +896,12 @@
       "coordinatesAccuracy": "approximate",
       "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
       "priceRangeAccuracy": "estimate",
-      "photo": null,
+      "photo": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Por_do_sol_encantado_Pep%C3%AA_-_Praia_da_Barra_da_Tijuca.jpg/1280px-Por_do_sol_encantado_Pep%C3%AA_-_Praia_da_Barra_da_Tijuca.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Por_do_sol_encantado_Pep%C3%AA_-_Praia_da_Barra_da_Tijuca.jpg",
+        "credit": "Fwellisch / Wikimedia Commons",
+        "license": "CC BY-SA 3.0"
+      },
       "notes": [
         "Trecho da praia da Barra; foto própria do Pepê ainda pendente."
       ]
@@ -3545,7 +3550,7 @@
     "latitude": -22.2412,
     "longitude": -45.706,
     "city": "Santa Rita do Sapucaí",
-    "coverImageUrl": null,
+    "coverImageUrl": "https://static.wixstatic.com/media/39e28b_0c6a77ebe07e4ae7b7518fc7fe6debc3~mv2.jpg/v1/fit/w_1200,h_800,q_85/39e28b_0c6a77ebe07e4ae7b7518fc7fe6debc3~mv2.jpg",
     "catalogMetadata": {
       "slug": "srs-the-town-bar-e-cafe",
       "state": "MG",
@@ -3560,11 +3565,16 @@
       "coordinatesAccuracy": "approximate",
       "coordinatesNote": "Ponto de referência aproximado; confirme o acesso pelo endereço. Não representa levantamento da entrada.",
       "priceRangeAccuracy": "estimate",
-      "photo": null,
+      "photo": {
+        "url": "https://static.wixstatic.com/media/39e28b_0c6a77ebe07e4ae7b7518fc7fe6debc3~mv2.jpg/v1/fit/w_1200,h_800,q_85/39e28b_0c6a77ebe07e4ae7b7518fc7fe6debc3~mv2.jpg",
+        "sourceUrl": "https://www.visitesrs.com.br/gastronomia",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
       "notes": [
         "Listado no portal oficial de turismo Visite SRS (seção Gastronomia, montada em 2025).",
-        "A foto do portal parece imagem genérica de prato (possível banco de imagens), então não foi usada.",
-        "Horários só foram encontrados numa matéria de 2020 e foram omitidos."
+        "Horários só foram encontrados numa matéria de 2020 e foram omitidos.",
+        "Foto: imagem que o portal Visite SRS publica na ficha do The Town (prato, não fachada); não foi possível confirmar se é foto própria do estabelecimento."
       ]
     }
   },

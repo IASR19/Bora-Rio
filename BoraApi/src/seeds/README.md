@@ -57,13 +57,13 @@ dez categorias novas. Metadados são retornados junto ao local pela API.
 - `priceRangeAccuracy`: todas as faixas são estimativas editoriais; não são preços ou ingressos cotados.
 - `catalogMetadata.photo`: URL, página de origem, crédito e estado da licença.
 
-São **101 URLs de fotos reais**, com resposta HTTP e decodificação de imagem verificadas e revisão visual.
+São **103 URLs de fotos reais**, com resposta HTTP e decodificação de imagem verificadas e revisão visual.
 São referências externas: não são fotos geradas nem cópias hospedadas no BORA. As licenças de
-republicação não foram confirmadas (`license: not_confirmed`), exceto 6 fotos do Wikimedia Commons
+republicação não foram confirmadas (`license: not_confirmed`), exceto 7 fotos do Wikimedia Commons
 com licença CC e autor registrados (a aba Sobre exibe "Foto: autor · licença"); os créditos permanecem na origem e a
 aba Sobre inclui o link da fonte. Links externos podem mudar. A capa da Praça do Santuário focaliza o
-Santuário situado na praça e compartilha essa referência com seu registro. **Praia do Pepê e Quiosques do Pepê** ficam sem capa própria;
-não receberam a foto de outro trecho de praia ou estabelecimento.
+Santuário situado na praça e compartilha essa referência com seu registro. **Quiosques do Pepê** fica sem capa própria; não recebeu a foto da praia ou de outro
+estabelecimento. A Praia do Pepê usa uma foto do Commons tirada no próprio trecho.
 
 Fontes principais: [Riotur](https://riotur.rio/), [Orla Rio](https://www.orlario.com.br/), sites dos
 estabelecimentos, [Veja Rio](https://vejario.abril.com.br/),
@@ -86,7 +86,7 @@ As URLs específicas ficam em cada registro do JSON.
 
 Santa Rita não tem praia/beach club, e a pesquisa não encontrou casas de samba/pagode, lounges nem
 baladas fixas em operação; `festa` é representada pelo Centro Municipal de Eventos (shows e festas da cidade).
-The Town Bar e Café fica sem capa (não houve foto confiável).
+A capa do The Town Bar e Café é a imagem que o Visite SRS publica na ficha dele (prato, não fachada).
 
 Santa Rita, cultura: Santuário Santa Rita de Cássia, Praça do Santuário, Museu Histórico Delfim Moreira,
 Galeria Aberta de Arte Urbana, Mercado Municipal Benedito Pereira dos Reis e campus do Inatel.
