@@ -3,6 +3,7 @@ import {
   Beer,
   Bell,
   Building2,
+  ChevronDown,
   Landmark,
   type LucideIcon,
   MapPin,
@@ -24,6 +25,7 @@ import { useState, type WheelEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventCard } from '@/components/EventCard';
+import { LocationSheet } from '@/components/LocationSheet';
 import { VenueListItem } from '@/components/VenueListItem';
 import { useAuth } from '@/context/AuthContext';
 import { eventsService } from '@/services/events.service';
@@ -71,13 +73,13 @@ const SHORTCUTS: Shortcut[] = [
 ];
 
 const HOME_PLACES_LIMIT = 8;
-const PLACE_CATEGORIES = new Set<VenueCategory>(['praia', 'ponto_turistico', 'cultura', 'parque', 'aventura']);
 
 export function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activeShortcut, setActiveShortcut] = useState('agora');
   const [search, setSearch] = useState('');
+  const [locationOpen, setLocationOpen] = useState(false);
   const shortcut = SHORTCUTS.find((s) => s.key === activeShortcut) ?? SHORTCUTS[0];
 
   const lat = user?.latitude ?? undefined;
@@ -96,8 +98,6 @@ export function Home() {
     queryFn: () => venuesService.search({ category: shortcut.category, music: shortcut.music, lat, lng }),
   });
   const placesLink = shortcut.category ? `/explore?category=${shortcut.category}` : '/explore';
-  // Praia, parque, museu... quase nunca têm evento: sem evento, a seção some e os lugares sobem.
-  const showEvents = !(shortcut.category && PLACE_CATEGORIES.has(shortcut.category) && events?.length === 0);
 
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter' || !search.trim()) return;
@@ -117,9 +117,22 @@ export function Home() {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-lg font-extrabold gradient-text">BORA</p>
-          <p className="flex items-center gap-1 text-xs text-muted">
-            <MapPin className="h-3.5 w-3.5" /> {user?.city ?? 'Barra da Tijuca, RJ'}
-          </p>
+          {/* Sem login não há perfil pra salvar a cidade: aí o rótulo é só informativo. */}
+          {user ? (
+            <button
+              type="button"
+              onClick={() => setLocationOpen(true)}
+              className="flex items-center gap-1 text-xs text-muted"
+              aria-label={user.city ? `Localização: ${user.city}. Toque para trocar` : 'Definir localização'}
+            >
+              <MapPin className="h-3.5 w-3.5" /> {user.city ?? 'Definir localização'}
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+          ) : (
+            <p className="flex items-center gap-1 text-xs text-muted">
+              <MapPin className="h-3.5 w-3.5" /> Barra da Tijuca, RJ
+            </p>
+          )}
         </div>
         <button
           type="button"
@@ -166,31 +179,27 @@ export function Home() {
         <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent" />
       </div>
 
-      {showEvents && (
-        <>
-          <div className="mt-8 flex items-center justify-between">
-            <h2 className="text-lg font-bold">Eventos para você</h2>
-            <button className="text-sm font-semibold text-destaque" onClick={() => navigate('/explore')}>
-              Ver todos
-            </button>
-          </div>
+      <div className="mt-8 flex items-center justify-between">
+        <h2 className="text-lg font-bold">Eventos para você</h2>
+        <button className="text-sm font-semibold text-destaque" onClick={() => navigate('/explore')}>
+          Ver todos
+        </button>
+      </div>
 
-          <div className="mt-4 space-y-4 pb-6">
-            {isLoading && <p className="text-sm text-muted">Carregando...</p>}
-            {events?.length === 0 && (
-              <div className="rounded-2xl border border-border bg-surface p-4 text-center">
-                <p className="text-sm font-semibold">Nenhum evento marcado por aqui ainda.</p>
-                <p className="mt-1 text-xs text-muted">Veja abaixo lugares para ir ou crie um evento no botão +.</p>
-              </div>
-            )}
-            {events?.map((event) => (
-              <EventCard key={event.id} event={event} score={event.boraScore} distanceKm={event.distanceKm} />
-            ))}
+      <div className="mt-4 space-y-4 pb-6">
+        {isLoading && <p className="text-sm text-muted">Carregando...</p>}
+        {events?.length === 0 && (
+          <div className="rounded-2xl border border-border bg-surface p-4 text-center">
+            <p className="text-sm font-semibold">Nenhum evento marcado por aqui ainda.</p>
+            <p className="mt-1 text-xs text-muted">Veja abaixo lugares para ir ou crie um evento no botão +.</p>
           </div>
-        </>
-      )}
+        )}
+        {events?.map((event) => (
+          <EventCard key={event.id} event={event} score={event.boraScore} distanceKm={event.distanceKm} />
+        ))}
+      </div>
 
-      <div className={cn('flex items-center justify-between', !showEvents && 'mt-8')}>
+      <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Lugares perto de você</h2>
         <button className="text-sm font-semibold text-destaque" onClick={() => navigate(placesLink)}>
           Ver todos
@@ -211,6 +220,7 @@ export function Home() {
           <VenueListItem key={venue.id} venue={venue} onClick={() => navigate(`/venue/${venue.id}`)} />
         ))}
       </div>
+      {locationOpen && <LocationSheet onClose={() => setLocationOpen(false)} />}
     </div>
   );
 }
