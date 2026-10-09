@@ -6,6 +6,7 @@ import { featureFlags } from '@/config/featureFlags';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
+import { Select } from '@/shared/ui/Select';
 
 export function Register() {
   const navigate = useNavigate();
@@ -48,16 +49,12 @@ export function Register() {
       <form className="mt-8 space-y-3" onSubmit={handleSubmit}>
         <Input placeholder="Nome" value={form.name} onChange={update('name')} required />
         <Input type="date" placeholder="Data de nascimento" value={form.birthDate} onChange={update('birthDate')} required />
-        <select
-          className="h-14 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground outline-none"
-          value={form.gender}
-          onChange={update('gender')}
-        >
+        <Select value={form.gender} onChange={update('gender')}>
           <option value="undisclosed">Prefiro não dizer</option>
           <option value="female">Feminino</option>
           <option value="male">Masculino</option>
           <option value="other">Outro</option>
-        </select>
+        </Select>
         <Input placeholder="+55 21 90000-0000" value={form.phone} onChange={update('phone')} required />
         <Input type="email" placeholder="E-mail" value={form.email} onChange={update('email')} required />
         <Input type="password" placeholder="Senha" value={form.password} onChange={update('password')} required />

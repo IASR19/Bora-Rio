@@ -39,32 +39,29 @@ interface Shortcut {
   now: boolean;
   category?: VenueCategory;
   music?: string;
-  /** Categoria de lugar (praia, museu, parque...): quase nunca tem evento, então abre o
-   * Explorar com os locais da categoria em vez de filtrar a lista de eventos. */
-  opensPlaces: boolean;
 }
 
 /** Record tipado: uma categoria nova em VENUE_CATEGORY_OPTIONS sem atalho aqui quebra o build. */
-const CATEGORY_SHORTCUTS: Record<VenueCategory, Pick<Shortcut, 'label' | 'icon' | 'opensPlaces'>> = {
-  festa: { label: 'Festas', icon: Music, opensPlaces: false },
-  bar: { label: 'Bares', icon: Beer, opensPlaces: false },
-  samba: { label: 'Roda de samba', icon: MicVocal, opensPlaces: false },
-  beach_club: { label: 'Beach clubs', icon: Umbrella, opensPlaces: false },
-  rooftop: { label: 'Rooftops', icon: Building2, opensPlaces: false },
-  praia: { label: 'Praias', icon: Waves, opensPlaces: true },
-  ponto_turistico: { label: 'Pontos turísticos', icon: Landmark, opensPlaces: true },
-  cultura: { label: 'Cultura', icon: Palette, opensPlaces: true },
-  parque: { label: 'Parques', icon: Trees, opensPlaces: true },
-  aventura: { label: 'Aventura', icon: Mountain, opensPlaces: true },
-  restaurante: { label: 'Jantar', icon: UtensilsCrossed, opensPlaces: false },
-  lounge: { label: 'Lounges', icon: Wine, opensPlaces: false },
+const CATEGORY_SHORTCUTS: Record<VenueCategory, Pick<Shortcut, 'label' | 'icon'>> = {
+  festa: { label: 'Festas', icon: Music },
+  bar: { label: 'Bares', icon: Beer },
+  samba: { label: 'Roda de samba', icon: MicVocal },
+  beach_club: { label: 'Beach clubs', icon: Umbrella },
+  rooftop: { label: 'Rooftops', icon: Building2 },
+  praia: { label: 'Praias', icon: Waves },
+  ponto_turistico: { label: 'Pontos turísticos', icon: Landmark },
+  cultura: { label: 'Cultura', icon: Palette },
+  parque: { label: 'Parques', icon: Trees },
+  aventura: { label: 'Aventura', icon: Mountain },
+  restaurante: { label: 'Jantar', icon: UtensilsCrossed },
+  lounge: { label: 'Lounges', icon: Wine },
 };
 
 /** Cada atalho mapeia pra um filtro real de busca (escopo.md #8 e #12 "outras categorias"). */
 const SHORTCUTS: Shortcut[] = [
-  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true, opensPlaces: false },
-  { key: 'pagode', label: 'Pagode', icon: Volume2, now: false, music: 'pagode', opensPlaces: false },
-  { key: 'eletronico', label: 'Eletrônico', icon: Sunrise, now: false, music: 'eletronico', opensPlaces: false },
+  { key: 'agora', label: 'BORA Agora', icon: PartyPopper, now: true },
+  { key: 'pagode', label: 'Pagode', icon: Volume2, now: false, music: 'pagode' },
+  { key: 'eletronico', label: 'Eletrônico', icon: Sunrise, now: false, music: 'eletronico' },
   ...VENUE_CATEGORY_OPTIONS.map(({ value }) => ({
     key: value,
     now: false,
@@ -74,6 +71,7 @@ const SHORTCUTS: Shortcut[] = [
 ];
 
 const HOME_PLACES_LIMIT = 8;
+const PLACE_CATEGORIES = new Set<VenueCategory>(['praia', 'ponto_turistico', 'cultura', 'parque', 'aventura']);
 
 export function Home() {
   const { user } = useAuth();
@@ -98,6 +96,8 @@ export function Home() {
     queryFn: () => venuesService.search({ category: shortcut.category, music: shortcut.music, lat, lng }),
   });
   const placesLink = shortcut.category ? `/explore?category=${shortcut.category}` : '/explore';
+  // Praia, parque, museu... quase nunca têm evento: sem evento, a seção some e os lugares sobem.
+  const showEvents = !(shortcut.category && PLACE_CATEGORIES.has(shortcut.category) && events?.length === 0);
 
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter' || !search.trim()) return;
@@ -146,12 +146,10 @@ export function Home() {
 
       <div className="relative mt-5">
         <div className="flex gap-2 overflow-x-auto scroll-smooth pb-1" onWheel={handleShortcutsWheel}>
-          {SHORTCUTS.map(({ key, label, icon: Icon, category, opensPlaces }) => (
+          {SHORTCUTS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
-              onClick={() =>
-                opensPlaces && category ? navigate(`/explore?category=${category}`) : setActiveShortcut(key)
-              }
+              onClick={() => setActiveShortcut(key)}
               className={cn(
                 'flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors',
                 activeShortcut === key
@@ -168,27 +166,31 @@ export function Home() {
         <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent" />
       </div>
 
-      <div className="mt-8 flex items-center justify-between">
-        <h2 className="text-lg font-bold">Eventos para você</h2>
-        <button className="text-sm font-semibold text-destaque" onClick={() => navigate('/explore')}>
-          Ver todos
-        </button>
-      </div>
-
-      <div className="mt-4 space-y-4 pb-6">
-        {isLoading && <p className="text-sm text-muted">Carregando...</p>}
-        {events?.length === 0 && (
-          <div className="rounded-2xl border border-border bg-surface p-4 text-center">
-            <p className="text-sm font-semibold">Nenhum evento marcado por aqui ainda.</p>
-            <p className="mt-1 text-xs text-muted">Veja abaixo lugares para ir ou crie um evento no botão +.</p>
+      {showEvents && (
+        <>
+          <div className="mt-8 flex items-center justify-between">
+            <h2 className="text-lg font-bold">Eventos para você</h2>
+            <button className="text-sm font-semibold text-destaque" onClick={() => navigate('/explore')}>
+              Ver todos
+            </button>
           </div>
-        )}
-        {events?.map((event) => (
-          <EventCard key={event.id} event={event} score={event.boraScore} distanceKm={event.distanceKm} />
-        ))}
-      </div>
 
-      <div className="flex items-center justify-between">
+          <div className="mt-4 space-y-4 pb-6">
+            {isLoading && <p className="text-sm text-muted">Carregando...</p>}
+            {events?.length === 0 && (
+              <div className="rounded-2xl border border-border bg-surface p-4 text-center">
+                <p className="text-sm font-semibold">Nenhum evento marcado por aqui ainda.</p>
+                <p className="mt-1 text-xs text-muted">Veja abaixo lugares para ir ou crie um evento no botão +.</p>
+              </div>
+            )}
+            {events?.map((event) => (
+              <EventCard key={event.id} event={event} score={event.boraScore} distanceKm={event.distanceKm} />
+            ))}
+          </div>
+        </>
+      )}
+
+      <div className={cn('flex items-center justify-between', !showEvents && 'mt-8')}>
         <h2 className="text-lg font-bold">Lugares perto de você</h2>
         <button className="text-sm font-semibold text-destaque" onClick={() => navigate(placesLink)}>
           Ver todos
@@ -200,7 +202,9 @@ export function Home() {
         {venues?.length === 0 && (
           <div className="rounded-2xl border border-border bg-surface p-6 text-center">
             <p className="font-semibold">Nenhum lugar desse tipo no seu raio.</p>
-            <p className="mt-1 text-sm text-muted">Aumente a distância em Minhas preferências ou veja outra categoria.</p>
+            <p className="mt-1 text-sm text-muted">
+              Aumente a distância em Minhas preferências ou veja outra categoria.
+            </p>
           </div>
         )}
         {venues?.slice(0, HOME_PLACES_LIMIT).map((venue) => (
