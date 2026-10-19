@@ -408,6 +408,50 @@
     }
   },
   {
+    "name": "Porta Aberta",
+    "description": "Roda de pagode de domingo no Aldeia Lagoa, à beira da Lagoa Rodrigo de Freitas, com almoço, chopp e DJs. Entrada por lista de convidados.",
+    "category": "samba",
+    "musicGenres": [
+      "pagode",
+      "samba"
+    ],
+    "vibes": [
+      "animado",
+      "casual"
+    ],
+    "priceRange": "medio",
+    "address": "Aldeia Lagoa - Av. Borges de Medeiros, 1994 - Lagoa, Rio de Janeiro - RJ",
+    "latitude": -22.9745,
+    "longitude": -43.2168,
+    "city": "Rio de Janeiro",
+    "coverImageUrl": "https://imagens.tasendo.com.br/events/photos/events/6066/porta-aberta-domingo-03-05-original-d68d26e6fe2a0950ec3315406c7a315b.jpeg",
+    "catalogMetadata": {
+      "slug": "porta-aberta",
+      "state": "RJ",
+      "researchedAt": "2026-10-19",
+      "sourceUrls": [
+        "https://www.instagram.com/vemproporta/",
+        "https://festaserrejota.com.br/porta-aberta",
+        "https://tasendo.com.br/rio-de-janeiro/festas/porta-aberta-domingo-03-05"
+      ],
+      "instagramUrl": "https://www.instagram.com/vemproporta/",
+      "openingHours": "Domingo, 13h–22h.",
+      "coordinatesAccuracy": "approximate",
+      "coordinatesNote": "Ponto de referência aproximado do Aldeia Lagoa (Parque dos Patins); confirme o acesso pelo endereço. Não representa levantamento da entrada.",
+      "priceRangeAccuracy": "estimate",
+      "photo": {
+        "url": "https://imagens.tasendo.com.br/events/photos/events/6066/porta-aberta-domingo-03-05-original-d68d26e6fe2a0950ec3315406c7a315b.jpeg",
+        "sourceUrl": "https://tasendo.com.br/rio-de-janeiro/festas/porta-aberta-domingo-03-05",
+        "credit": "Consultar os créditos da página de origem.",
+        "license": "not_confirmed"
+      },
+      "notes": [
+        "Festa recorrente (\"since 2024\") do perfil @vemproporta, realizada no Aldeia Lagoa (@aldeia.lagoa); evento só para convidados, com nome na lista.",
+        "Ingressos a partir de R$ 70 segundo o Tá Sendo; valor sujeito a mudança."
+      ]
+    }
+  },
+  {
     "name": "Clássico Beach Club — Leme",
     "description": "Quiosque e beach club na praia do Leme. Unidade escolhida para identificar a rede.",
     "category": "beach_club",

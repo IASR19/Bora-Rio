@@ -1,6 +1,6 @@
 # Catálogo real do BORA
 
-O seed padrão contém **104 locais: 85 no Rio de Janeiro e 19 em Santa Rita do Sapucaí (MG)**,
+O seed padrão contém **105 locais: 86 no Rio de Janeiro e 19 em Santa Rita do Sapucaí (MG)**,
 nas doze categorias da curadoria. Pesquisa realizada em **09/10/2026**.
 
 ## Aplicar
@@ -47,7 +47,7 @@ dez categorias novas. Metadados são retornados junto ao local pela API.
 ## Dados e fontes
 
 - `venues.catalog.json`: dados utilizados offline pelo seed, sem chamadas externas durante o startup.
-- `venues.pending.json`: Vitrinni Lounge Beer (operação atual), Villa/Planetário, Bar da Lapa, Porta Aberta,
+- `venues.pending.json`: Vitrinni Lounge Beer (operação atual), Villa/Planetário, Bar da Lapa,
   Casa do Pi (funcionamento) e Rampa de Voo Livre da Serra do Paredão (município/acesso).
   Não entram no catálogo público enquanto a identidade/operação estiver pendente.
 - `catalogMetadata.sourceUrls`: páginas consultadas para cada local.
@@ -59,7 +59,7 @@ dez categorias novas. Metadados são retornados junto ao local pela API.
 - `priceRangeAccuracy`: todas as faixas são estimativas editoriais; não são preços ou ingressos cotados.
 - `catalogMetadata.photo`: URL, página de origem, crédito e estado da licença.
 
-São **103 URLs de fotos reais**, com resposta HTTP e decodificação de imagem verificadas e revisão visual.
+São **104 URLs de fotos reais**, com resposta HTTP e decodificação de imagem verificadas e revisão visual.
 São referências externas: não são fotos geradas nem cópias hospedadas no BORA. As licenças de
 republicação não foram confirmadas (`license: not_confirmed`), exceto 7 fotos do Wikimedia Commons
 com licença CC e autor registrados (a aba Sobre exibe "Foto: autor · licença"); os créditos permanecem na origem e a
