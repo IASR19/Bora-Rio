@@ -1,4 +1,7 @@
 export interface User {
+  role: 'user' | 'admin';
+  language: 'pt' | 'es' | 'en';
+  isActive: boolean;
   id: string;
   name: string;
   email: string;
@@ -84,13 +87,7 @@ export interface BoraEvent {
 
 export type ReportTargetType = 'event' | 'venue' | 'user';
 
-export type ReportCategory =
-  | 'comportamento_inadequado'
-  | 'perfil_falso'
-  | 'assedio'
-  | 'spam'
-  | 'fraude'
-  | 'outro';
+export type ReportCategory = 'comportamento_inadequado' | 'perfil_falso' | 'assedio' | 'spam' | 'fraude' | 'outro';
 
 export interface PublicParticipant {
   id: string;

@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery } from '@tanstack/react-query';
 import { ListFilter, Map as MapIcon, Rows3, X } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
@@ -15,6 +16,7 @@ import { FiltersSheet, type Filters } from './FiltersSheet';
 const VenueMap = lazy(() => import('@/components/VenueMap').then((m) => ({ default: m.VenueMap })));
 
 export function Explore() {
+  useI18n();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
@@ -38,9 +40,10 @@ export function Explore() {
       {filters.q && (
         <div className="mb-3 flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
           <span>
-            Buscando por <strong>&ldquo;{filters.q}&rdquo;</strong>
+            {' '}
+            {t('Buscando por')} <strong>&ldquo;{filters.q}&rdquo;</strong>
           </span>
-          <button onClick={() => setFilters((f) => ({ ...f, q: undefined }))} aria-label="Limpar busca">
+          <button onClick={() => setFilters((f) => ({ ...f, q: undefined }))} aria-label={t('Limpar busca')}>
             <X className="h-4 w-4 text-muted" />
           </button>
         </div>
@@ -48,9 +51,10 @@ export function Explore() {
       {filters.category && (
         <div className="mb-3 flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
           <span>
-            Categoria: <strong>{venueCategoryLabel(filters.category)}</strong>
+            {' '}
+            {t('Categoria:')} <strong>{venueCategoryLabel(filters.category)}</strong>
           </span>
-          <button onClick={() => setFilters((f) => ({ ...f, category: undefined }))} aria-label="Limpar categoria">
+          <button onClick={() => setFilters((f) => ({ ...f, category: undefined }))} aria-label={t('Limpar categoria')}>
             <X className="h-4 w-4 text-muted" />
           </button>
         </div>
@@ -64,7 +68,7 @@ export function Explore() {
               mode === 'list' ? 'bg-bora-gradient text-white' : 'text-muted',
             )}
           >
-            <Rows3 className="h-4 w-4" /> Lista
+            <Rows3 className="h-4 w-4" /> {t('Lista')}{' '}
           </button>
           <button
             onClick={() => setMode('map')}
@@ -73,14 +77,14 @@ export function Explore() {
               mode === 'map' ? 'bg-bora-gradient text-white' : 'text-muted',
             )}
           >
-            <MapIcon className="h-4 w-4" /> Mapa
+            <MapIcon className="h-4 w-4" /> {t('Mapa')}{' '}
           </button>
         </div>
 
         <button
           onClick={() => setFiltersOpen(true)}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
-          aria-label="Filtros"
+          aria-label={t('Filtros')}
         >
           <ListFilter className="h-5 w-5" />
         </button>
@@ -88,11 +92,12 @@ export function Explore() {
 
       {mode === 'map' ? (
         <div className="mt-6">
-          {isLoading && <p className="mb-3 text-sm text-muted">Carregando...</p>}
+          {isLoading && <p className="mb-3 text-sm text-muted">{t('Carregando...')}</p>}
           <Suspense
             fallback={
               <div className="flex h-[65vh] items-center justify-center rounded-2xl border border-border bg-surface text-sm text-muted">
-                Carregando mapa...
+                {' '}
+                {t('Carregando mapa...')}{' '}
               </div>
             }
           >
@@ -101,25 +106,26 @@ export function Explore() {
         </div>
       ) : (
         <div className="mt-5 space-y-3 pb-6">
-          {isLoading && <p className="text-sm text-muted">Carregando...</p>}
+          {isLoading && <p className="text-sm text-muted">{t('Carregando...')}</p>}
           {venues?.length === 0 && (
             <div className="rounded-2xl border border-border bg-surface p-6 text-center">
               {/* Só há corte por raio quando a localização é conhecida (ver isWithinRadius na API). */}
               {lat != null && filters.maxDistanceKm !== 0 ? (
                 <>
-                  <p className="font-semibold">Nada encontrado nesse raio.</p>
-                  <p className="mt-1 text-sm text-muted">Aumente a distância para ver o que fica mais longe.</p>
+                  <p className="font-semibold">{t('Nada encontrado nesse raio.')}</p>
+                  <p className="mt-1 text-sm text-muted">{t('Aumente a distância para ver o que fica mais longe.')}</p>
                   <button
                     onClick={() => setFilters((f) => ({ ...f, maxDistanceKm: 0 }))}
                     className="mt-3 text-sm font-semibold text-destaque"
                   >
-                    Ver qualquer distância
+                    {' '}
+                    {t('Ver qualquer distância')}{' '}
                   </button>
                 </>
               ) : (
                 <>
-                  <p className="font-semibold">Nada encontrado.</p>
-                  <p className="mt-1 text-sm text-muted">Tente limpar a busca ou os filtros.</p>
+                  <p className="font-semibold">{t('Nada encontrado.')}</p>
+                  <p className="mt-1 text-sm text-muted">{t('Tente limpar a busca ou os filtros.')}</p>
                 </>
               )}
             </div>
@@ -129,7 +135,9 @@ export function Explore() {
               onClick={() => navigate('/profile/edit')}
               className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-left text-sm text-muted"
             >
-              Sem sua localização, a lista não é ordenada pela distância. <strong>Definir localização</strong>
+              {' '}
+              {t('Sem sua localização, a lista não é ordenada pela distância.')}{' '}
+              <strong>{t('Definir localização')}</strong>
             </button>
           )}
           {venues?.map((venue) => (

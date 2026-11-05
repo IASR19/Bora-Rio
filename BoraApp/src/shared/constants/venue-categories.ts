@@ -1,3 +1,4 @@
+import { t } from '@/i18n';
 export const VENUE_CATEGORY_OPTIONS = [
   { value: 'festa', label: 'Baladas e casas noturnas' },
   { value: 'bar', label: 'Bares, pubs e botecos' },
@@ -20,5 +21,5 @@ export function isVenueCategory(value: string | null): value is VenueCategory {
 }
 
 export function venueCategoryLabel(category: string): string {
-  return VENUE_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ?? category;
+  return t(VENUE_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ?? category);
 }

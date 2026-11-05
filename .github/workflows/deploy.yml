@@ -76,6 +76,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test languages, errors and storage fallback
+        run: npm run test:i18n
+
       - name: Build application
         run: npm run build
 
@@ -117,13 +120,13 @@ jobs:
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           DATABASE_SSL: ${{ secrets.DATABASE_SSL }}
 
-      # Catálogo real de locais (src/seeds/venues.catalog.json): idempotente, numa transação
-      # com lock, não cria eventos nem remove registros. Só roda com "runOnDeploy": true em
-      # src/seeds/seed.config.json (padrão false). Ver src/seeds/README.md.
-      - name: Seed venue catalog
+      # Seeds idempotentes do catálogo e da conta administrativa inicial.
+      # Controlados por runOnDeploy em src/seeds/seed.config.json. Ver src/seeds/README.md.
+      - name: Seed venue catalog and administrator
         run: |
           if [ "$(node -p "require('./src/seeds/seed.config.json').runOnDeploy === true")" = "true" ]; then
             node dist/seeds/seed.js
+            node dist/seeds/admin.seed.js
           else
             echo "Seed skipped: runOnDeploy is false in src/seeds/seed.config.json"
           fi

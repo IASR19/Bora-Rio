@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { MapPin } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 
@@ -7,6 +8,7 @@ import type { Venue } from '@/types/domain';
 const VenueMap = lazy(() => import('@/components/VenueMap').then((m) => ({ default: m.VenueMap })));
 
 export function LocationTab({ venue }: { venue: Venue }) {
+  useI18n();
   return (
     <div>
       <Suspense
@@ -20,7 +22,7 @@ export function LocationTab({ venue }: { venue: Venue }) {
       </Suspense>
       <p className="mt-3 text-sm text-foreground">{venue.address}</p>
       {venue.catalogMetadata?.coordinatesAccuracy === 'approximate' && (
-        <p className="mt-1 text-xs text-muted">Localização aproximada. Confirme o acesso pelo endereço.</p>
+        <p className="mt-1 text-xs text-muted">{t('Localização aproximada. Confirme o acesso pelo endereço.')}</p>
       )}
       <a
         className="mt-2 inline-block text-sm underline"
@@ -28,7 +30,8 @@ export function LocationTab({ venue }: { venue: Venue }) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Abrir no Google Maps
+        {' '}
+        {t('Abrir no Google Maps')}{' '}
       </a>
     </div>
   );

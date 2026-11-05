@@ -1,3 +1,5 @@
+import { domainLabel } from '@/i18n/domain-label';
+import { t, useI18n } from '@/i18n';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,6 +37,7 @@ function defaultStartsAt() {
 }
 
 export function CreateEvent() {
+  useI18n();
   const navigate = useNavigate();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -181,7 +184,7 @@ export function CreateEvent() {
 
       setResult({ status: event.status ?? 'published', eventId: event.id });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Não foi possível criar o evento.');
+      setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível criar o evento.');
     } finally {
       setLoading(false);
     }
@@ -191,16 +194,19 @@ export function CreateEvent() {
     const published = result.status === 'published';
     return (
       <div className="bg-background px-5 pt-8 text-center">
-        <p className="text-2xl font-extrabold">{published ? 'Evento publicado! 🎉' : 'Evento enviado ✅'}</p>
+        <p className="text-2xl font-extrabold">{published ? t('Evento publicado! 🎉') : t('Evento enviado ✅')}</p>
         <p className="mx-auto mt-3 max-w-xs text-sm text-muted">
           {published
-            ? 'Já aparece na busca pra todo mundo.'
+            ? t('Já aparece na busca pra todo mundo.')
             : creatorType === 'business'
-              ? 'Fica em análise até a validação do seu CNPJ ser aprovada — dá pra ver pelo link direto.'
-              : 'Ainda está em análise — dá pra ver pelo link direto, e ele aparece pra todo mundo assim que ganhar mais confiança (ex.: pessoas confirmando presença de verdade no local, ou você verificar sua identidade em Perfil > Segurança).'}
+              ? t('Fica em análise até a validação do seu CNPJ ser aprovada — dá pra ver pelo link direto.')
+              : t(
+                  'Ainda está em análise — dá pra ver pelo link direto, e ele aparece pra todo mundo assim que ganhar mais confiança (ex.: pessoas confirmando presença de verdade no local, ou você verificar sua identidade em Perfil > Segurança).',
+                )}
         </p>
         <Button size="lg" className="mt-6 w-full" onClick={() => navigate(`/event/${result.eventId}`)}>
-          Ver evento
+          {' '}
+          {t('Ver evento')}{' '}
         </Button>
       </div>
     );
@@ -208,21 +214,27 @@ export function CreateEvent() {
 
   return (
     <div className="bg-background px-5 pt-6">
-      <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-surface">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
+      >
         <ArrowLeft className="h-5 w-5" />
       </button>
 
-      <h1 className="mt-4 text-2xl font-extrabold">Criar evento</h1>
+      <h1 className="mt-4 text-2xl font-extrabold">{t('Criar evento')}</h1>
       <p className="mt-1 text-sm text-muted">
-        Ponto comercial com CNPJ validado, local verificado ou você com identidade verificada (Perfil {'>'} Segurança)
-        publicam na hora.
-        Senão, o evento fica em análise até 3 check-ins reais confirmarem que é de verdade.
+        {' '}
+        {t('Ponto comercial com CNPJ validado, local verificado ou você com identidade verificada (Perfil')} {'>'}{' '}
+        {t(
+          'Segurança) publicam na hora. Senão, o evento fica em análise até 3 check-ins reais confirmarem que é de verdade.',
+        )}{' '}
       </p>
 
       <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
         <div ref={creatorTypeRef}>
           <label className="mb-2 block text-sm font-semibold text-muted">
-            Este evento é de... <span className="text-destaque">*</span>
+            {' '}
+            {t('Este evento é de...')} <span className="text-destaque">*</span>
           </label>
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -234,7 +246,8 @@ export function CreateEvent() {
                   : 'rounded-xl border border-border bg-surface px-3 py-3 text-sm font-semibold text-muted'
               }
             >
-              Estabelecimento comercial
+              {' '}
+              {t('Estabelecimento comercial')}{' '}
             </button>
             <button
               type="button"
@@ -245,32 +258,39 @@ export function CreateEvent() {
                   : 'rounded-xl border border-border bg-surface px-3 py-3 text-sm font-semibold text-muted'
               }
             >
-              Pessoa física
+              {' '}
+              {t('Pessoa física')}{' '}
             </button>
           </div>
           {creatorType === 'business' && <BusinessVerificationCard />}
           {creatorType === 'personal' && (
             <p className="mt-2 text-xs text-muted">
-              Pra publicar na hora, verifique sua identidade (telefone + CPF + selfie) em{' '}
-              <button type="button" onClick={() => navigate('/profile/security')} className="font-semibold text-destaque">
-                Perfil {'>'} Segurança
-              </button>
-              . Sem isso, o evento fica em análise até 3 check-ins confirmarem que é real.
+              {' '}
+              {t('Pra publicar na hora, verifique sua identidade (telefone + CPF + selfie) em')}{' '}
+              <button
+                type="button"
+                onClick={() => navigate('/profile/security')}
+                className="font-semibold text-destaque"
+              >
+                {' '}
+                {t('Perfil')} {'>'} {t('Segurança')}{' '}
+              </button>{' '}
+              {t('. Sem isso, o evento fica em análise até 3 check-ins confirmarem que é real.')}{' '}
             </p>
           )}
-          {!creatorType && error && <p className="mt-2 text-sm text-destaque">{error}</p>}
+          {!creatorType && error && <p className="mt-2 text-sm text-destaque">{t(error)}</p>}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Local</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Local')}</label>
           {!creatingNewVenue ? (
             <>
               <Input
-                placeholder="Buscar local existente..."
+                placeholder={t('Buscar local existente...')}
                 value={selectedVenue ? selectedVenue.name : venueQuery}
                 onChange={(e) => handleVenueQueryChange(e.target.value)}
               />
-              {searchingVenues && <p className="mt-2 text-xs text-muted">Buscando...</p>}
+              {searchingVenues && <p className="mt-2 text-xs text-muted">{t('Buscando...')}</p>}
               {!selectedVenue && venueResults.length > 0 && (
                 <div className="mt-2 divide-y divide-border rounded-xl border border-border bg-surface">
                   {venueResults.map((v) => (
@@ -290,7 +310,8 @@ export function CreateEvent() {
                 </div>
               )}
               <p className="mt-2 text-xs text-muted">
-                Não achou?{' '}
+                {' '}
+                {t('Não achou?')}{' '}
                 <button
                   type="button"
                   onClick={() => {
@@ -299,29 +320,40 @@ export function CreateEvent() {
                   }}
                   className="font-semibold text-destaque"
                 >
-                  Cadastrar novo local
+                  {' '}
+                  {t('Cadastrar novo local')}{' '}
                 </button>
               </p>
             </>
           ) : (
             <div className="space-y-3 rounded-2xl border border-border bg-surface p-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold">Cadastrar novo local</p>
+                <p className="text-sm font-semibold">{t('Cadastrar novo local')}</p>
                 <button type="button" onClick={() => setCreatingNewVenue(false)} className="text-xs text-muted">
-                  Cancelar
+                  {' '}
+                  {t('Cancelar')}{' '}
                 </button>
               </div>
-              <Input placeholder="Nome do local" value={newVenueName} onChange={(e) => setNewVenueName(e.target.value)} />
+              <Input
+                placeholder={t('Nome do local')}
+                value={newVenueName}
+                onChange={(e) => setNewVenueName(e.target.value)}
+              />
               <div className="flex flex-wrap gap-2">
                 {VENUE_CATEGORY_OPTIONS.map(({ value: c, label }) => (
                   <Chip key={c} selected={newVenueCategory === c} onClick={() => setNewVenueCategory(c)}>
-                    {label}
+                    {t(label)}
                   </Chip>
                 ))}
               </div>
-              <Input placeholder="00000-000" value={cep} onChange={(e) => handleCepChange(e.target.value)} inputMode="numeric" />
-              {cepStatus === 'loading' && <p className="text-xs text-muted">Buscando endereço...</p>}
-              {cepStatus === 'not-found' && <p className="text-xs text-destaque">CEP não encontrado.</p>}
+              <Input
+                placeholder="00000-000"
+                value={cep}
+                onChange={(e) => handleCepChange(e.target.value)}
+                inputMode="numeric"
+              />
+              {cepStatus === 'loading' && <p className="text-xs text-muted">{t('Buscando endereço...')}</p>}
+              {cepStatus === 'not-found' && <p className="text-xs text-destaque">{t('CEP não encontrado.')}</p>}
               {cepStatus === 'found' && address && (
                 <p className="text-xs text-muted">
                   {address.street && `${address.street}, `}
@@ -333,12 +365,12 @@ export function CreateEvent() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Nome do evento</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Nome do evento')}</label>
           <Input value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Descrição</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Descrição')}</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -348,37 +380,45 @@ export function CreateEvent() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Gêneros musicais</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Gêneros musicais')}</label>
           <div className="flex flex-wrap gap-2">
             {MUSIC.map((genre) => (
-              <Chip key={genre} selected={musicGenres.includes(genre)} onClick={() => toggleMusicGenre(genre)}>
-                {genre}
+              <Chip
+                key={domainLabel(genre)}
+                selected={musicGenres.includes(genre)}
+                onClick={() => toggleMusicGenre(genre)}
+              >
+                {domainLabel(genre)}
               </Chip>
             ))}
           </div>
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Data e hora</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Data e hora')}</label>
           <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Capa (opcional)</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Capa (opcional)')}</label>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="flex h-32 w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-border bg-surface text-sm text-muted"
           >
-            {coverImageUrl ? <img src={coverImageUrl} className="h-full w-full object-cover" alt="" /> : 'Escolher imagem'}
+            {coverImageUrl ? (
+              <img src={coverImageUrl} className="h-full w-full object-cover" alt="" />
+            ) : (
+              t('Escolher imagem')
+            )}
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverChange} />
         </div>
 
-        {error && <p className="text-sm text-destaque">{error}</p>}
+        {error && <p className="text-sm text-destaque">{t(error)}</p>}
 
         <Button size="lg" className="w-full" type="submit" disabled={loading}>
-          {loading ? 'Criando...' : 'Criar evento'}
+          {loading ? t('Criando...') : t('Criar evento')}
         </Button>
       </form>
     </div>

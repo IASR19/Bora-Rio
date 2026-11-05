@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { Calendar, Compass, Home, Plus, User } from 'lucide-react';
 
 /**
@@ -6,6 +7,7 @@ import { Calendar, Compass, Home, Plus, User } from 'lucide-react';
  */
 
 export function StatusBar() {
+  useI18n();
   return (
     <div className="flex items-center justify-between px-5 pt-2 text-[9px] font-semibold text-foreground">
       <span>9:41</span>
@@ -32,6 +34,7 @@ const NAV = [
 ];
 
 export function BottomNav({ activeIndex = 0 }: { activeIndex?: number }) {
+  useI18n();
   return (
     <div className="absolute inset-x-0 bottom-0 flex items-center justify-around border-t border-border bg-surface/90 px-3 pb-3 pt-2 backdrop-blur">
       {NAV.map(({ icon: Icon, label }, index) =>
@@ -43,19 +46,15 @@ export function BottomNav({ activeIndex = 0 }: { activeIndex?: number }) {
             <Icon className="h-5 w-5 text-white" strokeWidth={2.6} />
           </span>
         ) : (
-          <span key={label} className="flex flex-col items-center gap-[3px]">
+          <span key={t(label)} className="flex flex-col items-center gap-[3px]">
             <Icon
               className={index === activeIndex ? 'h-[15px] w-[15px] text-destaque' : 'h-[15px] w-[15px] text-muted'}
               strokeWidth={index === activeIndex ? 2.4 : 1.8}
             />
             <span
-              className={
-                index === activeIndex
-                  ? 'text-[7px] font-semibold text-destaque'
-                  : 'text-[7px] text-muted'
-              }
+              className={index === activeIndex ? 'text-[7px] font-semibold text-destaque' : 'text-[7px] text-muted'}
             >
-              {label}
+              {t(label)}
             </span>
           </span>
         ),
@@ -66,6 +65,7 @@ export function BottomNav({ activeIndex = 0 }: { activeIndex?: number }) {
 
 /** Pilha de rostinhos "+N confirmaram" — desenhada, sem foto de gente real. */
 export function FaceStack({ count, size = 16 }: { count: number; size?: number }) {
+  useI18n();
   const tints = ['#FF8A00', '#FF2D95', '#7A2BFF', '#FF5C7A', '#B14BFF'];
   return (
     <div className="flex items-center gap-1.5">
@@ -78,7 +78,9 @@ export function FaceStack({ count, size = 16 }: { count: number; size?: number }
           />
         ))}
       </div>
-      <span className="text-[8px] text-muted">+{count} confirmaram</span>
+      <span className="text-[8px] text-muted">
+        +{count} {t('confirmaram')}
+      </span>
     </div>
   );
 }

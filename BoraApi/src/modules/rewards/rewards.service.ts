@@ -5,6 +5,7 @@ import { In, Repository } from 'typeorm';
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { CheckIn } from '../checkins/entities/checkin.entity';
+import { assertEventAcceptsParticipation } from '../events/event-access';
 import { Reward } from './entities/reward.entity';
 import { RewardRedemption } from './entities/reward-redemption.entity';
 
@@ -31,8 +32,10 @@ export class RewardsService {
   }
 
   async redeem(userId: string, rewardId: string): Promise<RewardRedemption> {
-    const reward = await this.rewardsRepository.findOne({ where: { id: rewardId } });
+    const reward = await this.rewardsRepository.findOne({ where: { id: rewardId }, relations: ['event'] });
     if (!reward) throw new ResourceNotFoundException('Reward', rewardId);
+    if (!reward.event) throw new ResourceNotFoundException('Event', reward.eventId);
+    assertEventAcceptsParticipation(reward.event);
 
     const alreadyRedeemed = await this.redemptionsRepository.findOne({ where: { userId, rewardId } });
     if (alreadyRedeemed) {

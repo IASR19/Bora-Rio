@@ -1,3 +1,4 @@
+import { t, useI18n, getLocale } from '@/i18n';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +14,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 function EventRow({ event }: { event: BoraEvent }) {
+  useI18n();
   const navigate = useNavigate();
   return (
     <button
@@ -23,12 +25,12 @@ function EventRow({ event }: { event: BoraEvent }) {
       <div className="min-w-0 flex-1">
         <p className="truncate font-bold">{event.name}</p>
         <p className="text-xs text-muted">
-          {event.venue?.name} · {new Date(event.startsAt).toLocaleDateString('pt-BR')}
+          {event.venue?.name} · {new Date(event.startsAt).toLocaleDateString(getLocale())}
         </p>
       </div>
       {event.status && event.status !== 'published' && (
         <span className="shrink-0 rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-semibold text-muted">
-          {STATUS_LABEL[event.status]}
+          {t(STATUS_LABEL[event.status])}
         </span>
       )}
     </button>
@@ -36,12 +38,13 @@ function EventRow({ event }: { event: BoraEvent }) {
 }
 
 export function Events() {
+  useI18n();
   const { data } = useQuery({ queryKey: ['events', 'mine'], queryFn: eventsService.mine });
   const { data: createdByMe } = useQuery({ queryKey: ['events', 'created-by-me'], queryFn: eventsService.createdByMe });
 
   return (
     <div className="bg-background px-5 pt-6">
-      <h1 className="text-2xl font-extrabold">Meus eventos</h1>
+      <h1 className="text-2xl font-extrabold">{t('Meus eventos')}</h1>
 
       <Tabs.Root defaultValue="interested" className="mt-5">
         <Tabs.List className="flex gap-5 overflow-x-auto border-b border-border text-sm font-semibold text-muted">
@@ -54,17 +57,21 @@ export function Events() {
             <Tabs.Trigger
               key={tab.value}
               value={tab.value}
-              className={cn('shrink-0 border-b-2 border-transparent pb-3 data-[state=active]:border-destaque data-[state=active]:text-foreground')}
+              className={cn(
+                'shrink-0 border-b-2 border-transparent pb-3 data-[state=active]:border-destaque data-[state=active]:text-foreground',
+              )}
             >
-              {tab.label}
+              {t(tab.label)}
             </Tabs.Trigger>
           ))}
         </Tabs.List>
 
         {(['interested', 'confirmed', 'past'] as const).map((key) => (
           <Tabs.Content key={key} value={key} className="mt-4 space-y-3 pb-6">
-            {data?.[key]?.length ? data[key].map((event) => <EventRow key={event.id} event={event} />) : (
-              <p className="text-sm text-muted">Nenhum evento por aqui ainda.</p>
+            {data?.[key]?.length ? (
+              data[key].map((event) => <EventRow key={event.id} event={event} />)
+            ) : (
+              <p className="text-sm text-muted">{t('Nenhum evento por aqui ainda.')}</p>
             )}
           </Tabs.Content>
         ))}
@@ -73,7 +80,7 @@ export function Events() {
           {createdByMe?.length ? (
             createdByMe.map((event) => <EventRow key={event.id} event={event} />)
           ) : (
-            <p className="text-sm text-muted">Você ainda não criou nenhum evento.</p>
+            <p className="text-sm text-muted">{t('Você ainda não criou nenhum evento.')}</p>
           )}
         </Tabs.Content>
       </Tabs.Root>

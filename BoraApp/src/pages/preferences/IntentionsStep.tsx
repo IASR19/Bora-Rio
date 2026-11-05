@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useNavigate } from 'react-router-dom';
 
 import { usePreferencesDraft } from '@/hooks/usePreferencesDraft';
@@ -18,6 +19,7 @@ const OPTIONS = [
 ];
 
 export function IntentionsStep() {
+  useI18n();
   const navigate = useNavigate();
   const { draft, toggleInArray } = usePreferencesDraft();
 
@@ -25,7 +27,7 @@ export function IntentionsStep() {
     <PreferencesLayout
       step={1}
       total={5}
-      title="O que você procura?"
+      title={t('O que você procura?')}
       onContinue={() => navigate('/preferences/music')}
       continueDisabled={draft.intentions.length === 0}
     >
@@ -36,7 +38,7 @@ export function IntentionsStep() {
             selected={draft.intentions.includes(option.value)}
             onClick={() => toggleInArray('intentions', option.value)}
           >
-            {option.label}
+            {t(option.label)}
           </Chip>
         ))}
       </div>

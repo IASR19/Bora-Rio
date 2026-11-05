@@ -7,6 +7,7 @@ import { CommonModule } from './common/common.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { ClsUserInterceptor } from './common/interceptors/cls-user.interceptor';
 import { createBaseDbOptions } from './config/database.config';
+import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { BlocksModule } from './modules/blocks/blocks.module';
@@ -32,6 +33,7 @@ import { SharedModule } from './shared/shared.module';
       useFactory: (configService: ConfigService) => createBaseDbOptions(configService),
     }),
     CommonModule,
+    AdminModule,
     SharedModule,
     HealthModule,
     AuthModule,

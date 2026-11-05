@@ -1,3 +1,5 @@
+import { domainLabel } from '@/i18n/domain-label';
+import { t, useI18n } from '@/i18n';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Heart, MapPin, Share2 } from 'lucide-react';
@@ -19,6 +21,7 @@ import { LocationTab } from './tabs/LocationTab';
 
 /** Página do lugar: informações do local e os eventos marcados nele. Cada evento abre /event/:id. */
 export function VenueDetail() {
+  useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -79,14 +82,17 @@ export function VenueDetail() {
       <div className="relative h-64 w-full bg-bora-gradient-soft">
         <CoverImage src={venue.coverImageUrl} alt={venue.name} />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-          <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
+          >
             <ArrowLeft className="h-5 w-5 text-white" />
           </button>
           <div className="flex gap-2">
             <button
               onClick={handleShare}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
-              aria-label="Compartilhar"
+              aria-label={t('Compartilhar')}
             >
               <Share2 className="h-4 w-4 text-white" />
             </button>
@@ -94,7 +100,7 @@ export function VenueDetail() {
               onClick={handleToggleFavorite}
               disabled={favoritePending}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
-              aria-label="Favoritar"
+              aria-label={t('Favoritar')}
             >
               <Heart className={cn('h-4 w-4 text-white', isFavorite && 'fill-destaque text-destaque')} />
             </button>
@@ -102,7 +108,8 @@ export function VenueDetail() {
         </div>
         {shareCopied && (
           <p className="absolute bottom-3 right-4 rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur">
-            Link copiado
+            {' '}
+            {t('Link copiado')}{' '}
           </p>
         )}
       </div>
@@ -124,8 +131,8 @@ export function VenueDetail() {
         {(venue.musicGenres.length > 0 || venue.vibes.length > 0) && (
           <div className="mt-3 flex flex-wrap gap-2">
             {[...venue.musicGenres, ...venue.vibes.slice(0, 2)].map((tag) => (
-              <span key={tag} className="rounded-full bg-surface px-3 py-1 text-xs font-medium text-muted">
-                {tag}
+              <span key={domainLabel(tag)} className="rounded-full bg-surface px-3 py-1 text-xs font-medium text-muted">
+                {domainLabel(tag)}
               </span>
             ))}
           </div>
@@ -135,7 +142,10 @@ export function VenueDetail() {
           <Tabs.List className="flex gap-5 overflow-x-auto border-b border-border text-sm font-semibold text-muted">
             {[
               { value: 'about', label: 'Sobre' },
-              { value: 'events', label: events?.length ? `Eventos (${events.length})` : 'Eventos' },
+              {
+                value: 'events',
+                label: events?.length ? t('Eventos ({count})', { count: events.length }) : t('Eventos'),
+              },
               { value: 'location', label: 'Local' },
             ].map((tab) => (
               <Tabs.Trigger
@@ -143,7 +153,7 @@ export function VenueDetail() {
                 value={tab.value}
                 className="shrink-0 border-b-2 border-transparent pb-3 data-[state=active]:border-destaque data-[state=active]:text-foreground"
               >
-                {tab.label}
+                {t(tab.label)}
               </Tabs.Trigger>
             ))}
           </Tabs.List>
@@ -152,17 +162,20 @@ export function VenueDetail() {
             <AboutTab venue={venue} />
           </Tabs.Content>
           <Tabs.Content value="events" className="space-y-4 pt-4">
-            {eventsLoading && <p className="text-sm text-muted">Carregando...</p>}
+            {eventsLoading && <p className="text-sm text-muted">{t('Carregando...')}</p>}
             {events?.length === 0 && (
               <div className="rounded-2xl border border-border bg-surface p-6 text-center">
-                <p className="font-semibold">Nenhum evento marcado aqui ainda.</p>
-                <p className="mt-1 text-sm text-muted">Vai rolar algo? Crie o primeiro evento neste lugar.</p>
+                <p className="font-semibold">{t('Nenhum evento marcado aqui ainda.')}</p>
+                <p className="mt-1 text-sm text-muted">{t('Vai rolar algo? Crie o primeiro evento neste lugar.')}</p>
                 <Button className="mt-4" onClick={() => navigate('/events/create')}>
-                  Criar evento
+                  {' '}
+                  {t('Criar evento')}{' '}
                 </Button>
               </div>
             )}
-            {events?.map((event) => <EventCard key={event.id} event={event} />)}
+            {events?.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
           </Tabs.Content>
           <Tabs.Content value="location" className="pt-4">
             <LocationTab venue={venue} />

@@ -1,3 +1,5 @@
+import { domainLabel } from '@/i18n/domain-label';
+import { t, useI18n, getLocale } from '@/i18n';
 import { MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,12 +11,23 @@ function formatDistance(km?: number | null) {
   return km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`;
 }
 
-export function EventCard({ event, score, distanceKm }: { event: BoraEvent; score?: number; distanceKm?: number | null }) {
+export function EventCard({
+  event,
+  score,
+  distanceKm,
+}: {
+  event: BoraEvent;
+  score?: number;
+  distanceKm?: number | null;
+}) {
+  useI18n();
   const navigate = useNavigate();
   const startsAt = new Date(event.startsAt);
-  const time = startsAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const time = startsAt.toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
   const isToday = startsAt.toDateString() === new Date().toDateString();
-  const day = isToday ? 'Hoje' : startsAt.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+  const day = isToday
+    ? t('Hoje')
+    : startsAt.toLocaleDateString(getLocale(), { weekday: 'short', day: '2-digit', month: 'short' });
 
   return (
     <button
@@ -37,11 +50,16 @@ export function EventCard({ event, score, distanceKm }: { event: BoraEvent; scor
         </p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {event.musicGenres.slice(0, 2).map((genre) => (
-            <span key={genre} className="rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-medium text-muted">
-              {genre}
+            <span
+              key={domainLabel(genre)}
+              className="rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-medium text-muted"
+            >
+              {domainLabel(genre)}
             </span>
           ))}
-          <span className="rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-medium text-muted">{day} · {time}</span>
+          <span className="rounded-full bg-surface-alt px-2.5 py-1 text-[11px] font-medium text-muted">
+            {day} · {time}
+          </span>
         </div>
       </div>
     </button>

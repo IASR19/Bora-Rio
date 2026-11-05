@@ -7,7 +7,16 @@ export const usersService = {
     data: Partial<
       Pick<
         User,
-        'name' | 'avatarUrl' | 'city' | 'latitude' | 'longitude' | 'phone' | 'birthDate' | 'showInWhoIsGoing'
+        | 'name'
+        | 'gender'
+        | 'avatarUrl'
+        | 'city'
+        | 'latitude'
+        | 'longitude'
+        | 'phone'
+        | 'birthDate'
+        | 'showInWhoIsGoing'
+        | 'language'
       >
     >,
   ) => apiFetch<User>('/users/me', { method: 'PATCH', body: data }),

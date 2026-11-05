@@ -1,18 +1,15 @@
+import { t, useI18n } from '@/i18n';
 import { ArrowLeft, CalendarDays, Clock, Gift, Heart, MapPin } from 'lucide-react';
 
 import { FaceStack, StatusBar } from './SceneChrome';
 
 /** Cena 2 — a página do evento: o que é, quem vai e o benefício. */
 export function VenueScene() {
+  useI18n();
   return (
     <div className="relative h-full bg-background">
       <div className="relative h-[168px]">
-        <img
-          src="/venues/marea-beach-club.webp"
-          alt=""
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+        <img src="/venues/marea-beach-club.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-background/80 to-transparent pb-6">
           <StatusBar />
           <div className="mt-2 flex items-center justify-between px-4">
@@ -38,15 +35,14 @@ export function VenueScene() {
             Sáb, 12 Out
           </span>
           <span className="flex items-center gap-1 rounded-lg bg-surface px-2 py-1 text-[7.5px] text-muted">
-            <Clock className="h-[8px] w-[8px]" strokeWidth={2.2} />
-            18h – 02h
+            <Clock className="h-[8px] w-[8px]" strokeWidth={2.2} /> {t('18h – 02h')}{' '}
           </span>
         </div>
 
         <div className="mt-2 flex gap-1">
           <span className="rounded-md bg-surface px-1.5 py-0.5 text-[7px] text-muted">Pagode</span>
           <span className="rounded-md bg-surface px-1.5 py-0.5 text-[7px] text-muted">Open Bar</span>
-          <span className="rounded-md bg-surface px-1.5 py-0.5 text-[7px] text-muted">120 confirmados</span>
+          <span className="rounded-md bg-surface px-1.5 py-0.5 text-[7px] text-muted">{t('120 confirmados')}</span>
         </div>
 
         <div className="mt-3">
@@ -56,13 +52,14 @@ export function VenueScene() {
         <div className="mt-3 flex items-start gap-2 rounded-xl border border-destaque/35 bg-bora-gradient-soft p-2.5">
           <Gift className="mt-[1px] h-[13px] w-[13px] shrink-0 text-destaque" strokeWidth={2.2} />
           <div>
-            <p className="text-[8px] font-bold text-destaque">Benefício BORA</p>
-            <p className="text-[9px] font-semibold">2 drinks até 21h</p>
+            <p className="text-[8px] font-bold text-destaque">{t('Benefício BORA')}</p>
+            <p className="text-[9px] font-semibold">{t('2 drinks até 21h')}</p>
           </div>
         </div>
 
         <div className="mt-3 flex h-9 items-center justify-center rounded-full bg-bora-gradient text-[10px] font-bold text-white shadow-glow">
-          Quero ir
+          {' '}
+          {t('Quero ir')}{' '}
         </div>
         <p className="mt-2 text-center text-[7.5px] text-muted">Ver mais informações</p>
       </div>

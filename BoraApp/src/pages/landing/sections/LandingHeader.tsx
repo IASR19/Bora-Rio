@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +8,7 @@ import { BrandLockup } from '../components/BrandLockup';
 
 /** Cabeçalho fixo: só ganha fundo depois que a pessoa começa a rolar. */
 export function LandingHeader() {
+  useI18n();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export function LandingHeader() {
       )}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 lg:px-8">
-        <a href="#topo" aria-label="BORA — início da página">
+        <a href="#topo" aria-label={t('BORA — início da página')}>
           <BrandLockup />
         </a>
 
@@ -33,13 +35,15 @@ export function LandingHeader() {
             to="/login"
             className="rounded-full px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-foreground"
           >
-            Entrar
+            {' '}
+            {t('Entrar')}{' '}
           </Link>
           <Link
             to="/welcome"
             className="hidden rounded-full bg-bora-gradient px-5 py-2 text-sm font-bold text-white shadow-glow sm:block"
           >
-            Criar conta
+            {' '}
+            {t('Criar conta')}{' '}
           </Link>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { useI18n } from '@/i18n';
+import { domainLabel } from '@/i18n/domain-label';
 import { MapPin } from 'lucide-react';
 
 import { venueCategoryLabel } from '@/shared/constants/venue-categories';
@@ -6,6 +8,7 @@ import { ScoreBadge } from '@/shared/ui/ScoreBadge';
 import type { Venue } from '@/types/domain';
 
 export function VenueListItem({ venue, onClick }: { venue: Venue; onClick: () => void }) {
+  useI18n();
   return (
     <button
       onClick={onClick}
@@ -21,7 +24,7 @@ export function VenueListItem({ venue, onClick }: { venue: Venue; onClick: () =>
           {venue.distanceKm != null ? `${venue.distanceKm.toFixed(1)} km` : venue.city}
         </p>
         <p className="mt-1 text-xs text-muted">
-          {venueCategoryLabel(venue.category)} · {venue.priceRange}
+          {venueCategoryLabel(venue.category)} · {domainLabel(venue.priceRange)}
         </p>
       </div>
       {venue.boraScore != null && <ScoreBadge score={venue.boraScore} className="h-11 w-11" />}

@@ -45,11 +45,18 @@ export class UsersService {
     await this.usersRepository.update({ id: userId }, { googleId });
   }
 
-  createFromGoogle(data: { name: string; email: string; googleId: string; avatarUrl?: string | null }): Promise<User> {
+  createFromGoogle(data: {
+    name: string;
+    email: string;
+    googleId: string;
+    avatarUrl?: string | null;
+    language?: 'pt' | 'es' | 'en';
+  }): Promise<User> {
     const user = this.usersRepository.create({
       name: data.name,
       email: data.email,
       googleId: data.googleId,
+      language: data.language ?? 'pt',
       avatarUrl: data.avatarUrl ?? null,
       phone: null,
       phoneVerified: false,
@@ -72,6 +79,7 @@ export class UsersService {
       phone: data.phone,
       birthDate: data.birthDate,
       gender: data.gender,
+      language: data.language ?? 'pt',
       passwordHash: data.passwordHash,
       avatarUrl: data.avatarUrl ?? null,
     });

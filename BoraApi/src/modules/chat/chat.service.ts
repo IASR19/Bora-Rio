@@ -8,6 +8,7 @@ import { isUniqueViolation } from '../../common/utils/database.utils';
 import { BlocksService } from '../blocks/blocks.service';
 import { Event } from '../events/entities/event.entity';
 import { EventParticipation } from '../events/entities/event-participation.entity';
+import { assertEventAcceptsParticipation } from '../events/event-access';
 import { UsersService } from '../users/users.service';
 import { Conversation, ConversationType } from './entities/conversation.entity';
 import { Message } from './entities/message.entity';
@@ -41,6 +42,7 @@ export class ChatService {
   private async ensureRoomAccess(userId: string, eventId: string): Promise<Event> {
     const event = await this.eventsRepository.findOne({ where: { id: eventId } });
     if (!event) throw new ResourceNotFoundException('Event', eventId);
+    assertEventAcceptsParticipation(event);
 
     if (event.createdBy === userId) return event;
 
@@ -135,7 +137,12 @@ export class ChatService {
     const message = await this.messagesRepository.save(
       this.messagesRepository.create({ conversationId: room.id, senderId: userId, body }),
     );
-    return { id: message.id, body: message.body, createdAt: message.createdAt, sender: await this.toPublicSender(userId) };
+    return {
+      id: message.id,
+      body: message.body,
+      createdAt: message.createdAt,
+      sender: await this.toPublicSender(userId),
+    };
   }
 
   async listDirectMessages(userId: string, conversationId: string): Promise<PublicMessage[]> {
@@ -148,7 +155,12 @@ export class ChatService {
     const message = await this.messagesRepository.save(
       this.messagesRepository.create({ conversationId, senderId: userId, body }),
     );
-    return { id: message.id, body: message.body, createdAt: message.createdAt, sender: await this.toPublicSender(userId) };
+    return {
+      id: message.id,
+      body: message.body,
+      createdAt: message.createdAt,
+      sender: await this.toPublicSender(userId),
+    };
   }
 
   /** Conversas diretas do usuário — usado pelo DeuBoraService pra listar matches. */

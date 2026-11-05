@@ -4,6 +4,7 @@ import { authService, type RegisterPayload } from '@/services/auth.service';
 import { usersService } from '@/services/users.service';
 import { setAccessToken } from '@/shared/api/client';
 import type { User } from '@/types/domain';
+import { getLanguage, setLanguage } from '@/i18n';
 
 interface AuthContextValue {
   user: User | null;
@@ -20,6 +21,10 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.language) setLanguage(user.language);
+  }, [user?.id, user?.language]);
 
   useEffect(() => {
     // Restaura a sessão a partir do cookie httpOnly de refresh (até 10 dias) —
@@ -44,14 +49,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = async (idToken: string) => {
-    const { user: loggedUser, accessToken } = await authService.loginWithGoogle(idToken);
+    const { user: loggedUser, accessToken } = await authService.loginWithGoogle(idToken, getLanguage());
     setAccessToken(accessToken);
     setUser(loggedUser);
     return loggedUser;
   };
 
   const register = async (payload: RegisterPayload) => {
-    const { user: newUser, accessToken } = await authService.register(payload);
+    const { user: newUser, accessToken } = await authService.register({ ...payload, language: getLanguage() });
     setAccessToken(accessToken);
     setUser(newUser);
     return newUser;

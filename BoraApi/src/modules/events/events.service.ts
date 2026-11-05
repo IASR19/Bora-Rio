@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
@@ -14,6 +14,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { QueryEventsDto } from './dto/query-events.dto';
 import { Event, EventStatus } from './entities/event.entity';
 import { EventParticipation } from './entities/event-participation.entity';
+import { assertEventAcceptsParticipation } from './event-access';
 
 const BORA_AGORA_WINDOW_HOURS = 6;
 const CHECKINS_TO_PUBLISH = 3;
@@ -40,6 +41,22 @@ export class EventsService {
     return event;
   }
 
+  async findParticipatingById(id: string): Promise<Event> {
+    const event = await this.findById(id);
+    assertEventAcceptsParticipation(event);
+    return event;
+  }
+
+  async withParticipatingEvent<T>(id: string, work: (event: Event, manager: EntityManager) => Promise<T>): Promise<T> {
+    return this.eventsRepository.manager.transaction(async (manager) => {
+      // The same row lock used by moderation keeps a rejection and a participation write ordered.
+      const event = await manager.findOne(Event, { where: { id }, lock: { mode: 'pessimistic_write' } });
+      if (!event) throw new ResourceNotFoundException('Event', id);
+      assertEventAcceptsParticipation(event);
+      return work(event, manager);
+    });
+  }
+
   async search(query: QueryEventsDto, preferences: UserPreferences | null): Promise<EventWithScore[]> {
     const qb = this.eventsRepository
       .createQueryBuilder('event')
@@ -59,6 +76,8 @@ export class EventsService {
     // pending_review — é o "link direto" do modelo de confiança do escopo.md.
     if (!query.venueId) {
       qb.andWhere('event.status = :status', { status: EventStatus.PUBLISHED });
+    } else {
+      qb.andWhere('event.status != :rejected', { rejected: EventStatus.REJECTED });
     }
 
     if (query.now) {
@@ -69,37 +88,38 @@ export class EventsService {
     const events = await qb.orderBy('event.startsAt', 'ASC').getMany();
     const maxDistanceKm = query.maxDistanceKm ?? preferences?.maxDistanceKm ?? null;
 
-    return events
-      .map((event) => ({
-        event,
-        distance:
-          query.lat != null && query.lng != null
-            ? distanceKm(query.lat, query.lng, event.venue.latitude, event.venue.longitude)
-            : null,
-      }))
-      // Busca por venueId (página do local) não corta por distância.
-      .filter(({ distance }) => query.venueId != null || isWithinRadius(distance, maxDistanceKm))
-      .map(({ event, distance }) => {
+    return (
+      events
+        .map((event) => ({
+          event,
+          distance:
+            query.lat != null && query.lng != null
+              ? distanceKm(query.lat, query.lng, event.venue.latitude, event.venue.longitude)
+              : null,
+        }))
+        // Busca por venueId (página do local) não corta por distância.
+        .filter(({ distance }) => query.venueId != null || isWithinRadius(distance, maxDistanceKm))
+        .map(({ event, distance }) => {
+          const boraScore = this.scoreService.calculate({
+            userMusicGenres: preferences?.musicGenres ?? [],
+            venueMusicGenres: event.musicGenres,
+            userVibes: preferences?.venueVibes ?? [],
+            venueVibes: event.venue.vibes,
+            userAgeMin: preferences?.ageInterestMin ?? null,
+            userAgeMax: preferences?.ageInterestMax ?? null,
+            venueTargetAge: event.targetAge,
+            userMaxDistanceKm: query.maxDistanceKm ?? preferences?.maxDistanceKm ?? 10,
+            distanceKm: distance ?? 0,
+            userPriceRanges: preferences?.priceRanges ?? [],
+            venuePriceRange: event.venue.priceRange,
+            userIntentions: preferences?.intentions ?? [],
+            venueIntentions: [],
+          });
 
-        const boraScore = this.scoreService.calculate({
-          userMusicGenres: preferences?.musicGenres ?? [],
-          venueMusicGenres: event.musicGenres,
-          userVibes: preferences?.venueVibes ?? [],
-          venueVibes: event.venue.vibes,
-          userAgeMin: preferences?.ageInterestMin ?? null,
-          userAgeMax: preferences?.ageInterestMax ?? null,
-          venueTargetAge: event.targetAge,
-          userMaxDistanceKm: query.maxDistanceKm ?? preferences?.maxDistanceKm ?? 10,
-          distanceKm: distance ?? 0,
-          userPriceRanges: preferences?.priceRanges ?? [],
-          venuePriceRange: event.venue.priceRange,
-          userIntentions: preferences?.intentions ?? [],
-          venueIntentions: [],
-        });
-
-        return { ...event, boraScore, distanceKm: distance };
-      })
-      .sort((a, b) => (query.now ? 0 : b.boraScore - a.boraScore));
+          return { ...event, boraScore, distanceKm: distance };
+        })
+        .sort((a, b) => (query.now ? 0 : b.boraScore - a.boraScore))
+    );
   }
 
   async create(userId: string, dto: CreateEventDto): Promise<Event> {
@@ -115,7 +135,11 @@ export class EventsService {
     const creator = await this.usersService.findById(userId);
     const asBusiness = dto.asBusiness === true;
     const businessStatus = creator.businessVerificationStatus;
-    if (asBusiness && businessStatus !== BusinessVerificationStatus.APPROVED && businessStatus !== BusinessVerificationStatus.PENDING) {
+    if (
+      asBusiness &&
+      businessStatus !== BusinessVerificationStatus.APPROVED &&
+      businessStatus !== BusinessVerificationStatus.PENDING
+    ) {
       throw new BusinessException('Valide seu CNPJ com o contrato social antes de criar evento como ponto comercial');
     }
     const businessApproved = asBusiness && businessStatus === BusinessVerificationStatus.APPROVED;
@@ -142,6 +166,7 @@ export class EventsService {
 
     const event = await this.eventsRepository.save(
       this.eventsRepository.create({
+        createdBy: userId,
         venueId: venue.id,
         name: dto.name,
         description: dto.description ?? null,
@@ -170,44 +195,50 @@ export class EventsService {
   /** Prova social contínua (ver escopo.md): check-ins reais de gente diferente do
    * criador promovem um evento pending_review pra published, sem precisar de
    * revisão manual. */
-  async publishIfTrusted(eventId: string, distinctCheckinCount: number): Promise<void> {
+  async publishIfTrusted(eventId: string, distinctCheckinCount: number, manager?: EntityManager): Promise<void> {
     if (distinctCheckinCount < CHECKINS_TO_PUBLISH) return;
-    await this.eventsRepository.update({ id: eventId, status: EventStatus.PENDING_REVIEW }, { status: EventStatus.PUBLISHED });
+    await (manager?.getRepository(Event) ?? this.eventsRepository).update(
+      { id: eventId, status: EventStatus.PENDING_REVIEW },
+      { status: EventStatus.PUBLISHED },
+    );
   }
 
   /** Denúncias acumuladas derrubam o evento de volta pra revisão (ver ReportsService). */
   async sendBackToReview(eventId: string): Promise<void> {
-    await this.eventsRepository.update({ id: eventId, status: EventStatus.PUBLISHED }, { status: EventStatus.PENDING_REVIEW });
+    await this.eventsRepository.update(
+      { id: eventId, status: EventStatus.PUBLISHED },
+      { status: EventStatus.PENDING_REVIEW },
+    );
   }
 
-  private async getOrCreateParticipation(userId: string, eventId: string): Promise<EventParticipation> {
-    const existing = await this.participationRepository.findOne({ where: { userId, eventId } });
-    if (existing) return existing;
-    return this.participationRepository.save(this.participationRepository.create({ userId, eventId }));
+  private async updateParticipation(
+    userId: string,
+    eventId: string,
+    changes: Partial<EventParticipation>,
+  ): Promise<EventParticipation> {
+    return this.withParticipatingEvent(eventId, async (_, manager) => {
+      const repository = manager.getRepository(EventParticipation);
+      const participation =
+        (await repository.findOne({ where: { userId, eventId } })) ?? repository.create({ userId, eventId });
+      Object.assign(participation, changes);
+      return repository.save(participation);
+    });
   }
 
   async markViewed(userId: string, eventId: string): Promise<EventParticipation> {
-    const participation = await this.getOrCreateParticipation(userId, eventId);
-    participation.viewed = true;
-    return this.participationRepository.save(participation);
+    return this.updateParticipation(userId, eventId, { viewed: true });
   }
 
   async markInterested(userId: string, eventId: string): Promise<EventParticipation> {
-    const participation = await this.getOrCreateParticipation(userId, eventId);
-    participation.viewed = true;
-    participation.interested = true;
-    return this.participationRepository.save(participation);
+    return this.updateParticipation(userId, eventId, { viewed: true, interested: true });
   }
 
   async markConfirmed(userId: string, eventId: string): Promise<EventParticipation> {
-    const participation = await this.getOrCreateParticipation(userId, eventId);
-    participation.viewed = true;
-    participation.interested = true;
-    participation.confirmed = true;
-    return this.participationRepository.save(participation);
+    return this.updateParticipation(userId, eventId, { viewed: true, interested: true, confirmed: true });
   }
 
   async getParticipants(eventId: string) {
+    await this.findParticipatingById(eventId);
     const participations = await this.participationRepository.find({
       where: { eventId },
       relations: ['user'],
@@ -231,9 +262,7 @@ export class EventsService {
     const now = Date.now();
     return {
       interested: participations.filter((p) => p.interested && !p.confirmed).map((p) => p.event),
-      confirmed: participations
-        .filter((p) => p.confirmed && p.event.startsAt.getTime() >= now)
-        .map((p) => p.event),
+      confirmed: participations.filter((p) => p.confirmed && p.event.startsAt.getTime() >= now).map((p) => p.event),
       past: participations.filter((p) => p.event.startsAt.getTime() < now).map((p) => p.event),
     };
   }

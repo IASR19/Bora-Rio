@@ -1,5 +1,13 @@
 # Catálogo real do BORA
 
+## Conta administrativa inicial
+
+Execute `npm run seed:admin` para criar `admin@bora.com` com o role `admin` e a senha inicial definida para o bootstrap. Depois do build, também é possível usar `npm run seed:admin:prod`.
+
+A conta nasce sem telefone, data de nascimento e cidade. Ao entrar, precisa completar nome, gênero, data de nascimento, telefone e localização; depois segue para as preferências, como no primeiro cadastro. O painel administrativo permanece bloqueado enquanto o perfil estiver incompleto.
+
+O seed é transacional e idempotente: não redefine a senha, os dados, o role ou a situação de uma conta existente. Uma conta removida ou sem role administrativo com esse e-mail causa erro, em vez de ser sobrescrita. No deploy de produção, roda automaticamente depois do catálogo quando `runOnDeploy` está habilitado; também pode ser executado separadamente pelos comandos acima.
+
 O seed padrão contém **105 locais: 86 no Rio de Janeiro e 19 em Santa Rita do Sapucaí (MG)**,
 nas doze categorias da curadoria. Pesquisa realizada em **09/10/2026**.
 
@@ -13,9 +21,9 @@ npm run seed:dev
 ```
 
 Em produção, a cada push na `main` o job `migrate` do `.github/workflows/deploy.yml` roda as
-migrations e, **só se** `"runOnDeploy": true` em `src/seeds/seed.config.json`, o seed (antes do
-deploy na Vercel). O padrão é `false`: ao alterar o catálogo e querer publicar, marque `true` no
-mesmo commit. Como o seed é idempotente, esquecer `true` só faz ele rodar de novo sem duplicar nada.
+migrations e, **só se** `"runOnDeploy": true` em `src/seeds/seed.config.json`, os seeds do catálogo e
+da conta administrativa (antes do deploy na Vercel). A flag está habilitada. Ambos podem rodar
+novamente sem duplicar registros; o seed administrativo preserva a senha e o perfil existentes.
 Para rodar manualmente (ignora a flag), após o build:
 
 ```sh

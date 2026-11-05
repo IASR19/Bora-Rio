@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -57,6 +57,7 @@ export class AuthService {
   }
 
   issueTokens(user: User): TokenPair {
+    if (!user.isActive) throw new UnauthorizedException('Conta suspensa.');
     const payload = { sub: user.id, email: user.email };
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_SECRET'),
@@ -69,10 +70,12 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  refreshTokens(refreshToken: string): TokenPair {
+  async refreshTokens(refreshToken: string): Promise<TokenPair> {
     const payload = this.jwtService.verify(refreshToken, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
+    const user = await this.usersService.findById(payload.sub).catch(() => null);
+    if (!user?.isActive) throw new UnauthorizedException('Conta suspensa.');
     const accessToken = this.jwtService.sign(
       { sub: payload.sub, email: payload.email },
       {
@@ -90,7 +93,7 @@ export class AuthService {
     return { accessToken, refreshToken: newRefreshToken };
   }
 
-  async loginWithGoogle(idToken: string): Promise<User> {
+  async loginWithGoogle(idToken: string, language: 'pt' | 'es' | 'en' = 'pt'): Promise<User> {
     const audience = this.configService.get<string>('GOOGLE_CLIENT_ID');
     if (!audience) throw new GoogleLoginNotConfiguredException();
 
@@ -115,6 +118,7 @@ export class AuthService {
     }
 
     return this.usersService.createFromGoogle({
+      language,
       name: payload.name ?? payload.email.split('@')[0],
       email: payload.email,
       googleId: payload.sub,

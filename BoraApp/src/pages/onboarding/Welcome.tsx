@@ -1,9 +1,11 @@
+import { t, useI18n } from '@/i18n';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.png';
 import { Button } from '@/shared/ui/Button';
 
 export function Welcome() {
+  useI18n();
   const navigate = useNavigate();
 
   return (
@@ -11,15 +13,15 @@ export function Welcome() {
       <div>
         <img src={logo} alt="BORA" className="h-16 w-16" />
         <h1 className="mt-10 text-4xl font-extrabold leading-tight">
-          Descubra
-          <br />
-          lugares <span className="gradient-text">incríveis.</span>
+          {' '}
+          {t('Descubra')} <br /> {t('lugares')} <span className="gradient-text">{t('incríveis.')}</span>
         </h1>
-        <p className="mt-4 text-base text-muted">Conheça pessoas. Encontre experiências. Viva mais.</p>
+        <p className="mt-4 text-base text-muted">{t('Conheça pessoas. Encontre experiências. Viva mais.')}</p>
       </div>
 
       <Button size="lg" className="w-full" onClick={() => navigate('/how-it-works')}>
-        Continuar
+        {' '}
+        {t('Continuar')}{' '}
       </Button>
     </div>
   );

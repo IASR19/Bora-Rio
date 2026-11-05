@@ -1,9 +1,11 @@
+import { t, useI18n } from '@/i18n';
 import { MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/shared/ui/Button';
 
 export function Permissions() {
+  useI18n();
   const navigate = useNavigate();
 
   const requestLocation = () => {
@@ -23,18 +25,21 @@ export function Permissions() {
         <div className="flex h-24 w-24 items-center justify-center rounded-full bg-bora-gradient-soft">
           <MapPin className="h-11 w-11 text-destaque" />
         </div>
-        <h1 className="mt-8 text-2xl font-extrabold">Ative sua localização</h1>
+        <h1 className="mt-8 text-2xl font-extrabold">{t('Ative sua localização')}</h1>
         <p className="mt-3 max-w-xs text-sm text-muted">
-          Para descobrir o que está acontecendo perto de você.
+          {' '}
+          {t('Para descobrir o que está acontecendo perto de você.')}{' '}
         </p>
       </div>
 
       <div className="w-full space-y-3">
         <Button size="lg" className="w-full" onClick={requestLocation}>
-          Permitir localização
+          {' '}
+          {t('Permitir localização')}{' '}
         </Button>
         <Button size="lg" variant="ghost" className="w-full" onClick={() => navigate('/login')}>
-          Agora não
+          {' '}
+          {t('Agora não')}{' '}
         </Button>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react';
 import { useRef } from 'react';
 
@@ -11,6 +12,7 @@ import { STEPS } from '../data/landing.data';
  * os passos conta isso melhor do que caixas soltas.
  */
 export function HowItWorks() {
+  useI18n();
   const sectionRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -24,11 +26,10 @@ export function HowItWorks() {
     <section className="landing-band py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 lg:px-8">
         <Reveal>
-          <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-destaque">
-            Como funciona
-          </p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-destaque"> {t('Como funciona')} </p>
           <h2 className="mt-4 max-w-2xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-            Do “não sei o que fazer hoje” até o rolê acontecer.
+            {' '}
+            {t('Do “não sei o que fazer hoje” até o rolê acontecer.')}{' '}
           </h2>
         </Reveal>
 
@@ -65,10 +66,8 @@ export function HowItWorks() {
                 <span className="absolute -left-12 top-0 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-[11px] font-extrabold text-destaque sm:-left-16 sm:h-[52px] sm:w-[52px] sm:text-sm">
                   {step.number}
                 </span>
-                <h3 className="text-xl font-extrabold tracking-tight sm:text-2xl">{step.title}</h3>
-                <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
-                  {step.description}
-                </p>
+                <h3 className="text-xl font-extrabold tracking-tight sm:text-2xl">{t(step.title)}</h3>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted sm:text-base">{t(step.description)}</p>
               </Reveal>
             ))}
           </ol>

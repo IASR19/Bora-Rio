@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { Plus } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
@@ -10,6 +11,7 @@ import { FAQ } from '../data/landing.data';
 
 /** Acordeão de dúvidas — um item aberto por vez. */
 export function Faq() {
+  useI18n();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const prefersReducedMotion = useReducedMotion();
 
@@ -18,10 +20,12 @@ export function Faq() {
       <div className="mx-auto max-w-3xl px-5 lg:px-8">
         <Reveal>
           <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-destaque">
-            Perguntas frequentes
+            {' '}
+            {t('Perguntas frequentes')}{' '}
           </p>
           <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
-            O que todo mundo pergunta antes de criar a conta.
+            {' '}
+            {t('O que todo mundo pergunta antes de criar a conta.')}{' '}
           </h2>
         </Reveal>
 
@@ -29,7 +33,7 @@ export function Faq() {
           {FAQ.map((item, index) => {
             const isOpen = openIndex === index;
             return (
-              <Reveal key={item.question} delay={Math.min(index, 4) * STAGGER}>
+              <Reveal key={t(item.question)} delay={Math.min(index, 4) * STAGGER}>
                 <h3>
                   <button
                     type="button"
@@ -38,7 +42,7 @@ export function Faq() {
                     aria-controls={`faq-panel-${index}`}
                     className="flex w-full items-center justify-between gap-4 py-5 text-left"
                   >
-                    <span className="text-base font-semibold sm:text-lg">{item.question}</span>
+                    <span className="text-base font-semibold sm:text-lg">{t(item.question)}</span>
                     <Plus
                       className={cn(
                         'h-5 w-5 shrink-0 text-destaque transition-transform duration-300',
@@ -59,9 +63,7 @@ export function Faq() {
                       exit={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: EASE_OUT }}
                     >
-                      <p className="pb-5 pr-8 text-sm leading-relaxed text-muted sm:text-base">
-                        {item.answer}
-                      </p>
+                      <p className="pb-5 pr-8 text-sm leading-relaxed text-muted sm:text-base">{t(item.answer)}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>

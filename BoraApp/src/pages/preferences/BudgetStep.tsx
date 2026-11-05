@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useNavigate } from 'react-router-dom';
 
 import { usePreferencesDraft } from '@/hooks/usePreferencesDraft';
@@ -13,6 +14,7 @@ const OPTIONS = [
 ];
 
 export function BudgetStep() {
+  useI18n();
   const navigate = useNavigate();
   const { draft, toggleInArray } = usePreferencesDraft();
 
@@ -25,7 +27,7 @@ export function BudgetStep() {
     <PreferencesLayout
       step={5}
       total={5}
-      title="Faixa de preço"
+      title={t('Faixa de preço')}
       onContinue={finish}
       continueDisabled={draft.priceRanges.length === 0}
     >
@@ -36,7 +38,7 @@ export function BudgetStep() {
             selected={draft.priceRanges.includes(option.value)}
             onClick={() => toggleInArray('priceRanges', option.value)}
           >
-            {option.label}
+            {t(option.label)}
           </Chip>
         ))}
       </div>

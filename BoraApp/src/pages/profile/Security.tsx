@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { ArrowLeft, BadgeCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +22,7 @@ function formatCpf(value: string) {
 }
 
 export function Security() {
+  useI18n();
   const navigate = useNavigate();
   const { user, logout, refreshUser } = useAuth();
   const selfieInputRef = useRef<HTMLInputElement>(null);
@@ -64,7 +66,7 @@ export function Security() {
       await usersService.submitIdentity(cpf, selfieUrl);
       await refreshUser();
     } catch (err) {
-      setIdentityError(err instanceof ApiError ? err.message : 'Não foi possível verificar sua identidade.');
+      setIdentityError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível verificar sua identidade.');
     } finally {
       setIdentityLoading(false);
     }
@@ -81,7 +83,7 @@ export function Security() {
       setCurrentPassword('');
       setNewPassword('');
     } catch (err) {
-      setPasswordError(err instanceof ApiError ? err.message : 'Não foi possível trocar a senha.');
+      setPasswordError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível trocar a senha.');
     } finally {
       setPasswordLoading(false);
     }
@@ -95,57 +97,66 @@ export function Security() {
       await logout();
       navigate('/login', { replace: true });
     } catch (err) {
-      setDeleteError(err instanceof ApiError ? err.message : 'Não foi possível excluir a conta.');
+      setDeleteError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível excluir a conta.');
       setDeleteLoading(false);
     }
   };
 
   return (
     <div className="bg-background px-5 pt-6">
-      <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-surface">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
+      >
         <ArrowLeft className="h-5 w-5" />
       </button>
 
-      <h1 className="mt-4 text-2xl font-extrabold">Segurança</h1>
+      <h1 className="mt-4 text-2xl font-extrabold">{t('Segurança')}</h1>
 
       <form className="mt-6 space-y-4 rounded-2xl border border-border bg-surface p-4" onSubmit={handleChangePassword}>
-        <p className="font-semibold">Trocar senha</p>
+        <p className="font-semibold">{t('Trocar senha')}</p>
         <p className="text-xs text-muted">
-          Se você entra pelo Google, sua conta não tem senha — essa troca só funciona pra quem cadastrou com e-mail.
+          {' '}
+          {t(
+            'Se você entra pelo Google, sua conta não tem senha — essa troca só funciona pra quem cadastrou com e-mail.',
+          )}{' '}
         </p>
         <Input
           type="password"
-          placeholder="Senha atual"
+          placeholder={t('Senha atual')}
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           required
         />
         <Input
           type="password"
-          placeholder="Nova senha"
+          placeholder={t('Nova senha')}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           minLength={8}
           required
         />
-        {passwordError && <p className="text-sm text-destaque">{passwordError}</p>}
-        {passwordSuccess && <p className="text-sm text-green-400">Senha alterada.</p>}
+        {passwordError && <p className="text-sm text-destaque">{t(passwordError)}</p>}
+        {passwordSuccess && <p className="text-sm text-green-400">{t('Senha alterada.')}</p>}
         <Button type="submit" variant="outline" className="w-full" disabled={passwordLoading}>
-          {passwordLoading ? 'Salvando...' : 'Trocar senha'}
+          {passwordLoading ? t('Salvando...') : t('Trocar senha')}
         </Button>
       </form>
 
       <div className="mt-4 rounded-2xl border border-border bg-surface p-4">
-        <p className="font-semibold">Verificação de identidade</p>
+        <p className="font-semibold">{t('Verificação de identidade')}</p>
         {identityVerified ? (
           <p className="mt-2 flex items-center gap-2 text-sm text-muted">
-            <BadgeCheck className="h-4 w-4 text-destaque" /> Identidade verificada. Seus eventos publicam na hora.
+            <BadgeCheck className="h-4 w-4 text-destaque" />{' '}
+            {t('Identidade verificada. Seus eventos publicam na hora.')}{' '}
           </p>
         ) : (
           <form className="mt-3 space-y-3" onSubmit={handleSubmitIdentity}>
             <p className="text-xs text-muted">
-              Telefone confirmado + CPF + uma selfie liberam publicar evento na hora, mesmo em local novo, sem
-              esperar check-in de ninguém.
+              {' '}
+              {t(
+                'Telefone confirmado + CPF + uma selfie liberam publicar evento na hora, mesmo em local novo, sem esperar check-in de ninguém.',
+              )}{' '}
             </p>
             <Input placeholder="CPF" value={cpf} onChange={(e) => setCpf(formatCpf(e.target.value))} required />
             <button
@@ -153,7 +164,7 @@ export function Security() {
               onClick={() => selfieInputRef.current?.click()}
               className="flex h-32 w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-border bg-background text-sm text-muted"
             >
-              {selfieUrl ? <img src={selfieUrl} className="h-full w-full object-cover" alt="" /> : 'Tirar selfie'}
+              {selfieUrl ? <img src={selfieUrl} className="h-full w-full object-cover" alt="" /> : t('Tirar selfie')}
             </button>
             <input
               ref={selfieInputRef}
@@ -163,33 +174,36 @@ export function Security() {
               className="hidden"
               onChange={handleSelfieChange}
             />
-            {identityError && <p className="text-sm text-destaque">{identityError}</p>}
+            {identityError && <p className="text-sm text-destaque">{t(identityError)}</p>}
             <Button type="submit" variant="outline" className="w-full" disabled={identityLoading}>
-              {identityLoading ? 'Enviando...' : 'Verificar identidade'}
+              {identityLoading ? t('Enviando...') : t('Verificar identidade')}
             </Button>
           </form>
         )}
       </div>
 
       <div className="mt-4 rounded-2xl border border-destaque/30 bg-surface p-4">
-        <p className="font-semibold text-destaque">Excluir conta</p>
+        <p className="font-semibold text-destaque">{t('Excluir conta')}</p>
         <p className="mt-1 text-xs text-muted">
-          Seus dados são removidos do BORA. Essa ação não pode ser desfeita.
+          {' '}
+          {t('Seus dados são removidos do BORA. Essa ação não pode ser desfeita.')}{' '}
         </p>
-        {deleteError && <p className="mt-2 text-sm text-destaque">{deleteError}</p>}
+        {deleteError && <p className="mt-2 text-sm text-destaque">{t(deleteError)}</p>}
         {!confirmingDelete ? (
           <Button variant="outline" className="mt-3 w-full" onClick={() => setConfirmingDelete(true)}>
-            Excluir minha conta
+            {' '}
+            {t('Excluir minha conta')}{' '}
           </Button>
         ) : (
           <div className="mt-3 space-y-2">
-            <p className="text-sm font-semibold">Tem certeza? Isso não pode ser desfeito.</p>
+            <p className="text-sm font-semibold">{t('Tem certeza? Isso não pode ser desfeito.')}</p>
             <div className="flex gap-2">
               <Button variant="ghost" className="flex-1" onClick={() => setConfirmingDelete(false)}>
-                Cancelar
+                {' '}
+                {t('Cancelar')}{' '}
               </Button>
               <Button className="flex-1" onClick={handleDeleteAccount} disabled={deleteLoading}>
-                {deleteLoading ? 'Excluindo...' : 'Confirmar exclusão'}
+                {deleteLoading ? t('Excluindo...') : t('Confirmar exclusão')}
               </Button>
             </div>
           </div>

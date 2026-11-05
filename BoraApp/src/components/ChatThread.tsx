@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -10,12 +11,15 @@ const POLL_INTERVAL_MS = 4000;
 
 interface ChatThreadProps {
   queryKey: unknown[];
-  fetchMessages: () => Promise<{ id: string; body: string; createdAt: string; sender: { id: string; name: string; avatarUrl: string | null } }[]>;
+  fetchMessages: () => Promise<
+    { id: string; body: string; createdAt: string; sender: { id: string; name: string; avatarUrl: string | null } }[]
+  >;
   sendMessage: (body: string) => Promise<unknown>;
   emptyLabel: string;
 }
 
 export function ChatThread({ queryKey, fetchMessages, sendMessage, emptyLabel }: ChatThreadProps) {
+  useI18n();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState('');
@@ -51,7 +55,7 @@ export function ChatThread({ queryKey, fetchMessages, sendMessage, emptyLabel }:
       setDraft('');
       await queryClient.invalidateQueries({ queryKey });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Não foi possível enviar a mensagem.');
+      setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível enviar a mensagem.');
     } finally {
       setSending(false);
     }
@@ -62,8 +66,8 @@ export function ChatThread({ queryKey, fetchMessages, sendMessage, emptyLabel }:
       <div className="flex flex-1 items-center justify-center px-4 text-center">
         <p className="text-sm text-muted">
           {accessDenied
-            ? 'Você precisa demonstrar interesse, confirmar presença ou fazer check-in nesse evento pra entrar aqui.'
-            : 'Não foi possível carregar as mensagens.'}
+            ? t('Você precisa demonstrar interesse, confirmar presença ou fazer check-in nesse evento pra entrar aqui.')
+            : t('Não foi possível carregar as mensagens.')}
         </p>
       </div>
     );
@@ -72,7 +76,7 @@ export function ChatThread({ queryKey, fetchMessages, sendMessage, emptyLabel }:
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex-1 space-y-3 overflow-y-auto py-2">
-        {!messages?.length && <p className="py-4 text-center text-sm text-muted">{emptyLabel}</p>}
+        {!messages?.length && <p className="py-4 text-center text-sm text-muted">{t(emptyLabel)}</p>}
         {messages?.map((message) => {
           const mine = message.sender.id === user?.id;
           return (
@@ -92,20 +96,20 @@ export function ChatThread({ queryKey, fetchMessages, sendMessage, emptyLabel }:
         <div ref={bottomRef} />
       </div>
 
-      {error && <p className="pb-1 text-xs text-destaque">{error}</p>}
+      {error && <p className="pb-1 text-xs text-destaque">{t(error)}</p>}
 
       <form onSubmit={handleSend} className="flex items-center gap-2 pb-2 pt-1">
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Escrever mensagem..."
+          placeholder={t('Escrever mensagem...')}
           className="h-12 flex-1 rounded-full border border-border bg-surface px-4 text-sm outline-none focus:border-destaque"
         />
         <button
           type="submit"
           disabled={!draft.trim() || sending}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-bora-gradient text-white disabled:opacity-50"
-          aria-label="Enviar"
+          aria-label={t('Enviar')}
         >
           <Send className="h-5 w-5" />
         </button>

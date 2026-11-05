@@ -2,7 +2,7 @@
 
 Aplicativo de descoberta social e experiências presenciais. Monorepo com backend (NestJS + TypeORM +
 PostgreSQL) e frontend (React + Vite + PWA), seguindo o padrão arquitetural de referência (etapa
-inicial/MVP: shadcn/Tailwind, sem Storybook/Cypress/Orval/i18n).
+inicial/MVP: shadcn/Tailwind, sem Storybook/Cypress/Orval; idiomas PT/ES/EN).
 
 ## Estrutura
 
@@ -16,6 +16,8 @@ Bora-Rio/
 ```
 
 ## Infra
+
+Painel administrativo, roles, moderação, filtros e configuração do primeiro administrador: [guia de administração e idiomas](docs/administration.md).
 
 **Um único deploy na Vercel** (não usa Railway): o `vercel.json` na raiz builda o
 front (`BoraApp`, estático) e a API NestJS (`BoraApi/api/index.ts`, serverless

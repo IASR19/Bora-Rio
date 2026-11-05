@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
@@ -12,6 +13,7 @@ import { LocationFields } from './LocationFields';
 /** Troca rápida da cidade (e do ponto usado na distância) a partir do cabeçalho da Home.
  * Montado só enquanto aberto, então cada abertura parte da cidade salva. */
 export function LocationSheet({ onClose }: { onClose: () => void }) {
+  useI18n();
   const { user, refreshUser } = useAuth();
   const location = useCityLocation(user);
   const [saving, setSaving] = useState(false);
@@ -25,24 +27,24 @@ export function LocationSheet({ onClose }: { onClose: () => void }) {
       await usersService.updateMe({ city, ...(latitude != null && longitude != null ? { latitude, longitude } : {}) });
       await refreshUser();
       if (geocodeFailed) {
-        location.setError('Cidade salva, mas não achamos ela no mapa. Use "Usar minha localização atual".');
+        location.setError(t('Cidade salva, mas não achamos ela no mapa. Use "Usar minha localização atual".'));
         return;
       }
       onClose();
     } catch (err) {
-      location.setError(err instanceof ApiError ? err.message : 'Não foi possível salvar.');
+      location.setError(err instanceof ApiError ? err.sourceMessage : t('Não foi possível salvar.'));
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <BottomSheet open onOpenChange={(open) => !open && onClose()} title="Sua localização">
+    <BottomSheet open onOpenChange={(open) => !open && onClose()} title={t('Sua localização')}>
       <div className="space-y-5">
         <LocationFields location={location} />
-        {location.error && <p className="text-sm text-destaque">{location.error}</p>}
+        {location.error && <p className="text-sm text-destaque">{t(location.error)}</p>}
         <Button size="lg" className="w-full" onClick={handleSave} disabled={saving || location.locating}>
-          {saving ? 'Salvando...' : 'Salvar localização'}
+          {saving ? t('Salvando...') : t('Salvar localização')}
         </Button>
       </div>
     </BottomSheet>

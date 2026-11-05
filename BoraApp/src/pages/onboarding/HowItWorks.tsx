@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { Compass, MapPin, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,12 +11,13 @@ const steps = [
 ];
 
 export function HowItWorks() {
+  useI18n();
   const navigate = useNavigate();
 
   return (
     <div className="app-shell flex min-h-dvh flex-col justify-between bg-background px-6 pb-10 pt-16">
       <div>
-        <h1 className="text-2xl font-extrabold">Como funciona</h1>
+        <h1 className="text-2xl font-extrabold">{t('Como funciona')}</h1>
         <div className="mt-8 space-y-6">
           {steps.map(({ number, title, desc, icon: Icon }) => (
             <div key={number} className="flex items-start gap-4 rounded-2xl border border-border bg-surface p-4">
@@ -24,7 +26,7 @@ export function HowItWorks() {
               </div>
               <div>
                 <p className="text-xs font-bold tracking-widest text-muted">{number}</p>
-                <p className="font-bold">{title}</p>
+                <p className="font-bold">{t(title)}</p>
                 <p className="mt-1 text-sm text-muted">{desc}</p>
               </div>
             </div>
@@ -33,7 +35,8 @@ export function HowItWorks() {
       </div>
 
       <Button size="lg" className="w-full" onClick={() => navigate('/permissions')}>
-        Continuar
+        {' '}
+        {t('Continuar')}{' '}
       </Button>
     </div>
   );

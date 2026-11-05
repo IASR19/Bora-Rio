@@ -6,6 +6,7 @@ export const CommonErrorCodes = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   DUPLICATED_RESOURCE: 'DUPLICATED_RESOURCE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+  EVENT_REJECTED: 'EVENT_REJECTED',
 } as const;
 
 export type CommonErrorCode = (typeof CommonErrorCodes)[keyof typeof CommonErrorCodes];

@@ -26,6 +26,15 @@ export enum BusinessVerificationStatus {
 
 @Entity('users')
 export class User extends BaseEntity {
+  @Column({ type: 'varchar', length: 16, default: 'user' })
+  role: 'user' | 'admin';
+
+  @Column({ type: 'varchar', length: 5, default: 'pt' })
+  language: 'pt' | 'es' | 'en';
+
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean;
+
   @Column({ length: 120 })
   name: string;
 

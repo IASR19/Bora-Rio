@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -28,6 +29,7 @@ const FAQ = [
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
+  useI18n();
   const [open, setOpen] = useState(false);
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-surface">
@@ -35,24 +37,28 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold"
       >
-        {q}
+        {t(q)}
         <ChevronDown className={cn('h-4 w-4 shrink-0 text-muted transition-transform', open && 'rotate-180')} />
       </button>
-      {open && <p className="px-4 pb-4 text-sm text-muted">{a}</p>}
+      {open && <p className="px-4 pb-4 text-sm text-muted">{t(a)}</p>}
     </div>
   );
 }
 
 export function Support() {
+  useI18n();
   const navigate = useNavigate();
 
   return (
     <div className="bg-background px-5 pt-6">
-      <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-surface">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
+      >
         <ArrowLeft className="h-5 w-5" />
       </button>
 
-      <h1 className="mt-4 text-2xl font-extrabold">Ajuda e suporte</h1>
+      <h1 className="mt-4 text-2xl font-extrabold">{t('Ajuda e suporte')}</h1>
 
       <div className="mt-6 space-y-2">
         {FAQ.map(({ q, a }) => (
@@ -61,8 +67,10 @@ export function Support() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-surface p-4 text-center text-sm text-muted">
-        Canal direto de suporte (WhatsApp/e-mail) ainda não configurado — assim que houver um contato oficial, ele
-        aparece aqui.
+        {' '}
+        {t(
+          'Canal direto de suporte (WhatsApp/e-mail) ainda não configurado — assim que houver um contato oficial, ele aparece aqui.',
+        )}{' '}
       </div>
     </div>
   );

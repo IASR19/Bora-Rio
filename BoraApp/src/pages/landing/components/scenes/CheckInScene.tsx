@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { QrCode, ScanLine, ShieldCheck } from 'lucide-react';
 
 import { StatusBar } from './SceneChrome';
@@ -21,6 +22,7 @@ const QR_PATTERN = [
 
 /** Cena 3 — chegou no lugar: check-in pelo QR do estabelecimento. */
 export function CheckInScene() {
+  useI18n();
   return (
     <div className="relative flex h-full flex-col bg-background">
       <StatusBar />
@@ -31,8 +33,8 @@ export function CheckInScene() {
           Check-in
         </span>
         <p className="mt-2 text-[11px] font-bold leading-snug">
-          Escaneie o QR Code
-          <br />
+          {' '}
+          {t('Escaneie o QR Code')} <br />
           do estabelecimento
         </p>
 
@@ -45,24 +47,25 @@ export function CheckInScene() {
 
           <div className="grid gap-[2px]" style={{ gridTemplateColumns: 'repeat(13, 1fr)' }}>
             {QR_PATTERN.flatMap((row, y) =>
-              row.split('').map((cell, x) => (
-                <span
-                  key={`${y}-${x}`}
-                  className={cell === '#' ? 'h-[7px] w-[7px] bg-[#05070d]' : 'h-[7px] w-[7px]'}
-                />
-              )),
+              row
+                .split('')
+                .map((cell, x) => (
+                  <span
+                    key={`${y}-${x}`}
+                    className={cell === '#' ? 'h-[7px] w-[7px] bg-[#05070d]' : 'h-[7px] w-[7px]'}
+                  />
+                )),
             )}
           </div>
         </div>
 
         <div className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-surface py-2 text-[9px] text-muted">
-          <QrCode className="h-[11px] w-[11px]" strokeWidth={2} />
-          Inserir código manualmente
+          <QrCode className="h-[11px] w-[11px]" strokeWidth={2} /> {t('Inserir código manualmente')}{' '}
         </div>
 
         <p className="mt-4 flex items-center gap-1 text-[7.5px] text-muted">
-          <ShieldCheck className="h-[9px] w-[9px] text-destaque" strokeWidth={2.2} />
-          Código válido por 30 segundos
+          <ShieldCheck className="h-[9px] w-[9px] text-destaque" strokeWidth={2.2} />{' '}
+          {t('Código válido por 30 segundos')}{' '}
         </p>
       </div>
     </div>

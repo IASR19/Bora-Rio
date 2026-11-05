@@ -1,3 +1,5 @@
+import { domainLabel } from '@/i18n/domain-label';
+import { t, useI18n } from '@/i18n';
 import { useState } from 'react';
 
 import { DISTANCE_OPTIONS } from '@/shared/constants/distance-options';
@@ -35,6 +37,7 @@ export function FiltersSheet({
   /** Sem usuário não há raio salvo: "sem escolha" equivale a qualquer distância. */
   hasPreferences: boolean;
 }) {
+  useI18n();
   const [draft, setDraft] = useState<Filters>(value);
   const [wasOpen, setWasOpen] = useState(open);
 
@@ -46,10 +49,10 @@ export function FiltersSheet({
   }
 
   return (
-    <BottomSheet open={open} onOpenChange={onOpenChange} title="Filtros">
+    <BottomSheet open={open} onOpenChange={onOpenChange} title={t('Filtros')}>
       <div className="space-y-6">
         <div>
-          <p className="mb-2 text-sm font-semibold text-muted">Categoria</p>
+          <p className="mb-2 text-sm font-semibold text-muted">{t('Categoria')}</p>
           <div className="flex flex-wrap gap-2">
             {VENUE_CATEGORY_OPTIONS.map(({ value: category, label }) => (
               <Chip
@@ -57,29 +60,29 @@ export function FiltersSheet({
                 selected={draft.category === category}
                 onClick={() => setDraft((d) => ({ ...d, category: d.category === category ? undefined : category }))}
               >
-                {label}
+                {t(label)}
               </Chip>
             ))}
           </div>
         </div>
 
         <div>
-          <p className="mb-2 text-sm font-semibold text-muted">Música</p>
+          <p className="mb-2 text-sm font-semibold text-muted">{t('Música')}</p>
           <div className="flex flex-wrap gap-2">
             {MUSIC.map((genre) => (
               <Chip
-                key={genre}
+                key={domainLabel(genre)}
                 selected={draft.music === genre}
                 onClick={() => setDraft((d) => ({ ...d, music: d.music === genre ? undefined : genre }))}
               >
-                {genre}
+                {domainLabel(genre)}
               </Chip>
             ))}
           </div>
         </div>
 
         <div>
-          <p className="mb-2 text-sm font-semibold text-muted">Preço</p>
+          <p className="mb-2 text-sm font-semibold text-muted">{t('Preço')}</p>
           <div className="flex flex-wrap gap-2">
             {PRICES.map((price) => (
               <Chip
@@ -89,14 +92,14 @@ export function FiltersSheet({
                   setDraft((d) => ({ ...d, priceRange: d.priceRange === price.value ? undefined : price.value }))
                 }
               >
-                {price.label}
+                {t(price.label)}
               </Chip>
             ))}
           </div>
         </div>
 
         <div>
-          <p className="mb-2 text-sm font-semibold text-muted">Distância máxima</p>
+          <p className="mb-2 text-sm font-semibold text-muted">{t('Distância máxima')}</p>
           <div className="flex flex-wrap gap-2">
             {/* Sem escolha aqui, a API usa o raio salvo em Minhas preferências. */}
             {hasPreferences && (
@@ -104,7 +107,8 @@ export function FiltersSheet({
                 selected={draft.maxDistanceKm === undefined}
                 onClick={() => setDraft((d) => ({ ...d, maxDistanceKm: undefined }))}
               >
-                Minha preferência
+                {' '}
+                {t('Minha preferência')}{' '}
               </Chip>
             )}
             {DISTANCE_OPTIONS.map(({ value, label }) => (
@@ -115,7 +119,7 @@ export function FiltersSheet({
                 }
                 onClick={() => setDraft((d) => ({ ...d, maxDistanceKm: value }))}
               >
-                {label}
+                {t(label)}
               </Chip>
             ))}
           </div>
@@ -129,7 +133,8 @@ export function FiltersSheet({
             onOpenChange(false);
           }}
         >
-          Aplicar filtros
+          {' '}
+          {t('Aplicar filtros')}{' '}
         </Button>
       </div>
     </BottomSheet>

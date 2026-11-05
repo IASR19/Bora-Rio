@@ -1,3 +1,5 @@
+import { useI18n } from '@/i18n';
+import { domainLabel } from '@/i18n/domain-label';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -38,10 +40,10 @@ export function VenueMap({
   heightClassName?: string;
   interactive?: boolean;
 }) {
+  useI18n();
   const navigate = useNavigate();
 
-  const center: [number, number] =
-    venues.length > 0 ? [venues[0].latitude, venues[0].longitude] : DEFAULT_CENTER;
+  const center: [number, number] = venues.length > 0 ? [venues[0].latitude, venues[0].longitude] : DEFAULT_CENTER;
 
   return (
     <div className={cn('map-dark-tiles w-full overflow-hidden rounded-2xl border border-border', heightClassName)}>
@@ -73,7 +75,9 @@ export function VenueMap({
           >
             <Popup>
               <p className="font-bold">{venue.name}</p>
-              <p className="text-xs text-muted">{venueCategoryLabel(venue.category)} · {venue.priceRange}</p>
+              <p className="text-xs text-muted">
+                {venueCategoryLabel(venue.category)} · {domainLabel(venue.priceRange)}
+              </p>
             </Popup>
           </Marker>
         ))}

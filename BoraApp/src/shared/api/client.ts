@@ -1,3 +1,5 @@
+import { apiErrorSource, translateApiError } from '@/i18n/errors';
+
 // Em produção, front e API vivem no mesmo deploy Vercel (same-origin) — "/api" relativo
 // já resolve certo sem precisar de env var. Em dev local, o .env aponta pra localhost:3000.
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
@@ -15,13 +17,22 @@ function readCsrfCookie(): string | null {
 }
 
 export class ApiError extends Error {
+  readonly sourceMessage: string;
   constructor(
-    message: string,
+    message: unknown,
     public status: number,
     public errorCode?: string,
     public fieldErrors?: { field: string; message: string }[],
   ) {
-    super(message);
+    const source = apiErrorSource(message, status, errorCode);
+    super(source);
+    this.sourceMessage = source;
+    this.name = 'ApiError';
+    // Resolve when rendered so an existing error follows a subsequent language change.
+    Object.defineProperty(this, 'message', {
+      get: () => translateApiError(message, status, errorCode),
+      configurable: true,
+    });
   }
 }
 

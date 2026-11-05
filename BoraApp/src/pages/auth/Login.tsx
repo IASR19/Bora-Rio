@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -7,8 +8,10 @@ import { useAuth } from '@/context/AuthContext';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
+import { isProfileComplete } from '@/utils/profile';
 
 export function Login() {
+  useI18n();
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
@@ -21,10 +24,10 @@ export function Login() {
     setError(null);
     setLoading(true);
     try {
-      await login(email, password);
-      navigate('/home');
+      const user = await login(email, password);
+      navigate(isProfileComplete(user) ? '/home' : '/complete-profile', { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Não foi possível entrar.');
+      setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível entrar.');
     } finally {
       setLoading(false);
     }
@@ -32,42 +35,49 @@ export function Login() {
 
   return (
     <div className="app-shell flex min-h-dvh flex-col justify-center bg-background px-6 py-10">
-      <h1 className="text-3xl font-extrabold">Entrar no BORA</h1>
+      <h1 className="text-3xl font-extrabold">{t('Entrar no BORA')}</h1>
 
       <div className="mt-8 space-y-3">
         <GoogleSignInButton onSuccess={() => navigate('/home')} onError={setError} />
         {featureFlags.appleLogin && (
           <Button variant="outline" className="w-full" type="button">
-            Continuar com Apple
+            {' '}
+            {t('Continuar com Apple')}{' '}
           </Button>
         )}
       </div>
 
       <div className="my-6 flex items-center gap-3 text-xs text-muted">
-        <span className="h-px flex-1 bg-border" />
-        ou
-        <span className="h-px flex-1 bg-border" />
+        <span className="h-px flex-1 bg-border" /> {t('ou')} <span className="h-px flex-1 bg-border" />
       </div>
 
       <form className="space-y-3" onSubmit={handleSubmit}>
-        <Input type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Input
+          type="email"
+          placeholder={t('E-mail')}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
         <Input
           type="password"
-          placeholder="Senha"
+          placeholder={t('Senha')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && <p className="text-sm text-destaque">{error}</p>}
+        {error && <p className="text-sm text-destaque">{t(error)}</p>}
         <Button size="lg" className="w-full" type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Continuar'}
+          {loading ? t('Entrando...') : t('Continuar')}
         </Button>
       </form>
 
       <p className="mt-8 text-center text-sm text-muted">
-        Ainda não tem conta?{' '}
+        {' '}
+        {t('Ainda não tem conta?')}{' '}
         <Link to="/register" className="font-semibold text-foreground underline">
-          Criar conta
+          {' '}
+          {t('Criar conta')}{' '}
         </Link>
       </p>
     </div>

@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -5,17 +6,21 @@ import { useNavigate } from 'react-router-dom';
 import { deuBoraService } from '@/services/deu-bora.service';
 
 export function Matches() {
+  useI18n();
   const navigate = useNavigate();
   const { data: matches } = useQuery({ queryKey: ['deu-bora', 'matches'], queryFn: deuBoraService.myMatches });
 
   return (
     <div className="bg-background px-5 pt-6">
-      <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-surface">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
+      >
         <ArrowLeft className="h-5 w-5" />
       </button>
 
-      <h1 className="mt-4 text-2xl font-extrabold">Conexões</h1>
-      <p className="mt-1 text-sm text-muted">Deu Bora — interesse mútuo depois de um evento.</p>
+      <h1 className="mt-4 text-2xl font-extrabold">{t('Conexões')}</h1>
+      <p className="mt-1 text-sm text-muted">{t('Deu Bora — interesse mútuo depois de um evento.')}</p>
 
       <div className="mt-6 space-y-2">
         {matches?.length ? (
@@ -41,7 +46,8 @@ export function Matches() {
           ))
         ) : (
           <p className="py-6 text-center text-sm text-muted">
-            Nenhuma conexão ainda — dá bora num evento e, se rolar interesse mútuo depois, aparece aqui.
+            {' '}
+            {t('Nenhuma conexão ainda — dá bora num evento e, se rolar interesse mútuo depois, aparece aqui.')}{' '}
           </p>
         )}
       </div>

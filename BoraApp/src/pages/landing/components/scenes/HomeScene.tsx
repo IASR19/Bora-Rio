@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { Bell, MapPin, Search } from 'lucide-react';
 
 import { BottomNav, FaceStack, StatusBar } from './SceneChrome';
@@ -6,6 +7,7 @@ const CHIPS = ['Hoje', 'Bares', 'Festas', 'Jantar'];
 
 /** Cena 1 — "o que você quer fazer hoje?". Espelha a Home do app. */
 export function HomeScene() {
+  useI18n();
   return (
     <div className="relative h-full bg-background">
       <StatusBar />
@@ -27,7 +29,7 @@ export function HomeScene() {
 
       <div className="mx-4 mt-3 flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-2">
         <Search className="h-[11px] w-[11px] text-muted" strokeWidth={2} />
-        <span className="text-[9px] text-muted">O que você quer fazer hoje?</span>
+        <span className="text-[9px] text-muted">{t('O que você quer fazer hoje?')}</span>
       </div>
 
       <div className="mt-3 flex gap-1.5 overflow-hidden px-4">
@@ -46,18 +48,13 @@ export function HomeScene() {
       </div>
 
       <div className="mt-4 flex items-center justify-between px-4">
-        <span className="text-[10px] font-bold">Eventos para você</span>
-        <span className="text-[8px] text-muted">Ver todos</span>
+        <span className="text-[10px] font-bold">{t('Eventos para você')}</span>
+        <span className="text-[8px] text-muted">{t('Ver todos')}</span>
       </div>
 
       <div className="mx-4 mt-2 overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="relative h-[104px]">
-          <img
-            src="/venues/marea-beach-club.webp"
-            alt=""
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
+          <img src="/venues/marea-beach-club.webp" alt="" className="h-full w-full object-cover" loading="lazy" />
           <div className="absolute right-2 top-2 flex flex-col items-center rounded-xl bg-background/85 px-2 py-1 backdrop-blur">
             <span className="text-[13px] font-extrabold leading-none">92</span>
             <span className="text-[6px] font-bold tracking-widest text-destaque">BORA</span>

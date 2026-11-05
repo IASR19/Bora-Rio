@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useNavigate } from 'react-router-dom';
 
 import { usePreferencesDraft } from '@/hooks/usePreferencesDraft';
@@ -7,6 +8,7 @@ import { Chip } from '@/shared/ui/Chip';
 import { PreferencesLayout } from './PreferencesLayout';
 
 export function AgeDistanceStep() {
+  useI18n();
   const navigate = useNavigate();
   const { draft, update } = usePreferencesDraft();
 
@@ -14,10 +16,10 @@ export function AgeDistanceStep() {
     <PreferencesLayout
       step={4}
       total={5}
-      title="Faixa etária e distância"
+      title={t('Faixa etária e distância')}
       onContinue={() => navigate('/preferences/budget')}
     >
-      <p className="text-sm font-semibold text-muted">Idade de interesse</p>
+      <p className="text-sm font-semibold text-muted">{t('Idade de interesse')}</p>
       <div className="mt-3 flex items-center gap-3">
         <input
           type="number"
@@ -38,7 +40,7 @@ export function AgeDistanceStep() {
         />
       </div>
 
-      <p className="mt-8 text-sm font-semibold text-muted">Distância máxima</p>
+      <p className="mt-8 text-sm font-semibold text-muted">{t('Distância máxima')}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {DISTANCE_OPTIONS.map((option) => (
           <Chip
@@ -46,7 +48,7 @@ export function AgeDistanceStep() {
             selected={draft.maxDistanceKm === option.value}
             onClick={() => update({ maxDistanceKm: option.value })}
           >
-            {option.label}
+            {t(option.label)}
           </Chip>
         ))}
       </div>

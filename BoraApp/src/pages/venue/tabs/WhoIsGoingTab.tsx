@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -17,12 +18,17 @@ function ParticipantRow({
   isMe: boolean;
   onToggle: () => void;
 }) {
+  useI18n();
   return (
     <div className="flex items-center justify-between py-2.5">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-bora-gradient-soft text-sm font-bold text-destaque">
           {participant.avatarUrl ? (
-            <img src={participant.avatarUrl} className="h-full w-full rounded-full object-cover" alt={participant.name} />
+            <img
+              src={participant.avatarUrl}
+              className="h-full w-full rounded-full object-cover"
+              alt={participant.name}
+            />
           ) : (
             participant.name.charAt(0)
           )}
@@ -38,7 +44,7 @@ function ParticipantRow({
               : 'rounded-full bg-bora-gradient px-4 py-1.5 text-xs font-semibold text-white'
           }
         >
-          {isFollowing ? 'Seguindo' : 'Seguir'}
+          {isFollowing ? t('Seguindo') : t('Seguir')}
         </button>
       )}
     </div>
@@ -46,6 +52,7 @@ function ParticipantRow({
 }
 
 export function WhoIsGoingTab({ eventId }: { eventId: string }) {
+  useI18n();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -84,9 +91,9 @@ export function WhoIsGoingTab({ eventId }: { eventId: string }) {
     <div className="divide-y divide-border">
       {sections.map((section) =>
         section.list.length ? (
-          <div key={section.title} className="pb-3">
+          <div key={t(section.title)} className="pb-3">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-muted">
-              {section.title} ({section.list.length})
+              {t(section.title)} ({section.list.length})
             </p>
             {section.list.map((p) => (
               <ParticipantRow
@@ -101,7 +108,7 @@ export function WhoIsGoingTab({ eventId }: { eventId: string }) {
         ) : null,
       )}
       {!data.confirmed.length && !data.interested.length && !data.checkedIn.length && (
-        <p className="py-4 text-sm text-muted">Seja o primeiro a demonstrar interesse.</p>
+        <p className="py-4 text-sm text-muted">{t('Seja o primeiro a demonstrar interesse.')}</p>
       )}
     </div>
   );

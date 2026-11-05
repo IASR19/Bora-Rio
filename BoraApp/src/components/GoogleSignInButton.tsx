@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 import { googleClientId } from '@/config/featureFlags';
@@ -11,6 +12,7 @@ export function GoogleSignInButton({
   onSuccess: () => void;
   onError: (message: string) => void;
 }) {
+  const { language } = useI18n();
   const { loginWithGoogle } = useAuth();
 
   if (!googleClientId) {
@@ -20,15 +22,16 @@ export function GoogleSignInButton({
         className="w-full"
         type="button"
         disabled
-        title="Configure VITE_GOOGLE_CLIENT_ID para habilitar o login com Google"
+        title={t('Configure VITE_GOOGLE_CLIENT_ID para habilitar o login com Google')}
       >
-        Continuar com Google
+        {' '}
+        {t('Continuar com Google')}{' '}
       </Button>
     );
   }
 
   return (
-    <GoogleOAuthProvider clientId={googleClientId}>
+    <GoogleOAuthProvider clientId={googleClientId} locale={language} key={language}>
       <div className="flex justify-center overflow-hidden rounded-full [&>div]:w-full [&_iframe]:!w-full">
         <GoogleLogin
           theme="filled_black"

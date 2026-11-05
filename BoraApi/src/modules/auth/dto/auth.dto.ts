@@ -1,19 +1,14 @@
-import {
-  IsDateString,
-  IsEmail,
-  IsEnum,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-  Length,
-  MinLength,
-} from 'class-validator';
+import { IsDateString, IsEmail, IsEnum, IsOptional, IsPhoneNumber, IsString, Length, MinLength } from 'class-validator';
 
 import { IsMinAge } from '../../../shared/validators/min-age.validator';
 import { Gender } from '../../users/entities/user.entity';
 import { MIN_AGE } from '../auth.constants';
 
 export class RegisterDto {
+  @IsOptional()
+  @IsEnum(['pt', 'es', 'en'])
+  language?: 'pt' | 'es' | 'en';
+
   @IsString()
   @Length(2, 120)
   name: string;
@@ -63,6 +58,10 @@ export class ConfirmVerificationDto {
 }
 
 export class GoogleLoginDto {
+  @IsOptional()
+  @IsEnum(['pt', 'es', 'en'])
+  language?: 'pt' | 'es' | 'en';
+
   /** ID token (JWT) retornado pelo Google Identity Services no front. */
   @IsString()
   idToken: string;

@@ -43,7 +43,7 @@ export class AuthController {
   @Public()
   @Post('google')
   async loginWithGoogle(@Body() dto: GoogleLoginDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.loginWithGoogle(dto.idToken);
+    const user = await this.authService.loginWithGoogle(dto.idToken, dto.language);
     const tokens = this.authService.issueTokens(user);
     setRefreshTokenCookie(res, tokens.refreshToken);
     return { user, accessToken: tokens.accessToken };
@@ -51,11 +51,11 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
-  refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.[REFRESH_TOKEN_COOKIE];
     if (!refreshToken) throw new UnauthorizedException('Missing refresh token');
 
-    const tokens = this.authService.refreshTokens(refreshToken);
+    const tokens = await this.authService.refreshTokens(refreshToken);
     setRefreshTokenCookie(res, tokens.refreshToken);
     return { accessToken: tokens.accessToken };
   }

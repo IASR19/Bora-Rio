@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { BadgeCheck, Clock, FileUp } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -32,21 +33,25 @@ const ANALYSIS_STEPS = [
 ];
 
 function AnalysisProgress({ value }: { value: number }) {
+  useI18n();
   const step = [...ANALYSIS_STEPS].reverse().find((s) => value >= s.from) ?? ANALYSIS_STEPS[0];
   return (
     <div className="space-y-2">
       <div
         role="progressbar"
-        aria-label="Análise do contrato social"
+        aria-label={t('Análise do contrato social')}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(value)}
         className="h-2 w-full overflow-hidden rounded-full bg-surface-alt"
       >
-        <div className="h-full rounded-full bg-bora-gradient transition-[width] duration-300" style={{ width: `${value}%` }} />
+        <div
+          className="h-full rounded-full bg-bora-gradient transition-[width] duration-300"
+          style={{ width: `${value}%` }}
+        />
       </div>
       <p className="flex justify-between text-xs text-muted">
-        <span>{step.label}</span>
+        <span>{t(step.label)}</span>
         <span>{Math.round(value)}%</span>
       </p>
     </div>
@@ -56,7 +61,7 @@ function AnalysisProgress({ value }: { value: number }) {
 function readAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onerror = () => reject(new Error('Não foi possível ler o arquivo.'));
+    reader.onerror = () => reject(new Error(t('Não foi possível ler o arquivo.')));
     reader.onload = () => resolve(reader.result as string);
     reader.readAsDataURL(file);
   });
@@ -67,6 +72,7 @@ function readAsDataUrl(file: File): Promise<string> {
  * depois, mostra o CNPJ já validado (ou em análise) e reaproveita sem pedir de novo.
  */
 export function BusinessVerificationCard() {
+  useI18n();
   const { user, refreshUser } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cnpj, setCnpj] = useState(user?.businessCnpj ? formatCnpj(user.businessCnpj) : '');
@@ -89,7 +95,9 @@ export function BusinessVerificationCard() {
         <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-destaque" />
         <p>
           <span className="font-semibold">{user?.businessName ?? 'Empresa verificada'}</span>
-          <span className="block text-xs text-muted">CNPJ {formatCnpj(user?.businessCnpj ?? '')} · validado</span>
+          <span className="block text-xs text-muted">
+            CNPJ {formatCnpj(user?.businessCnpj ?? '')} {t('· validado')}
+          </span>
         </p>
       </div>
     );
@@ -100,10 +108,12 @@ export function BusinessVerificationCard() {
       <div className="mt-3 flex items-start gap-2 rounded-xl border border-border bg-surface p-3 text-sm">
         <Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted" />
         <p>
-          <span className="font-semibold">CNPJ {formatCnpj(user?.businessCnpj ?? '')} em análise</span>
+          <span className="font-semibold">
+            CNPJ {formatCnpj(user?.businessCnpj ?? '')} {t('em análise')}
+          </span>
           <span className="block text-xs text-muted">
-            {user?.businessVerificationNote ?? 'Estamos conferindo seu contrato social.'} Seus eventos comerciais ficam em
-            análise até a aprovação.
+            {user?.businessVerificationNote ?? 'Estamos conferindo seu contrato social.'}{' '}
+            {t('Seus eventos comerciais ficam em análise até a aprovação.')}{' '}
           </span>
         </p>
       </div>
@@ -138,7 +148,7 @@ export function BusinessVerificationCard() {
       setProgress(100);
       await refreshUser();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Não foi possível enviar o contrato social.');
+      setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível enviar o contrato social.');
     } finally {
       setSending(false);
     }
@@ -149,7 +159,9 @@ export function BusinessVerificationCard() {
       <p className="text-xs text-muted">
         {status === 'rejected'
           ? `Validação anterior reprovada: ${user?.businessVerificationNote ?? 'envie um novo documento.'}`
-          : 'Só na primeira vez: informe o CNPJ e anexe o contrato social. Conferimos se o documento bate com o CNPJ e depois reaproveitamos nos próximos eventos.'}
+          : t(
+              'Só na primeira vez: informe o CNPJ e anexe o contrato social. Conferimos se o documento bate com o CNPJ e depois reaproveitamos nos próximos eventos.',
+            )}
       </p>
       <div>
         <label className="mb-2 block text-sm font-semibold text-muted">CNPJ</label>
@@ -167,7 +179,7 @@ export function BusinessVerificationCard() {
           className="flex w-full items-center gap-2 rounded-xl border border-dashed border-border px-4 py-3 text-left text-sm text-muted"
         >
           <FileUp className="h-4 w-4 shrink-0" />
-          <span className="truncate">{file ? file.name : 'Anexar contrato social (PDF ou foto, até 2,5 MB)'}</span>
+          <span className="truncate">{file ? file.name : t('Anexar contrato social (PDF ou foto, até 2,5 MB)')}</span>
         </button>
         <input
           ref={fileInputRef}
@@ -177,12 +189,13 @@ export function BusinessVerificationCard() {
           onChange={handleFileChange}
         />
       </div>
-      {error && <p className="text-sm text-destaque">{error}</p>}
+      {error && <p className="text-sm text-destaque">{t(error)}</p>}
       {sending ? (
         <AnalysisProgress value={progress} />
       ) : (
         <Button type="button" className="w-full" onClick={handleSubmit}>
-          Validar CNPJ
+          {' '}
+          {t('Validar CNPJ')}{' '}
         </Button>
       )}
     </div>

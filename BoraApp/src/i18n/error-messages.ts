@@ -1,0 +1,172 @@
+export const errorTranslations: Record<string, { en: string; es: string }> = Object.fromEntries(
+  [
+    ['E-mail ou senha inválidos.', 'Invalid email or password.', 'Correo o contraseña incorrectos.'],
+    ['Este e-mail já está cadastrado.', 'This email is already registered.', 'Este correo ya está registrado.'],
+    [
+      'Código de verificação inválido ou expirado.',
+      'Invalid or expired verification code.',
+      'Código de verificación inválido o caducado.',
+    ],
+    [
+      'Não foi possível validar o login com Google.',
+      'Could not validate your Google sign-in.',
+      'No se pudo validar el acceso con Google.',
+    ],
+    [
+      'Sua sessão expirou. Entre novamente.',
+      'Your session expired. Please sign in again.',
+      'Tu sesión caducó. Inicia sesión de nuevo.',
+    ],
+    [
+      'Você não tem permissão para realizar esta ação.',
+      'You do not have permission to perform this action.',
+      'No tienes permiso para realizar esta acción.',
+    ],
+    ['Este registro não foi encontrado.', 'This record was not found.', 'No se encontró este registro.'],
+    [
+      'Não foi possível concluir a solicitação.',
+      'Could not complete the request.',
+      'No se pudo completar la solicitud.',
+    ],
+    ['Verifique os dados informados.', 'Please check the details you entered.', 'Revisa los datos introducidos.'],
+    [
+      'Este evento foi rejeitado e não aceita participação.',
+      'This event was rejected and does not accept participation.',
+      'Este evento fue rechazado y no admite participación.',
+    ],
+    ['Evento rejeitado', 'Event rejected', 'Evento rechazado'],
+    [
+      'Não é possível confirmar presença, fazer check-in ou acessar a sala deste evento.',
+      'You cannot confirm attendance, check in or access this event room.',
+      'No puedes confirmar asistencia, hacer check-in ni acceder a la sala de este evento.',
+    ],
+    [
+      'Não foi possível confirmar sua participação.',
+      'Could not confirm your participation.',
+      'No se pudo confirmar tu participación.',
+    ],
+    [
+      'Informe um local existente ou os dados de um novo local',
+      'Choose an existing venue or provide details for a new one.',
+      'Elige un lugar existente o introduce los datos de uno nuevo.',
+    ],
+    [
+      'A data do evento precisa estar no futuro',
+      'The event date must be in the future.',
+      'La fecha del evento debe ser futura.',
+    ],
+    [
+      'Valide seu CNPJ com o contrato social antes de criar evento como ponto comercial',
+      'Verify your CNPJ with the business document before creating a business event.',
+      'Valida tu CNPJ con el documento comercial antes de crear un evento comercial.',
+    ],
+    [
+      'Valide seu CNPJ com o contrato social antes de criar o evento como ponto comercial.',
+      'Verify your CNPJ with the business document before creating a business event.',
+      'Valida tu CNPJ con el documento comercial antes de crear un evento comercial.',
+    ],
+    [
+      'Escolha um local existente ou cadastre um novo.',
+      'Choose an existing venue or add a new one.',
+      'Elige un lugar existente o registra uno nuevo.',
+    ],
+    ['QR code inválido ou expirado', 'Invalid or expired QR code.', 'Código QR inválido o caducado.'],
+    [
+      'QR code não pertence a este evento',
+      'The QR code does not belong to this event.',
+      'El código QR no corresponde a este evento.',
+    ],
+    [
+      'Check-in já realizado para este evento',
+      'You have already checked in to this event.',
+      'Ya hiciste check-in en este evento.',
+    ],
+    [
+      'Não dá pra demonstrar interesse em si mesmo',
+      'You cannot express interest in yourself.',
+      'No puedes mostrar interés en ti mismo.',
+    ],
+    [
+      'Deu Bora só vale entre quem fez check-in no evento',
+      'Deu BORA is only available to people who checked in to the event.',
+      'Deu BORA solo está disponible entre quienes hicieron check-in en el evento.',
+    ],
+    [
+      'Login com Google não está configurado no servidor',
+      'Google sign-in is not configured on the server.',
+      'El acceso con Google no está configurado en el servidor.',
+    ],
+    [
+      'Esta conta entra apenas pelo Google e não tem senha para trocar',
+      'This account uses Google sign-in and has no password to change.',
+      'Esta cuenta usa Google y no tiene contraseña para cambiar.',
+    ],
+    ['Você já resgatou este benefício', 'You have already redeemed this benefit.', 'Ya canjeaste este beneficio.'],
+    ['Benefício esgotado', 'This benefit is sold out.', 'Este beneficio está agotado.'],
+    [
+      'É necessário fazer check-in antes de resgatar o benefício',
+      'Check in before redeeming this benefit.',
+      'Haz check-in antes de canjear este beneficio.',
+    ],
+    [
+      'Só participantes do evento podem entrar na Bora Room',
+      'Only event participants can access the BORA Room.',
+      'Solo los participantes del evento pueden acceder a BORA Room.',
+    ],
+    [
+      'Você não faz parte dessa conversa',
+      'You are not part of this conversation.',
+      'No formas parte de esta conversación.',
+    ],
+    ['Essa Bora Room já encerrou', 'This BORA Room has closed.', 'Esta BORA Room ya cerró.'],
+    ['Você já denunciou isso', 'You have already reported this.', 'Ya denunciaste esto.'],
+    ['Telefone já está em uso', 'This phone number is already in use.', 'Este teléfono ya está en uso.'],
+    [
+      'Verifique seu telefone antes de enviar sua identidade',
+      'Verify your phone before submitting your identity.',
+      'Verifica tu teléfono antes de enviar tu identidad.',
+    ],
+    ['CPF inválido', 'Invalid CPF.', 'CPF inválido.'],
+    [
+      'Esse CPF já está associado a outra conta',
+      'This CPF is already linked to another account.',
+      'Este CPF ya está vinculado a otra cuenta.',
+    ],
+    ['Seu CNPJ já foi validado.', 'Your CNPJ has already been verified.', 'Tu CNPJ ya fue validado.'],
+    [
+      'Seu CNPJ já está em análise. Aguarde a revisão.',
+      'Your CNPJ is already under review. Please wait.',
+      'Tu CNPJ ya está en revisión. Espera la decisión.',
+    ],
+    ['CNPJ inválido', 'Invalid CNPJ.', 'CNPJ inválido.'],
+    [
+      'Não conseguimos consultar o CNPJ agora. Tente novamente em alguns minutos.',
+      'We cannot check the CNPJ now. Try again in a few minutes.',
+      'No podemos consultar el CNPJ ahora. Inténtalo en unos minutos.',
+    ],
+    [
+      'Envie o contrato social em PDF ou imagem (JPG, PNG).',
+      'Send your business document as a PDF or image (JPG, PNG).',
+      'Envía el documento comercial en PDF o imagen (JPG, PNG).',
+    ],
+    [
+      'O arquivo do contrato social precisa ter no máximo 2,5 MB.',
+      'The business document must be no larger than 2.5 MB.',
+      'El documento comercial debe tener como máximo 2,5 MB.',
+    ],
+    [
+      'CNPJ não encontrado na Receita Federal.',
+      'CNPJ not found in the official registry.',
+      'No se encontró el CNPJ en el registro oficial.',
+    ],
+    ['Selecione o estado e a cidade.', 'Select your state and city.', 'Selecciona el estado y la ciudad.'],
+    ['Informe o CNPJ completo.', 'Enter the complete CNPJ.', 'Introduce el CNPJ completo.'],
+    [
+      'Anexe o contrato social (PDF ou foto).',
+      'Attach your business document (PDF or photo).',
+      'Adjunta el documento comercial (PDF o foto).',
+    ],
+    ['Tire uma selfie antes de enviar.', 'Take a selfie before submitting.', 'Toma una selfie antes de enviar.'],
+    ['Erro inesperado', 'Unexpected error.', 'Error inesperado.'],
+  ].map(([source, en, es]) => [source, { en, es }]),
+);

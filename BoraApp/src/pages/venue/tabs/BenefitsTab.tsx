@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Gift } from 'lucide-react';
 import { useState } from 'react';
@@ -7,6 +8,7 @@ import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 
 export function BenefitsTab({ eventId }: { eventId: string }) {
+  useI18n();
   const queryClient = useQueryClient();
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<{ rewardId: string; message: string } | null>(null);
@@ -31,13 +33,14 @@ export function BenefitsTab({ eventId }: { eventId: string }) {
         queryClient.invalidateQueries({ queryKey: ['rewards', eventId, 'redemptions', 'mine'] }),
       ]);
     } catch (err) {
-      setError({ rewardId, message: err instanceof ApiError ? err.message : 'Não foi possível resgatar agora.' });
+      setError({ rewardId, message: err instanceof ApiError ? err.sourceMessage : 'Não foi possível resgatar agora.' });
     } finally {
       setPendingId(null);
     }
   };
 
-  if (!rewards?.length) return <p className="text-sm text-muted">Nenhum benefício disponível para este evento.</p>;
+  if (!rewards?.length)
+    return <p className="text-sm text-muted">{t('Nenhum benefício disponível para este evento.')}</p>;
 
   return (
     <div className="space-y-3">
@@ -52,10 +55,11 @@ export function BenefitsTab({ eventId }: { eventId: string }) {
             <div className="min-w-0 flex-1">
               <p className="font-bold">{reward.title}</p>
               <p className="text-xs text-muted">
-                Válido {reward.validFrom.slice(0, 5)}–{reward.validUntil.slice(0, 5)} ·{' '}
-                {reward.quantityTotal - reward.quantityRedeemed} disponíveis
+                {' '}
+                {t('Válido')} {reward.validFrom.slice(0, 5)}–{reward.validUntil.slice(0, 5)} ·{' '}
+                {reward.quantityTotal - reward.quantityRedeemed} {t('disponíveis')}{' '}
               </p>
-              {error?.rewardId === reward.id && <p className="mt-1 text-xs text-destaque">{error.message}</p>}
+              {error?.rewardId === reward.id && <p className="mt-1 text-xs text-destaque">{t(error.message)}</p>}
             </div>
             <Button
               size="sm"
@@ -63,7 +67,13 @@ export function BenefitsTab({ eventId }: { eventId: string }) {
               disabled={redeemed || soldOut || pendingId === reward.id}
               onClick={() => handleRedeem(reward.id)}
             >
-              {redeemed ? 'Resgatado' : soldOut ? 'Esgotado' : pendingId === reward.id ? 'Resgatando...' : 'Resgatar'}
+              {redeemed
+                ? t('Resgatado')
+                : soldOut
+                  ? t('Esgotado')
+                  : pendingId === reward.id
+                    ? t('Resgatando...')
+                    : t('Resgatar')}
             </Button>
           </div>
         );

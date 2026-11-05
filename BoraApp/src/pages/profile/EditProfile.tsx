@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { ArrowLeft } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +15,7 @@ import { resizeImageToBase64 } from '@/utils/image';
 const AVATAR_SIZE = 256;
 
 export function EditProfile() {
+  useI18n();
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,7 +63,7 @@ export function EditProfile() {
       }
       navigate('/profile', { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Não foi possível salvar.');
+      setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível salvar.');
     } finally {
       setLoading(false);
     }
@@ -69,11 +71,14 @@ export function EditProfile() {
 
   return (
     <div className="bg-background px-5 pt-6">
-      <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-surface">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
+      >
         <ArrowLeft className="h-5 w-5" />
       </button>
 
-      <h1 className="mt-4 text-2xl font-extrabold">Editar perfil</h1>
+      <h1 className="mt-4 text-2xl font-extrabold">{t('Editar perfil')}</h1>
 
       <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
         <div className="flex flex-col items-center gap-3">
@@ -88,23 +93,28 @@ export function EditProfile() {
               (name || 'B').charAt(0)
             )}
           </button>
-          <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-semibold text-destaque">
-            Trocar foto
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="text-sm font-semibold text-destaque"
+          >
+            {' '}
+            {t('Trocar foto')}{' '}
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">Nome</label>
+          <label className="mb-2 block text-sm font-semibold text-muted">{t('Nome')}</label>
           <Input value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <LocationFields location={location} />
 
-        {(error ?? location.error) && <p className="text-sm text-destaque">{error ?? location.error}</p>}
+        {(error ?? location.error) && <p className="text-sm text-destaque">{t(error ?? location.error ?? '')}</p>}
 
         <Button size="lg" className="w-full" type="submit" disabled={loading}>
-          {loading ? 'Salvando...' : 'Salvar'}
+          {loading ? t('Salvando...') : t('Salvar')}
         </Button>
       </form>
     </div>

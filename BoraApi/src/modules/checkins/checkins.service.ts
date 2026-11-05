@@ -17,8 +17,6 @@ const QR_TOKEN_TTL_SECONDS = 30;
 export class CheckinsService {
   constructor(
     @InjectRepository(CheckIn) private readonly checkinsRepository: Repository<CheckIn>,
-    @InjectRepository(EventParticipation)
-    private readonly participationRepository: Repository<EventParticipation>,
     private readonly eventsService: EventsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -32,7 +30,8 @@ export class CheckinsService {
     return this.checkinsRepository.count({ where: { userId } });
   }
 
-  generateQrToken(eventId: string): { qrToken: string; expiresInSeconds: number } {
+  async generateQrToken(eventId: string): Promise<{ qrToken: string; expiresInSeconds: number }> {
+    await this.eventsService.findParticipatingById(eventId);
     const qrToken = this.jwtService.sign(
       { eventId, nonce: randomUUID() },
       { secret: this.configService.get<string>('CHECKIN_QR_SECRET'), expiresIn: `${QR_TOKEN_TTL_SECONDS}s` },
@@ -54,38 +53,41 @@ export class CheckinsService {
       throw new BusinessException('QR code não pertence a este evento');
     }
 
-    const event = await this.eventsService.findById(dto.eventId);
+    return this.eventsService.withParticipatingEvent(dto.eventId, async (event, manager) => {
+      const checkinsRepository = manager.getRepository(CheckIn);
+      const participationRepository = manager.getRepository(EventParticipation);
 
-    const existing = await this.checkinsRepository.findOne({ where: { userId, eventId: dto.eventId } });
-    if (existing) {
-      throw new BusinessException('Check-in já realizado para este evento');
-    }
+      const existing = await checkinsRepository.findOne({ where: { userId, eventId: dto.eventId } });
+      if (existing) {
+        throw new BusinessException('Check-in já realizado para este evento');
+      }
 
-    const checkin = await this.checkinsRepository.save(
-      this.checkinsRepository.create({
-        userId,
-        eventId: event.id,
-        qrNonce: payload.nonce,
-        checkedInAt: new Date(),
-        deviceId: dto.deviceId,
-      }),
-    );
+      const checkin = await checkinsRepository.save(
+        checkinsRepository.create({
+          userId,
+          eventId: event.id,
+          qrNonce: payload.nonce,
+          checkedInAt: new Date(),
+          deviceId: dto.deviceId,
+        }),
+      );
 
-    let participation = await this.participationRepository.findOne({ where: { userId, eventId: event.id } });
-    if (!participation) {
-      participation = this.participationRepository.create({ userId, eventId: event.id });
-    }
-    participation.viewed = true;
-    participation.checkedIn = true;
-    await this.participationRepository.save(participation);
+      let participation = await participationRepository.findOne({ where: { userId, eventId: event.id } });
+      if (!participation) {
+        participation = participationRepository.create({ userId, eventId: event.id });
+      }
+      participation.viewed = true;
+      participation.checkedIn = true;
+      await participationRepository.save(participation);
 
-    // "3 pessoas diferentes, fora o criador" (ver EventsService.publishIfTrusted) —
-    // o check-in do próprio criador não conta como prova social.
-    const checkinCount = await this.checkinsRepository.count({
-      where: { eventId: event.id, ...(event.createdBy ? { userId: Not(event.createdBy) } : {}) },
+      // "3 pessoas diferentes, fora o criador" (ver EventsService.publishIfTrusted) —
+      // o check-in do próprio criador não conta como prova social.
+      const checkinCount = await checkinsRepository.count({
+        where: { eventId: event.id, ...(event.createdBy ? { userId: Not(event.createdBy) } : {}) },
+      });
+      await this.eventsService.publishIfTrusted(event.id, checkinCount, manager);
+
+      return checkin;
     });
-    await this.eventsService.publishIfTrusted(event.id, checkinCount);
-
-    return checkin;
   }
 }

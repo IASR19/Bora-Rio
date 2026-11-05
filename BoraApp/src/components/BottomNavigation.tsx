@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { Calendar, Compass, Home, Plus, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ const itemsEnd = [
 ];
 
 export function BottomNavigation() {
+  useI18n();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto flex max-w-[480px] items-center justify-between border-t border-border bg-background/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-2 backdrop-blur">
       {items.map((item) => (
@@ -36,6 +38,7 @@ export function BottomNavigation() {
 }
 
 function NavItem({ to, label, icon: Icon }: { to: string; label: string; icon: typeof Home }) {
+  useI18n();
   return (
     <NavLink
       to={to}
@@ -49,7 +52,7 @@ function NavItem({ to, label, icon: Icon }: { to: string; label: string; icon: t
       {({ isActive }) => (
         <>
           <Icon className={cn('h-5 w-5', isActive && 'text-destaque')} strokeWidth={2} />
-          {label}
+          {t(label)}
         </>
       )}
     </NavLink>

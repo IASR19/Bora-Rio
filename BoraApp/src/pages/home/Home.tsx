@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery } from '@tanstack/react-query';
 import {
   Beer,
@@ -76,6 +77,7 @@ const SHORTCUTS: Shortcut[] = [
 const HOME_PLACES_LIMIT = 8;
 
 export function Home() {
+  useI18n();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activeShortcut, setActiveShortcut] = useState('agora');
@@ -118,9 +120,11 @@ export function Home() {
               type="button"
               onClick={() => setLocationOpen(true)}
               className="flex items-center gap-1 text-xs text-muted"
-              aria-label={user.city ? `Localização: ${user.city}. Toque para trocar` : 'Definir localização'}
+              aria-label={
+                user.city ? t('Localização: {city}. Toque para trocar', { city: user.city }) : t('Definir localização')
+              }
             >
-              <MapPin className="h-3.5 w-3.5" /> {user.city ?? 'Definir localização'}
+              <MapPin className="h-3.5 w-3.5" /> {user.city ?? t('Definir localização')}
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
           ) : (
@@ -132,19 +136,19 @@ export function Home() {
         <button
           type="button"
           className="relative flex h-10 w-10 items-center justify-center rounded-full bg-surface"
-          aria-label="Notificações"
+          aria-label={t('Notificações')}
           onClick={() => navigate('/notifications')}
         >
           <Bell className="h-5 w-5" />
         </button>
       </div>
 
-      <h1 className="mt-6 text-2xl font-extrabold leading-tight">O que você quer fazer hoje?</h1>
+      <h1 className="mt-6 text-2xl font-extrabold leading-tight">{t('O que você quer fazer hoje?')}</h1>
 
       <div className="relative mt-4">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" />
         <Input
-          placeholder="O que você está procurando?"
+          placeholder={t('O que você está procurando?')}
           className="pl-11"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -153,7 +157,10 @@ export function Home() {
       </div>
 
       <div className="relative mt-5">
-        <div ref={shortcutsRef} className="scrollbar-visible flex cursor-grab select-none gap-2 overflow-x-auto scroll-smooth pb-3">
+        <div
+          ref={shortcutsRef}
+          className="scrollbar-visible flex cursor-grab select-none gap-2 overflow-x-auto scroll-smooth pb-3"
+        >
           {SHORTCUTS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -166,7 +173,7 @@ export function Home() {
               )}
             >
               <Icon className="h-4 w-4" />
-              {label}
+              {t(label)}
             </button>
           ))}
         </div>
@@ -175,18 +182,19 @@ export function Home() {
       </div>
 
       <div className="mt-8 flex items-center justify-between">
-        <h2 className="text-lg font-bold">Eventos para você</h2>
+        <h2 className="text-lg font-bold">{t('Eventos para você')}</h2>
         <button className="text-sm font-semibold text-destaque" onClick={() => navigate('/explore')}>
-          Ver todos
+          {' '}
+          {t('Ver todos')}{' '}
         </button>
       </div>
 
       <div className="mt-4 space-y-4 pb-6">
-        {isLoading && <p className="text-sm text-muted">Carregando...</p>}
+        {isLoading && <p className="text-sm text-muted">{t('Carregando...')}</p>}
         {events?.length === 0 && (
           <div className="rounded-2xl border border-border bg-surface p-4 text-center">
-            <p className="text-sm font-semibold">Nenhum evento marcado por aqui ainda.</p>
-            <p className="mt-1 text-xs text-muted">Veja abaixo lugares para ir ou crie um evento no botão +.</p>
+            <p className="text-sm font-semibold">{t('Nenhum evento marcado por aqui ainda.')}</p>
+            <p className="mt-1 text-xs text-muted">{t('Veja abaixo lugares para ir ou crie um evento no botão +.')}</p>
           </div>
         )}
         {events?.map((event) => (
@@ -195,19 +203,21 @@ export function Home() {
       </div>
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Lugares perto de você</h2>
+        <h2 className="text-lg font-bold">{t('Lugares perto de você')}</h2>
         <button className="text-sm font-semibold text-destaque" onClick={() => navigate(placesLink)}>
-          Ver todos
+          {' '}
+          {t('Ver todos')}{' '}
         </button>
       </div>
 
       <div className="mt-4 space-y-3 pb-6">
-        {venuesLoading && <p className="text-sm text-muted">Carregando...</p>}
+        {venuesLoading && <p className="text-sm text-muted">{t('Carregando...')}</p>}
         {venues?.length === 0 && (
           <div className="rounded-2xl border border-border bg-surface p-6 text-center">
-            <p className="font-semibold">Nenhum lugar desse tipo no seu raio.</p>
+            <p className="font-semibold">{t('Nenhum lugar desse tipo no seu raio.')}</p>
             <p className="mt-1 text-sm text-muted">
-              Aumente a distância em Minhas preferências ou veja outra categoria.
+              {' '}
+              {t('Aumente a distância em Minhas preferências ou veja outra categoria.')}{' '}
             </p>
           </div>
         )}

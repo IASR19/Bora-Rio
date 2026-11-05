@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { MainLayout } from './components/MainLayout';
+import { isProfileComplete } from './utils/profile';
+import { LanguageSelector } from './components/LanguageSelector';
+import { Admin } from './pages/admin/Admin';
 import { useAuth } from './context/AuthContext';
 import { AgeDistanceStep } from './pages/preferences/AgeDistanceStep';
 import { BudgetStep } from './pages/preferences/BudgetStep';
@@ -46,10 +49,6 @@ function RequireAuth({ children }: { children: React.ReactElement }) {
 
 /** Idade, telefone e cidade são obrigatórios — sem isso não dá pra calcular
  * BORA Score (distância, restrição de idade) nem mostrar "perto de você". */
-function isProfileComplete(user: { birthDate: string | null; phone: string | null; city: string | null }) {
-  return Boolean(user.birthDate && user.phone && user.city);
-}
-
 function ProtectedLayout() {
   const { user, loading } = useAuth();
   if (loading) return null;
@@ -60,58 +59,62 @@ function ProtectedLayout() {
 
 export default function App() {
   return (
-    <Routes>
-      {/* "/" é a vitrine pública (landing). O app propriamente dito começa em "/app",
-       * que é também o start_url do PWA — quem já instalou continua abrindo no app,
-       * não na página de marketing. */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/app" element={<Splash />} />
-      <Route path="/welcome" element={<Welcome />} />
-      <Route path="/how-it-works" element={<HowItWorks />} />
-      <Route path="/permissions" element={<Permissions />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/verification" element={<Verification />} />
-      <Route
-        path="/complete-profile"
-        element={
-          <RequireAuth>
-            <CompleteProfile />
-          </RequireAuth>
-        }
-      />
+    <>
+      <LanguageSelector />
+      <Routes>
+        <Route path="/admin" element={<Admin />} />
+        {/* "/" é a vitrine pública (landing). O app propriamente dito começa em "/app",
+         * que é também o start_url do PWA — quem já instalou continua abrindo no app,
+         * não na página de marketing. */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/app" element={<Splash />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/permissions" element={<Permissions />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verification" element={<Verification />} />
+        <Route
+          path="/complete-profile"
+          element={
+            <RequireAuth>
+              <CompleteProfile />
+            </RequireAuth>
+          }
+        />
 
-      <Route path="/preferences/intentions" element={<IntentionsStep />} />
-      <Route path="/preferences/music" element={<MusicStep />} />
-      <Route path="/preferences/venue-types" element={<VenueTypesStep />} />
-      <Route path="/preferences/age-distance" element={<AgeDistanceStep />} />
-      <Route path="/preferences/budget" element={<BudgetStep />} />
-      <Route path="/subscription" element={<BoraClub />} />
+        <Route path="/preferences/intentions" element={<IntentionsStep />} />
+        <Route path="/preferences/music" element={<MusicStep />} />
+        <Route path="/preferences/venue-types" element={<VenueTypesStep />} />
+        <Route path="/preferences/age-distance" element={<AgeDistanceStep />} />
+        <Route path="/preferences/budget" element={<BudgetStep />} />
+        <Route path="/subscription" element={<BoraClub />} />
 
-      <Route element={<ProtectedLayout />}>
-        <Route path="/home" element={<Home />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/events/create" element={<CreateEvent />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
-        <Route path="/profile/settings" element={<Settings />} />
-        <Route path="/profile/security" element={<Security />} />
-        <Route path="/profile/support" element={<Support />} />
-        <Route path="/profile/payments" element={<Payments />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/matches" element={<Matches />} />
-        <Route path="/chat/:conversationId" element={<DirectChat />} />
-      </Route>
+        <Route element={<ProtectedLayout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/create" element={<CreateEvent />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/profile/settings" element={<Settings />} />
+          <Route path="/profile/security" element={<Security />} />
+          <Route path="/profile/support" element={<Support />} />
+          <Route path="/profile/payments" element={<Payments />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/matches" element={<Matches />} />
+          <Route path="/chat/:conversationId" element={<DirectChat />} />
+        </Route>
 
-      <Route path="/bora" element={<BoraQuickActions />} />
-      <Route path="/venue/:id" element={<VenueDetail />} />
-      <Route path="/event/:id" element={<EventDetail />} />
-      <Route path="/checkin/:eventId" element={<CheckIn />} />
-      <Route path="/checkin/:eventId/confirmed" element={<CheckInConfirmed />} />
-      <Route path="/deu-bora/:eventId" element={<DeuBora />} />
+        <Route path="/bora" element={<BoraQuickActions />} />
+        <Route path="/venue/:id" element={<VenueDetail />} />
+        <Route path="/event/:id" element={<EventDetail />} />
+        <Route path="/checkin/:eventId" element={<CheckIn />} />
+        <Route path="/checkin/:eventId/confirmed" element={<CheckInConfirmed />} />
+        <Route path="/deu-bora/:eventId" element={<DeuBora />} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }

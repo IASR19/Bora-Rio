@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -7,6 +8,7 @@ import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 
 export function Verification() {
+  useI18n();
   const location = useLocation();
   const navigate = useNavigate();
   const phone = (location.state as { phone?: string } | null)?.phone ?? '';
@@ -39,7 +41,7 @@ export function Verification() {
       await authService.confirmVerification(phone, digits.join(''));
       navigate('/preferences/intentions');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Código inválido.');
+      setError(err instanceof ApiError ? err.sourceMessage : 'Código inválido.');
     } finally {
       setLoading(false);
     }
@@ -47,8 +49,10 @@ export function Verification() {
 
   return (
     <div className="app-shell flex min-h-dvh flex-col justify-center bg-background px-6 py-10">
-      <h1 className="text-2xl font-extrabold">Confirme seu número</h1>
-      <p className="mt-2 text-sm text-muted">Enviamos um código para {phone || 'o seu telefone'}</p>
+      <h1 className="text-2xl font-extrabold">{t('Confirme seu número')}</h1>
+      <p className="mt-2 text-sm text-muted">
+        {t('Enviamos um código para')} {phone || 'o seu telefone'}
+      </p>
 
       <div className="mt-8 flex justify-between gap-2">
         {digits.map((digit, index) => (
@@ -66,18 +70,19 @@ export function Verification() {
         ))}
       </div>
 
-      {error && <p className="mt-4 text-sm text-destaque">{error}</p>}
+      {error && <p className="mt-4 text-sm text-destaque">{t(error)}</p>}
 
       <button
         type="button"
         className="mt-6 text-sm font-semibold text-muted underline"
         onClick={() => authService.requestVerification(phone)}
       >
-        Reenviar código
+        {' '}
+        {t('Reenviar código')}{' '}
       </button>
 
       <Button size="lg" className="mt-10 w-full" onClick={handleSubmit} disabled={loading || digits.some((d) => !d)}>
-        {loading ? 'Confirmando...' : 'Continuar'}
+        {loading ? t('Confirmando...') : t('Continuar')}
       </Button>
     </div>
   );

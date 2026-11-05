@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Flag, ShieldOff } from 'lucide-react';
 import { useState } from 'react';
@@ -23,6 +24,7 @@ const REPORT_CATEGORIES: { value: ReportCategory; label: string }[] = [
 ];
 
 export function DirectChat() {
+  useI18n();
   const { conversationId } = useParams<{ conversationId: string }>();
   const navigate = useNavigate();
   const [reportOpen, setReportOpen] = useState(false);
@@ -47,7 +49,7 @@ export function DirectChat() {
       await reportsService.create({ targetType: 'user', targetId: match.user.id, category: reportCategory });
       setReportSent(true);
     } catch (err) {
-      setReportError(err instanceof ApiError ? err.message : 'Não foi possível enviar a denúncia.');
+      setReportError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível enviar a denúncia.');
     }
   };
 
@@ -57,7 +59,10 @@ export function DirectChat() {
     <div className="app-shell flex min-h-dvh flex-col bg-background px-5 pb-4 pt-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full bg-surface">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
+          >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <p className="font-bold">{match?.user.name ?? 'Conversa'}</p>
@@ -67,21 +72,25 @@ export function DirectChat() {
             onClick={handleBlock}
             disabled={blocked}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-surface disabled:opacity-50"
-            aria-label="Bloquear"
+            aria-label={t('Bloquear')}
           >
             <ShieldOff className="h-4 w-4" />
           </button>
           <button
             onClick={() => setReportOpen(true)}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
-            aria-label="Denunciar"
+            aria-label={t('Denunciar')}
           >
             <Flag className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      {blocked && <p className="mt-2 text-xs text-muted">Você bloqueou essa pessoa — as mensagens dela não aparecem mais.</p>}
+      {blocked && (
+        <p className="mt-2 text-xs text-muted">
+          {t('Você bloqueou essa pessoa — as mensagens dela não aparecem mais.')}
+        </p>
+      )}
 
       <div className="mt-4 flex min-h-0 flex-1">
         <ChatThread
@@ -92,21 +101,22 @@ export function DirectChat() {
         />
       </div>
 
-      <BottomSheet open={reportOpen} onOpenChange={setReportOpen} title="Denunciar pessoa">
+      <BottomSheet open={reportOpen} onOpenChange={setReportOpen} title={t('Denunciar pessoa')}>
         {reportSent ? (
-          <p className="text-sm text-muted">Denúncia enviada. Obrigado por ajudar a manter o BORA confiável.</p>
+          <p className="text-sm text-muted">{t('Denúncia enviada. Obrigado por ajudar a manter o BORA confiável.')}</p>
         ) : (
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               {REPORT_CATEGORIES.map(({ value, label }) => (
                 <Chip key={value} selected={reportCategory === value} onClick={() => setReportCategory(value)}>
-                  {label}
+                  {t(label)}
                 </Chip>
               ))}
             </div>
-            {reportError && <p className="text-sm text-destaque">{reportError}</p>}
+            {reportError && <p className="text-sm text-destaque">{t(reportError)}</p>}
             <Button className="w-full" onClick={handleSendReport} disabled={!reportCategory}>
-              Enviar denúncia
+              {' '}
+              {t('Enviar denúncia')}{' '}
             </Button>
           </div>
         )}

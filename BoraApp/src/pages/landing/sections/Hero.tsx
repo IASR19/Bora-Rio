@@ -1,3 +1,4 @@
+import { t, useI18n } from '@/i18n';
 import { Sparkles, Users } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -24,6 +25,7 @@ const FLOATING = [
 ];
 
 export function Hero() {
+  useI18n();
   const prefersReducedMotion = useReducedMotion();
   const { scrollY } = useScroll();
   /* Parallax curto e só no aparelho (elemento decorativo): começa em 0, então
@@ -43,22 +45,20 @@ export function Hero() {
           <Reveal>
             <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.26em] text-muted">
               <span className="h-px w-6 bg-bora-gradient" />
-              {HERO.eyebrow}
+              {t(HERO.eyebrow)}
             </p>
           </Reveal>
 
           <Reveal delay={0.08}>
             <h1 className="mt-5 text-[2.75rem] font-extrabold leading-[0.98] tracking-tight sm:text-6xl lg:text-[4.25rem]">
-              {HERO.headlineStart}
+              {t(HERO.headlineStart)}
               <br />
-              <span className="gradient-text">{HERO.headlineAccent}</span>
+              <span className="gradient-text">{t(HERO.headlineAccent)}</span>
             </h1>
           </Reveal>
 
           <Reveal delay={0.16}>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">
-              {HERO.subtitle}
-            </p>
+            <p className="mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">{t(HERO.subtitle)}</p>
           </Reveal>
 
           <Reveal delay={0.24}>
@@ -67,13 +67,13 @@ export function Hero() {
                 to="/welcome"
                 className="cta-pulse inline-flex h-14 items-center justify-center rounded-full bg-bora-gradient px-8 text-base font-bold text-white shadow-glow transition-transform active:scale-[0.98]"
               >
-                {HERO.primaryCta}
+                {t(HERO.primaryCta)}
               </Link>
               <Link
                 to="/login"
                 className="inline-flex h-14 items-center justify-center rounded-full border border-border px-8 text-base font-semibold text-foreground transition-colors hover:bg-surface"
               >
-                {HERO.secondaryCta}
+                {t(HERO.secondaryCta)}
               </Link>
             </div>
           </Reveal>
@@ -81,9 +81,9 @@ export function Hero() {
           <Reveal delay={0.32}>
             <dl className="mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-border pt-6">
               {HERO_STATS.map((stat) => (
-                <div key={stat.label}>
+                <div key={t(stat.label)}>
                   <dt className="text-xl font-extrabold tracking-tight sm:text-2xl">{stat.value}</dt>
-                  <dd className="mt-1 text-[11px] leading-snug text-muted">{stat.label}</dd>
+                  <dd className="mt-1 text-[11px] leading-snug text-muted">{t(stat.label)}</dd>
                 </div>
               ))}
             </dl>
@@ -104,7 +104,7 @@ export function Hero() {
 
             {FLOATING.map(({ icon: Icon, title, subtitle, position }, index) => (
               <motion.div
-                key={title}
+                key={t(title)}
                 /* cn() em vez de template literal: valores arbitrários com
                  * vírgula/parêntese interrompem o scanner do Tailwind e as
                  * classes seguintes na mesma string não são geradas. */
@@ -120,8 +120,8 @@ export function Hero() {
                   <Icon className="h-4 w-4 text-destaque" strokeWidth={2.2} />
                 </span>
                 <div>
-                  <p className="text-xs font-bold">{title}</p>
-                  <p className="text-[10px] text-muted">{subtitle}</p>
+                  <p className="text-xs font-bold">{t(title)}</p>
+                  <p className="text-[10px] text-muted">{t(subtitle)}</p>
                 </div>
               </motion.div>
             ))}
