@@ -4,6 +4,8 @@ import { createContext, type ReactNode, useContext, useEffect, useMemo, useState
 import { authService, type RegisterBusinessPayload, type RegisterPayload } from '@/services/auth.service';
 import { usersService } from '@/services/users.service';
 import { setAccessToken } from '@/shared/api/client';
+import { promosService } from '@/services/promos.service';
+import { takePromoOrigin } from '@/utils/promoOrigin';
 import type { User } from '@/types/domain';
 import { getLanguage, setLanguage } from '@/i18n';
 
@@ -19,6 +21,12 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+/** Atribui o cadastro ao QR de promoção lido antes de criar a conta. Nunca bloqueia o fluxo. */
+function attributeSignup() {
+  const code = takePromoOrigin();
+  if (code) void promosService.signup(code).catch(() => undefined);
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
@@ -61,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(accessToken);
     queryClient.clear();
     setUser(loggedUser);
+    attributeSignup();
     return loggedUser;
   };
 
@@ -69,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(accessToken);
     queryClient.clear();
     setUser(newUser);
+    attributeSignup();
     return newUser;
   };
 

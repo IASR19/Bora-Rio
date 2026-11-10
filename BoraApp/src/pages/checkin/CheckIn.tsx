@@ -8,17 +8,8 @@ import { checkinsService } from '@/services/checkins.service';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { savePendingCheckin } from '@/utils/pendingCheckin';
-import { readLocalStorage, writeLocalStorage } from '@/utils/storage';
-
-function getDeviceId(): string {
-  const key = 'bora:device-id';
-  let id = readLocalStorage(key);
-  if (!id) {
-    id = crypto.randomUUID();
-    writeLocalStorage(key, id);
-  }
-  return id;
-}
+import { getDeviceId } from '@/utils/deviceId';
+import { isInstalledApp } from '@/pages/landing/isInstalledApp';
 
 export function CheckIn() {
   useI18n();
@@ -86,6 +77,12 @@ export function CheckIn() {
         {error && <p className="mt-4 text-sm text-destaque">{t(error)}</p>}
 
         {loading && <p className="mt-6 text-sm font-semibold">{t('Validando...')}</p>}
+
+        {isInstalledApp() && (
+          <Button className="mt-6 w-full" onClick={() => navigate('/scan')}>
+            <QrCode className="h-5 w-5" /> {t('Escanear QR')}
+          </Button>
+        )}
 
         <div className="mt-6 flex w-full items-center gap-2">
           <input

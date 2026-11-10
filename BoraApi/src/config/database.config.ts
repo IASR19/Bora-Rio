@@ -1,6 +1,8 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
+import { UserPublicCodeSubscriber } from '../modules/users/subscribers/user-public-code.subscriber';
+
 export function createBaseDbOptions(configService: ConfigService): TypeOrmModuleOptions {
   const ssl = configService.get<string>('DATABASE_SSL') === 'true';
 
@@ -12,6 +14,7 @@ export function createBaseDbOptions(configService: ConfigService): TypeOrmModule
     password: configService.get<string>('DATABASE_PASSWORD', 'postgres'),
     database: configService.get<string>('DATABASE_NAME', 'bora-local'),
     autoLoadEntities: true,
+    subscribers: [UserPublicCodeSubscriber],
     synchronize: false,
     logging: configService.get<string>('NODE_ENV') === 'development',
     ssl: ssl ? { rejectUnauthorized: false } : false,

@@ -1,6 +1,7 @@
 import { t, useI18n } from '@/i18n';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronRight, LogOut } from 'lucide-react';
+import { Check, ChevronRight, Copy, LogOut } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
@@ -23,6 +24,14 @@ export function Profile() {
   useI18n();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
+  const copyCode = () => {
+    if (!user?.publicCode) return;
+    void navigator.clipboard?.writeText(user.publicCode).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
 
   const { data: myEvents } = useQuery({ queryKey: ['events', 'mine'], queryFn: eventsService.mine });
   const { data: checkinCount } = useQuery({
@@ -63,6 +72,20 @@ export function Profile() {
           <p className="text-xs text-muted">{t('Conexões')}</p>
         </button>
       </div>
+
+      {user?.publicCode && (
+        <button
+          type="button"
+          onClick={copyCode}
+          className="mt-4 flex w-full items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3 text-left"
+        >
+          <span>
+            <span className="block text-xs text-muted">{t('Seu código Bora')}</span>
+            <span className="font-mono text-sm font-bold tracking-widest">{user.publicCode}</span>
+          </span>
+          {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4 text-muted" />}
+        </button>
+      )}
 
       <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-surface">
         {user?.role === 'admin' && (

@@ -45,6 +45,9 @@ import { BusinessEventDetail } from './pages/business/BusinessEventDetail';
 import { BusinessEvents } from './pages/business/BusinessEvents';
 import { BusinessLayout } from './pages/business/BusinessLayout';
 import { BusinessQr } from './pages/business/BusinessQr';
+import { Promo } from './pages/promo/Promo';
+import { Scan } from './pages/scan/Scan';
+import { PromoQrArt } from './pages/business/PromoQrArt';
 
 function RequireAuth({ children }: { children: React.ReactElement }) {
   const { user, loading } = useAuth();
@@ -126,10 +129,13 @@ export default function App() {
           <Route path="events/new" element={<CreateEvent />} />
           <Route path="events/:id" element={<BusinessEventDetail />} />
           <Route path="events/:id/qr" element={<BusinessQr />} />
+          <Route path="events/:id/promotions/:rewardId/qr" element={<PromoQrArt />} />
           <Route path="account" element={<BusinessAccount />} />
         </Route>
 
         <Route path="/bora" element={<BoraQuickActions />} />
+        <Route path="/scan" element={<Scan />} />
+        <Route path="/p/:code" element={<Promo />} />
         <Route path="/venue/:id" element={<VenueDetail />} />
         <Route path="/event/:id" element={<EventDetail />} />
         <Route path="/checkin/:eventId" element={<CheckIn />} />

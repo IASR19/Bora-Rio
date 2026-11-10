@@ -8,6 +8,7 @@ export const CommonErrorCodes = {
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   EVENT_REJECTED: 'EVENT_REJECTED',
   GOOGLE_ACCOUNT_NOT_FOUND: 'GOOGLE_ACCOUNT_NOT_FOUND',
+  EMAIL_NOT_VERIFIED: 'EMAIL_NOT_VERIFIED',
 } as const;
 
 export type CommonErrorCode = (typeof CommonErrorCodes)[keyof typeof CommonErrorCodes];

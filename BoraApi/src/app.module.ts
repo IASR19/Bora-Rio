@@ -20,6 +20,7 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
 import { FollowsModule } from './modules/follows/follows.module';
 import { HealthModule } from './modules/health/health.module';
 import { PreferencesModule } from './modules/preferences/preferences.module';
+import { PromosModule } from './modules/promos/promos.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { RewardsModule } from './modules/rewards/rewards.module';
 import { UsersModule } from './modules/users/users.module';
@@ -51,6 +52,7 @@ import { SharedModule } from './shared/shared.module';
     ChatModule,
     DeuBoraModule,
     BusinessModule,
+    PromosModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

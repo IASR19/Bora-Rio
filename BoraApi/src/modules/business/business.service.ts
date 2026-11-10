@@ -6,6 +6,7 @@ import { CheckIn } from '../checkins/entities/checkin.entity';
 import { Event, EventStatus } from '../events/entities/event.entity';
 import { EventParticipation } from '../events/entities/event-participation.entity';
 import { RewardRedemption } from '../rewards/entities/reward-redemption.entity';
+import { saoPauloDate } from '../rewards/reward-window';
 import { User } from '../users/entities/user.entity';
 import { findOwnedVenue, getOwnedVenue } from './business-ownership';
 
@@ -14,11 +15,6 @@ const DEFAULT_DAYS = 30;
 const EVENTS_TABLE_LIMIT = 50;
 
 type EventCounts = { interested: number; confirmed: number; checkins: number; giftRedemptions: number };
-
-/** 'YYYY-MM-DD' no fuso de São Paulo (en-CA formata exatamente assim). */
-function saoPauloDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(date);
-}
 
 @Injectable()
 export class BusinessService {
@@ -66,7 +62,7 @@ export class BusinessService {
       saoPauloDate(new Date(Date.now() - (days - 1 - index) * 24 * 60 * 60 * 1000)),
     );
 
-    const [participations, checkins, redemptions, byDay] = await Promise.all([
+    const [participations, checkins, redemptions, byDay, promos] = await Promise.all([
       this.participationRepository
         .createQueryBuilder('p')
         .innerJoin('p.event', 'e')
@@ -105,6 +101,23 @@ export class BusinessService {
         })
         .groupBy('label')
         .getRawMany<{ label: string; count: number }>(),
+      // QR impresso das promoções: leituras distintas (pessoa/aparelho por promoção, como no
+      // GET /business/events/:id/promotions/stats, somadas) e cadastros trazidos por elas.
+      this.eventsRepository.manager.query<{ scans: number; signups: number }[]>(
+        `SELECT
+           (SELECT COUNT(DISTINCT (s."reward_id", COALESCE(s."device_id", s."user_id"::text)))::int
+            FROM "promo_scans" s
+            JOIN "rewards" r ON r."id" = s."reward_id"
+            JOIN "events" e ON e."id" = r."event_id"
+            WHERE e."venue_id" = $1 AND s."deleted_at" IS NULL
+              AND COALESCE(s."device_id", s."user_id"::text) IS NOT NULL) AS "scans",
+           (SELECT COUNT(*)::int
+            FROM "users" u
+            JOIN "rewards" r ON r."id" = u."signup_reward_id"
+            JOIN "events" e ON e."id" = r."event_id"
+            WHERE e."venue_id" = $1) AS "signups"`,
+        [venue.id],
+      ),
     ]);
 
     const counts = new Map<string, EventCounts>();
@@ -131,6 +144,8 @@ export class BusinessService {
       confirmed: 0,
       checkins: 0,
       giftRedemptions: 0,
+      promoScans: Number(promos[0]?.scans ?? 0),
+      promoSignups: Number(promos[0]?.signups ?? 0),
     };
     const now = Date.now();
     for (const event of events) {

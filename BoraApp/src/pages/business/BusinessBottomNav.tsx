@@ -1,14 +1,16 @@
-import { t, useI18n } from '@/i18n';
-import { Calendar, LayoutDashboard, Plus, User } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { t, useI18n } from "@/i18n";
+import { Calendar, LayoutDashboard, Plus, User } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
-import { cn } from '@/utils/cn';
+import { cn } from "@/utils/cn";
 
 const items = [
-  { to: '/business', label: 'Painel', icon: LayoutDashboard, end: true },
-  { to: '/business/events', label: 'Eventos', icon: Calendar, end: false },
+  { to: "/business", label: "Painel", icon: LayoutDashboard, end: true },
+  { to: "/business/events", label: "Eventos", icon: Calendar, end: false },
 ];
-const itemsEnd = [{ to: '/business/account', label: 'Conta', icon: User, end: false }];
+const itemsEnd = [
+  { to: "/business/account", label: "Conta", icon: User, end: false },
+];
 
 function NavItem({ to, label, icon: Icon, end }: (typeof items)[number]) {
   return (
@@ -17,14 +19,17 @@ function NavItem({ to, label, icon: Icon, end }: (typeof items)[number]) {
       end={end}
       className={({ isActive }) =>
         cn(
-          'flex flex-1 flex-col items-center gap-1 py-1 text-[11px] font-medium text-muted transition-colors',
-          isActive && 'text-foreground',
+          "flex flex-1 flex-col items-center gap-1 py-1 text-[11px] font-medium text-muted transition-colors",
+          isActive && "text-foreground",
         )
       }
     >
       {({ isActive }) => (
         <>
-          <Icon className={cn('h-5 w-5', isActive && 'text-destaque')} strokeWidth={2} />
+          <Icon
+            className={cn("h-5 w-5", isActive && "text-destaque")}
+            strokeWidth={2}
+          />
           {t(label)}
         </>
       )}
@@ -42,7 +47,7 @@ export function BusinessBottomNav() {
       <NavLink
         to="/business/events/new"
         className="relative -mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-bora-gradient shadow-glow"
-        aria-label={t('Criar evento')}
+        aria-label={t("Criar evento")}
       >
         <Plus className="h-7 w-7 text-white" strokeWidth={2.5} />
       </NavLink>

@@ -177,6 +177,23 @@ test('language selection and device data survive blocked or full local storage w
   }
 });
 
+test('API messages with times in them are translated with their values', () => {
+  const delivered = new ApiError('Benefício já entregue às 22:14.', 400, 'BUSINESS_RULE_VIOLATION');
+  const outside = new ApiError('Esta promoção vale no dia do evento, das 20:00 às 23:00.', 400, 'BUSINESS_RULE_VIOLATION');
+  try {
+    i18n.setLanguage('pt');
+    assert.equal(delivered.message, 'Benefício já entregue às 22:14.');
+    assert.equal(delivered.sourceMessage, 'Benefício já entregue às 22:14.');
+    i18n.setLanguage('en');
+    assert.equal(delivered.message, 'Benefit already delivered at 22:14.');
+    assert.equal(outside.message, 'This promotion is valid on the event day, from 20:00 to 23:00.');
+    i18n.setLanguage('es');
+    assert.equal(outside.message, 'Esta promoción vale el día del evento, de 20:00 a 23:00.');
+  } finally {
+    i18n.setLanguage('pt');
+  }
+});
+
 test('API errors follow the selected language without exposing untranslated server messages', () => {
   const loginError = new ApiError('Invalid email or password', 400, 'INVALID_CREDENTIALS');
   i18n.setLanguage('pt');

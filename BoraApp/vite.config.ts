@@ -21,6 +21,12 @@ export default defineConfig({
         /* "/" é a landing page pública. Quem instalou o app precisa abrir direto no
          * fluxo do app (Splash), não na vitrine de marketing. */
         start_url: '/app',
+        /* Com scope '/', o Android entrega ao app instalado os links do próprio site
+         * (ex.: QR de promoção /p/<código> lido pela câmera). O iPhone não suporta isso. */
+        scope: '/',
+        /* O id padrão já é o start_url ('/app'); declarar o mesmo valor mantém a identidade
+         * de quem já instalou (mudar o id faria o sistema tratar como outro app). */
+        id: '/app',
         icons: [
           { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },

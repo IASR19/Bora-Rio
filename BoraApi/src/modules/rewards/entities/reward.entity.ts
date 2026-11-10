@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Event } from '../../events/entities/event.entity';
@@ -48,4 +48,10 @@ export class Reward extends BaseEntity {
 
   @Column({ name: 'quantity_redeemed', type: 'int', default: 0 })
   quantityRedeemed: number;
+
+  /** Código do QR impresso da promoção (link `/p/<código>`). Aleatório, para o link não ser
+   * adivinhável; criado na primeira vez que o comércio pede o QR. */
+  @Index({ unique: true })
+  @Column({ name: 'qr_code', type: 'varchar', length: 16, nullable: true })
+  qrCode: string | null;
 }

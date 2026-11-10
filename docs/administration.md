@@ -57,6 +57,19 @@ O tipo da conta (`users.account_type`) é escolhido no cadastro e não muda depo
   - Somente o comércio dono do local cria, edita e remove promoções.
 - **QR de check-in:** gerado somente pelo comércio dono (`GET /checkins/qr/:eventId`, validade de 60 s). O QR contém o link `/checkin/<id>?t=<token>`: o cliente abre com a câmera do celular e o app confirma o check-in.
 
+## QR de promoção e leitor de QR
+
+- **Leitor no app:** o botão "Escanear QR" (`/scan`) só aparece no app instalado (PWA, `isInstalledApp()`). Ele lê os QRs do Bora (check-in e promoção) e abre a tela certa.
+- **Câmera do celular:** o manifesto declara `scope: '/'`, então no Android o link lido pela câmera abre no app instalado. No iPhone a Apple não permite isso, e o link abre no Safari, onde o fluxo também funciona.
+- **QR impresso:** cada promoção tem um código aleatório (`rewards.qr_code`). O comércio gera a arte (1080×1350, texto em cima e QR embaixo) em "QR para imprimir" e pode compartilhar, baixar o PNG ou imprimir. O QR leva a `/p/<código>`.
+- **Quem lê o QR:**
+  - sem login, vê a promoção e o pedido para se cadastrar. Depois do cadastro, lê de novo. O cadastro é atribuído à promoção (`users.signup_reward_id`);
+  - logado, num brinde, vê a tela verde "Benefício a ser resgatado" com o seu código (`users.public_code`, `BORA-XXXXX`);
+  - em preço fixo ou desconto, vê a promoção para pedir no balcão.
+- **Prazo do brinde:** vale até o menor entre 1 h após a leitura e o fim do horário da promoção, e só no dia do evento. Se expirar sem baixa, a pessoa lê de novo e o mesmo resgate é renovado, sem gastar estoque. Depois do horário, não dá mais.
+- **Baixa:** o comércio digita o código da pessoa em "Dar baixa" (`POST /business/rewards/:id/deliver`). Depois disso, ler o QR de novo mostra "Você já resgatou este benefício".
+- **Painel:** por promoção, mostra quantas pessoas escanearam (aparelhos ou pessoas distintos), quantas se cadastraram pelo QR, quantas já tinham conta, quantos benefícios foram liberados e entregues, além da lista de resgates. O dashboard soma as leituras e os cadastros por QR.
+
 ## Confirmação de e-mail
 
 Toda conta (usuário ou comércio) confirma o e-mail com um código de 6 dígitos antes de usar o app. Quem entra pelo Google já chega confirmado. Contas antigas confirmam no próximo acesso.

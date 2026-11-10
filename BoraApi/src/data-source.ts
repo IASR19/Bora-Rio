@@ -13,5 +13,6 @@ export default new DataSource({
   // Glob relativo a __dirname: resolve pra src/*.ts rodando via ts-node (dev/CLI local)
   // e pra dist/*.js rodando o build compilado (produção — ver migration:run:prod).
   entities: [`${__dirname}/modules/**/entities/*.entity{.ts,.js}`],
+  subscribers: [`${__dirname}/modules/**/subscribers/*.subscriber{.ts,.js}`],
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
 });

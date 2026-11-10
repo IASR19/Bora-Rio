@@ -135,6 +135,16 @@ export class User extends BaseEntity {
   @Column({ name: 'business_verified_at', type: 'timestamptz', nullable: true })
   businessVerifiedAt: Date | null;
 
+  /** Código de identificação da pessoa (`BORA-XXXXX`), fixo e único. Gerado em toda criação de
+   * conta pelo UserPublicCodeSubscriber; o comércio digita ele ao entregar o brinde do QR. */
+  @Index({ unique: true })
+  @Column({ name: 'public_code', type: 'varchar', length: 10 })
+  publicCode: string;
+
+  /** Promoção (QR impresso) que trouxe a pessoa ao cadastro. Só para as estatísticas do comércio. */
+  @Column({ name: 'signup_reward_id', type: 'uuid', nullable: true, select: false })
+  signupRewardId: string | null;
+
   @OneToOne(() => UserPreferences, (preferences) => preferences.user)
   preferences: UserPreferences;
 }

@@ -1,4 +1,6 @@
 export interface User {
+  /** Código público fixo da pessoa (ex.: BORA-7K3P9), usado no resgate de brindes. */
+  publicCode: string;
   role: 'user' | 'admin';
   accountType: 'user' | 'business';
   businessVenueId?: string | null;

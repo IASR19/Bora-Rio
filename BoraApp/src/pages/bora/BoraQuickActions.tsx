@@ -2,6 +2,8 @@ import { t, useI18n } from '@/i18n';
 import { Compass, MapPin, PartyPopper, QrCode, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { isInstalledApp } from '@/pages/landing/isInstalledApp';
+
 const ACTIONS = [
   { label: 'BORA agora', icon: PartyPopper, to: '/explore' },
   { label: 'Procurar lugar', icon: MapPin, to: '/explore' },
@@ -13,11 +15,14 @@ const ACTIONS = [
 export function BoraQuickActions() {
   useI18n();
   const navigate = useNavigate();
+  const actions = isInstalledApp()
+    ? ACTIONS.map((a) => (a.label === 'Check-in' ? { ...a, label: 'Escanear QR', to: '/scan' } : a))
+    : ACTIONS;
 
   return (
     <div className="app-shell flex min-h-dvh flex-col justify-end bg-black/60 px-4 pb-28" onClick={() => navigate(-1)}>
       <div className="space-y-2 rounded-2xl border border-border bg-surface p-3" onClick={(e) => e.stopPropagation()}>
-        {ACTIONS.map(({ label, icon: Icon, to }) => (
+        {actions.map(({ label, icon: Icon, to }) => (
           <button
             key={t(label)}
             onClick={() => navigate(to)}

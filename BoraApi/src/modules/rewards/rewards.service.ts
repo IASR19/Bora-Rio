@@ -141,23 +141,32 @@ export class RewardsService {
         throw new BusinessException('É necessário fazer check-in antes de resgatar o benefício');
       }
 
-      // Incremento atômico com a mesma condição de estoque, por segurança extra além da trava.
-      const result = await manager
-        .createQueryBuilder()
-        .update(Reward)
-        .set({ quantityRedeemed: () => 'quantity_redeemed + 1' })
-        .where('id = :id', { id: rewardId })
-        .andWhere('(quantity_total IS NULL OR quantity_redeemed < quantity_total)')
-        .execute();
-      if (!result.affected) throw new BusinessException('Benefício esgotado');
+      await this.consumeStock(manager, rewardId);
 
       const redemptions = manager.getRepository(RewardRedemption);
-      return redemptions.save(redemptions.create({ rewardId, userId, redeemedAt: new Date() }));
+      // Resgate pelo app (check-in): sem prazo para retirar, diferente do resgate pelo QR impresso.
+      return redemptions.save(
+        redemptions.create({ rewardId, userId, redeemedAt: new Date(), source: 'checkin', expiresAt: null }),
+      );
     });
   }
 
-  /** Trava a linha da promoção até o fim da transação (resgate, edição e remoção entram em fila). */
-  private async lockReward(manager: EntityManager, rewardId: string): Promise<Reward> {
+  /** Gasta um brinde do estoque. Incremento atômico com a mesma condição de estoque, por segurança
+   * extra além da trava. Também usado pelo resgate via QR impresso (PromosService). */
+  async consumeStock(manager: EntityManager, rewardId: string): Promise<void> {
+    const result = await manager
+      .createQueryBuilder()
+      .update(Reward)
+      .set({ quantityRedeemed: () => 'quantity_redeemed + 1' })
+      .where('id = :id', { id: rewardId })
+      .andWhere('(quantity_total IS NULL OR quantity_redeemed < quantity_total)')
+      .execute();
+    if (!result.affected) throw new BusinessException('Benefício esgotado');
+  }
+
+  /** Trava a linha da promoção até o fim da transação (resgate, edição e remoção entram em fila).
+   * Também usada pelo resgate via QR impresso (PromosService). */
+  async lockReward(manager: EntityManager, rewardId: string): Promise<Reward> {
     const reward = await manager.findOne(Reward, {
       where: { id: rewardId },
       lock: { mode: 'pessimistic_write' },

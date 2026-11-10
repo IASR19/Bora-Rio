@@ -21,13 +21,42 @@ const codes: Record<string, string> = {
   UNAUTHORIZED_OPERATION: 'Você não tem permissão para realizar esta ação.',
   INTERNAL_ERROR: 'Não foi possível concluir a solicitação.',
   EVENT_REJECTED: 'Este evento foi rejeitado e não aceita participação.',
+  EMAIL_NOT_VERIFIED: 'Confirme seu e-mail para resgatar.',
 };
+
+/** Mensagens da API com valores no meio (horários): o dicionário guarda o modelo com {chaves}. */
+const patterns: { regex: RegExp; template: string; keys: string[] }[] = [
+  {
+    regex: /^Esta promoção vale no dia do evento, das (\d{1,2}:\d{2}) às (\d{1,2}:\d{2})\.$/,
+    template: 'Esta promoção vale no dia do evento, das {from} às {to}.',
+    keys: ['from', 'to'],
+  },
+  {
+    regex: /^Este brinde só pode ser resgatado das (\d{1,2}:\d{2}) às (\d{1,2}:\d{2})\.$/,
+    template: 'Este brinde só pode ser resgatado das {from} às {to}.',
+    keys: ['from', 'to'],
+  },
+  {
+    regex: /^Benefício já entregue às (\d{1,2}:\d{2})\.$/,
+    template: 'Benefício já entregue às {time}.',
+    keys: ['time'],
+  },
+];
+
+function matchPattern(message: unknown): { template: string; params: Record<string, string> } | null {
+  if (typeof message !== 'string') return null;
+  for (const { regex, template, keys } of patterns) {
+    const match = regex.exec(message);
+    if (match) return { template, params: Object.fromEntries(keys.map((key, index) => [key, match[index + 1]])) };
+  }
+  return null;
+}
 
 export function apiErrorSource(message: unknown, status: number, errorCode?: string): string {
   if (Array.isArray(message)) return 'Verifique os dados informados.';
   if (typeof message === 'string') {
     if (aliases[message]) return aliases[message];
-    if (translations[message]) return message;
+    if (translations[message] || matchPattern(message)) return message;
   }
   if (errorCode && codes[errorCode]) return codes[errorCode];
   if (status === 401) return 'Sua sessão expirou. Entre novamente.';
@@ -38,5 +67,7 @@ export function apiErrorSource(message: unknown, status: number, errorCode?: str
 }
 
 export function translateApiError(message: unknown, status: number, errorCode?: string): string {
+  const pattern = matchPattern(message);
+  if (pattern) return t(pattern.template, pattern.params);
   return t(apiErrorSource(message, status, errorCode));
 }
