@@ -2104,4 +2104,7 @@ export const translations: Record<string, { en: string; es: string }> = {
   'Confirme seu e-mail para resgatar': { en: 'Confirm your email to redeem', es: 'Confirma tu correo para canjear' },
   'Promoção válida em {date}, das {from} às {to}.': { en: 'Promotion valid on {date}, from {from} to {to}.', es: 'Promoción válida el {date}, de {from} a {to}.' },
   'Confirme seu e-mail para resgatar.': { en: 'Confirm your email to redeem.', es: 'Confirma tu correo para canjear.' },
+  '{count} aguardando aprovação': { en: '{count} awaiting approval', es: '{count} esperando aprobación' },
+  '1 cadastro comercial aguardando aprovação': { en: '1 business registration awaiting approval', es: '1 registro comercial esperando aprobación' },
+  '{count} cadastros comerciais aguardando aprovação': { en: '{count} business registrations awaiting approval', es: '{count} registros comerciales esperando aprobación' },
 };

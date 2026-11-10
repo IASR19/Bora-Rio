@@ -35,11 +35,43 @@ body {
   overscroll-behavior-y: none;
 }
 
+/* App instalado no iPhone: com viewport-fit=cover a página começa por baixo da barra de status
+ * (relógio, bateria). Desconta essa faixa em todas as telas; fora do app instalado ela vale 0. */
+#root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Telas de altura cheia descontam a mesma faixa, senão sobra uma rolagem do tamanho dela. */
+.min-h-dvh {
+  min-height: calc(100dvh - env(safe-area-inset-top));
+}
+
+/* O campo de data nunca passa da largura da coluna. */
+input[type='date'] {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Só no iOS (único que entende -webkit-touch-callout): o visual nativo do campo de data impõe uma
+ * largura mínima própria que estoura colunas estreitas. No computador o campo fica como é, com o
+ * ícone do calendário. */
+@supports (-webkit-touch-callout: none) {
+  input[type='date'] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type='date']::-webkit-date-and-time-value {
+    text-align: left;
+  }
+}
+
 /* Mobile-first shell: content sits inside a phone-width column with safe-area padding */
 .app-shell {
   max-width: 480px;
   margin-inline: auto;
-  min-height: 100dvh;
+  min-height: calc(100dvh - env(safe-area-inset-top));
   position: relative;
   padding-bottom: env(safe-area-inset-bottom);
 }

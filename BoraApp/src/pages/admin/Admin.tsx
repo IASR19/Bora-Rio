@@ -156,6 +156,12 @@ function AdminPanel() {
     queryFn: () => adminService.users({ ...userFilters, page: String(page) }),
     enabled: tab === 'users' || tab === 'business',
   });
+  // Quantos cadastros comerciais esperam aprovação: aparece na aba e na Visão geral, em qualquer aba.
+  const pendingBusiness = useQuery({
+    queryKey: ['admin', 'business-pending-count'],
+    queryFn: () => adminService.users({ business: 'pending', limit: '1', page: '1' }),
+  });
+  const pendingBusinessCount = pendingBusiness.data?.total ?? 0;
   const audit = useQuery({
     queryKey: ['admin', 'audit', page],
     queryFn: () => adminService.audit(page),
@@ -252,10 +258,9 @@ function AdminPanel() {
             </span>
           </div>
         </header>
-        <nav
-          aria-label={t('Navegação administrativa')}
-          className="mt-7 flex gap-2 overflow-x-auto pb-2 scrollbar-visible"
-        >
+        {/* Quebra linha em vez de rolar para o lado: no iPhone a barra de rolagem não aparece e as
+         * últimas abas (como Cadastros comerciais) ficavam escondidas. */}
+        <nav aria-label={t('Navegação administrativa')} className="mt-7 flex flex-wrap gap-2 pb-2">
           {tabs.map((item) => (
             <button
               key={item.id}
@@ -265,9 +270,36 @@ function AdminPanel() {
             >
               <item.icon className="h-4 w-4" />
               {t(item.label)}
+              {item.id === 'business' && pendingBusinessCount > 0 && (
+                <span
+                  aria-label={t('{count} aguardando aprovação', { count: pendingBusinessCount })}
+                  className={`rounded-full px-2 py-0.5 text-xs font-bold ${tab === 'business' ? 'bg-white text-destaque' : 'bg-destaque text-white'}`}
+                >
+                  {pendingBusinessCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
+
+        {tab !== 'business' && pendingBusinessCount > 0 && (
+          <button
+            type="button"
+            onClick={() => switchTab('business')}
+            className="mt-3 flex w-full items-center justify-between gap-3 rounded-2xl border border-destaque/40 bg-bora-gradient-soft px-4 py-3 text-left text-sm font-semibold"
+          >
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 shrink-0 text-destaque" />
+              {t(
+                pendingBusinessCount === 1
+                  ? '1 cadastro comercial aguardando aprovação'
+                  : '{count} cadastros comerciais aguardando aprovação',
+                { count: pendingBusinessCount },
+              )}
+            </span>
+            <span className="shrink-0 text-destaque">{t('Revisar')}</span>
+          </button>
+        )}
 
         {tab !== 'audit' && (
           <section aria-label={t('Filtros')} className="my-5 rounded-2xl border border-border bg-surface p-4">
@@ -295,7 +327,7 @@ function AdminPanel() {
                   'Categoria',
                   (options.data?.categories ?? []).map((value) => ({ value, label: domainLabel(value) })),
                 )}
-              <label className="text-xs text-muted">
+              <label className="block min-w-0 text-xs text-muted">
                 {t(tab === 'users' || tab === 'business' ? 'Cadastro a partir de' : 'Eventos a partir de')}
                 <Input
                   type="date"
@@ -304,7 +336,7 @@ function AdminPanel() {
                   onChange={(e) => changeFilter('from', e.target.value)}
                 />
               </label>
-              <label className="text-xs text-muted">
+              <label className="block min-w-0 text-xs text-muted">
                 {t('Até')}
                 <Input
                   type="date"
