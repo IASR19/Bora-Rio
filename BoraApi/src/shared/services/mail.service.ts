@@ -32,7 +32,9 @@ export class MailService {
 
   async send(message: MailMessage): Promise<void> {
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
-    const from = this.configService.get<string>('MAIL_FROM');
+    // Painéis como o da Vercel guardam aspas coladas junto com o valor (o .env as remove sozinho),
+    // e o Resend recusa `"Bora <...>"` com aspas.
+    const from = this.configService.get<string>('MAIL_FROM')?.trim().replace(/^(["'])(.*)\1$/, '$2');
 
     if (!apiKey || !from) {
       if (process.env.NODE_ENV === 'production') {
