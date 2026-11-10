@@ -1,8 +1,8 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { MainLayout } from './components/MainLayout';
 import { isProfileComplete } from './utils/profile';
-import { LanguageSelector } from './components/LanguageSelector';
+import { isPublicAppRoute, PublicLanguageCorner } from './components/LanguageSelector';
 import { Admin } from './pages/admin/Admin';
 import { useAuth } from './context/AuthContext';
 import { AgeDistanceStep } from './pages/preferences/AgeDistanceStep';
@@ -39,11 +39,19 @@ import { Settings } from './pages/profile/Settings';
 import { Support } from './pages/profile/Support';
 import { BoraClub } from './pages/subscription/BoraClub';
 import { VenueDetail } from './pages/venue/VenueDetail';
+import { BusinessAccount } from './pages/business/BusinessAccount';
+import { BusinessDashboard } from './pages/business/BusinessDashboard';
+import { BusinessEventDetail } from './pages/business/BusinessEventDetail';
+import { BusinessEvents } from './pages/business/BusinessEvents';
+import { BusinessLayout } from './pages/business/BusinessLayout';
+import { BusinessQr } from './pages/business/BusinessQr';
 
 function RequireAuth({ children }: { children: React.ReactElement }) {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
+  if (!user.emailVerified) return <Navigate to="/verification" replace />;
+  if (user.accountType === 'business') return <Navigate to="/business" replace />;
   return children;
 }
 
@@ -53,14 +61,20 @@ function ProtectedLayout() {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
+  if (!user.emailVerified) return <Navigate to="/verification" replace />;
+  if (user.accountType === 'business') return <Navigate to="/business" replace />;
   if (!isProfileComplete(user)) return <Navigate to="/complete-profile" replace />;
   return <MainLayout />;
 }
 
 export default function App() {
+  const { pathname } = useLocation();
+
   return (
     <>
-      <LanguageSelector />
+      {/* O idioma fica no cabeçalho da landing e do admin, em Configurações (usuário) e em
+       * Conta (comércio). Só as telas de entrada, que não têm cabeçalho, usam o canto flutuante. */}
+      {isPublicAppRoute(pathname) && <PublicLanguageCorner />}
       <Routes>
         <Route path="/admin" element={<Admin />} />
         {/* "/" é a vitrine pública (landing). O app propriamente dito começa em "/app",
@@ -94,7 +108,7 @@ export default function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/events" element={<Events />} />
-          <Route path="/events/create" element={<CreateEvent />} />
+          <Route path="/events/create" element={<Navigate to="/business/events/new" replace />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/profile/settings" element={<Settings />} />
@@ -104,6 +118,15 @@ export default function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/chat/:conversationId" element={<DirectChat />} />
+        </Route>
+
+        <Route path="/business" element={<BusinessLayout />}>
+          <Route index element={<BusinessDashboard />} />
+          <Route path="events" element={<BusinessEvents />} />
+          <Route path="events/new" element={<CreateEvent />} />
+          <Route path="events/:id" element={<BusinessEventDetail />} />
+          <Route path="events/:id/qr" element={<BusinessQr />} />
+          <Route path="account" element={<BusinessAccount />} />
         </Route>
 
         <Route path="/bora" element={<BoraQuickActions />} />

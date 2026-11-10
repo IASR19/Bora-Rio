@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom';
 import { Reveal } from '../components/Reveal';
 import { CLUB } from '../data/landing.data';
 
-const [priceInteger, priceCents] = CLUB.price.toFixed(2).split('.');
-
-/** Espelha a tela de assinatura do app: um preço só, os mesmos benefícios. */
+/** Espelha a tela de assinatura do app: os mesmos benefícios, sem preço até haver pagamento. */
 export function Club() {
   useI18n();
   return (
@@ -27,11 +25,8 @@ export function Club() {
             <div className="grid gap-8 p-7 sm:p-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">{CLUB.name}</p>
-                <p className="mt-3 flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-muted">R$</span>
-                  <span className="text-6xl font-extrabold tracking-tight sm:text-7xl">{priceInteger}</span>
-                  <span className="text-2xl font-extrabold tracking-tight">,{priceCents}</span>
-                  <span className="text-base font-medium text-muted">{t(CLUB.period)}</span>
+                <p className="mt-3 text-5xl font-extrabold tracking-tight sm:text-6xl">
+                  <span className="gradient-text">{t('Em breve')}</span>
                 </p>
                 <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">{t(CLUB.note)}</p>
 

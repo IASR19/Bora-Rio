@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ParseGuidPipe } from '../../shared/pipes/parse-guid.pipe';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { BusinessAccountGuard } from '../business/guards/business-account.guard';
+import { UserAccountGuard } from '../business/guards/user-account.guard';
 import { PreferencesService } from '../preferences/preferences.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { QueryEventsDto } from './dto/query-events.dto';
@@ -35,6 +37,8 @@ export class EventsController {
     return this.eventsService.getCreatedByMe(user.sub);
   }
 
+  /** Só comércio aprovado cria evento, sempre no próprio local. */
+  @UseGuards(BusinessAccountGuard)
   @Post()
   create(@Body() dto: CreateEventDto, @CurrentUser() user: JwtPayload) {
     return this.eventsService.create(user.sub, dto);
@@ -57,11 +61,13 @@ export class EventsController {
     return this.eventsService.markViewed(user.sub, id);
   }
 
+  @UseGuards(UserAccountGuard)
   @Post(':id/interested')
   interested(@Param('id', ParseGuidPipe) id: string, @CurrentUser() user: JwtPayload) {
     return this.eventsService.markInterested(user.sub, id);
   }
 
+  @UseGuards(UserAccountGuard)
   @Post(':id/confirmed')
   confirmed(@Param('id', ParseGuidPipe) id: string, @CurrentUser() user: JwtPayload) {
     return this.eventsService.markConfirmed(user.sub, id);

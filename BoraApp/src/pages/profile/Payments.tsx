@@ -30,10 +30,7 @@ export function Payments() {
       <div className="mt-6 rounded-2xl border border-border bg-surface p-5">
         <p className="text-xs font-bold uppercase tracking-widest text-muted">{t('Plano atual')}</p>
         <p className="mt-1 gradient-text text-xl font-extrabold">BORA CLUB</p>
-        <p className="mt-1 text-sm text-muted">
-          {t('R$ 4,99/mês ·')}{' '}
-          <span className="font-semibold text-foreground">{t(STATUS_LABEL[status] ?? status)}</span>
-        </p>
+        <p className="mt-1 text-sm font-semibold">{t(STATUS_LABEL[status] ?? status)}</p>
       </div>
 
       <div className="mt-4 rounded-2xl border border-border bg-surface p-4 text-sm text-muted">

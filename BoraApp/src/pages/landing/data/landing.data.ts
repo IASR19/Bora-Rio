@@ -39,7 +39,7 @@ export const HERO = {
 export const HERO_STATS = [
   { value: '6', label: 'lugares na primeira leva' },
   { value: '92', label: 'BORA Score do rolê mais quente' },
-  { value: 'R$ 4,99', label: 'por mês, se quiser o Club' },
+  { value: '100%', label: 'grátis pra usar' },
 ] as const;
 
 /** Os quatro passos do loop do produto, na mesma voz da tela "Como funciona" do app. */
@@ -128,8 +128,6 @@ export const SCORE_CRITERIA = [
 /** Espelha os benefícios da tela de assinatura (`pages/subscription/BoraClub.tsx`). */
 export const CLUB = {
   name: 'BORA CLUB',
-  price: 4.99,
-  period: '/mês',
   benefits: [
     'Participe de experiências',
     'Veja quem vai',
@@ -138,7 +136,7 @@ export const CLUB = {
     'Entre em grupos',
     'E muito mais',
   ],
-  note: 'Dá pra começar de graça e assinar quando fizer sentido. Pagamentos ainda estão chegando.',
+  note: 'Chega em breve. Por enquanto, tudo no BORA é de graça.',
 } as const;
 
 /* Cada resposta reflete o comportamento real do código, não a intenção de
@@ -149,7 +147,7 @@ export const FAQ: FaqItem[] = [
   {
     question: 'O BORA é pago?',
     answer:
-      'Hoje, não. Criar conta, descobrir lugares, ver quem vai e fazer check-in são gratuitos. O BORA Club, de R$ 4,99 por mês, é o plano de assinatura previsto — os pagamentos ainda não estão integrados, então por enquanto dá pra usar tudo sem pagar.',
+      'Hoje, não. Criar conta, descobrir lugares, ver quem vai e fazer check-in são gratuitos. O BORA Club, plano de assinatura, chega em breve — por enquanto dá pra usar tudo sem pagar.',
   },
   {
     question: 'Em qual cidade funciona?',

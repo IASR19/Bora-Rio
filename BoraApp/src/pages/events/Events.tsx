@@ -52,7 +52,7 @@ export function Events() {
             { value: 'interested', label: 'Interessados' },
             { value: 'confirmed', label: 'Confirmados' },
             { value: 'past', label: 'Passados' },
-            { value: 'created', label: 'Criados por mim' },
+            ...(createdByMe?.length ? [{ value: 'created', label: 'Criados por mim' }] : []),
           ].map((tab) => (
             <Tabs.Trigger
               key={tab.value}

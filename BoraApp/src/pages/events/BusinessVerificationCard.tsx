@@ -1,5 +1,6 @@
 import { t, useI18n } from '@/i18n';
 import { BadgeCheck, Clock, FileUp } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
@@ -7,19 +8,7 @@ import { usersService } from '@/services/users.service';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
-
-// Em base64 o arquivo cresce 4/3 e precisa caber no limite de envio da API (4 MB).
-const MAX_CONTRACT_BYTES = 2.5 * 1024 * 1024;
-const ACCEPTED_CONTRACT_TYPES = 'application/pdf,image/jpeg,image/png,image/webp';
-
-export function formatCnpj(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 14);
-  return digits
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
-}
+import { ACCEPTED_CONTRACT_TYPES, MAX_CONTRACT_BYTES, formatCnpj, readAsDataUrl } from '@/utils/businessContract';
 
 /** A API não informa progresso real (BrasilAPI + IA levam ~10–25 s): a barra avança por tempo,
  * desacelerando perto do teto, e só completa quando a resposta chega. */
@@ -58,22 +47,14 @@ function AnalysisProgress({ value }: { value: number }) {
   );
 }
 
-function readAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error(t('Não foi possível ler o arquivo.')));
-    reader.onload = () => resolve(reader.result as string);
-    reader.readAsDataURL(file);
-  });
-}
-
 /**
- * Ponto comercial: na primeira vez, CNPJ + contrato social (analisado por IA contra o CNPJ);
- * depois, mostra o CNPJ já validado (ou em análise) e reaproveita sem pedir de novo.
+ * Conta de comércio: CNPJ + contrato social (a IA dá um parecer; um administrador decide).
+ * Usado para reenviar o documento depois de uma rejeição.
  */
 export function BusinessVerificationCard() {
   useI18n();
   const { user, refreshUser } = useAuth();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cnpj, setCnpj] = useState(user?.businessCnpj ? formatCnpj(user.businessCnpj) : '');
   const [file, setFile] = useState<File | null>(null);
@@ -113,7 +94,7 @@ export function BusinessVerificationCard() {
           </span>
           <span className="block text-xs text-muted">
             {user?.businessVerificationNote ?? 'Estamos conferindo seu contrato social.'}{' '}
-            {t('Seus eventos comerciais ficam em análise até a aprovação.')}{' '}
+            {t('Um administrador vai revisar seu cadastro.')}{' '}
           </span>
         </p>
       </div>
@@ -147,6 +128,7 @@ export function BusinessVerificationCard() {
       await usersService.submitBusinessVerification(cnpj, await readAsDataUrl(file));
       setProgress(100);
       await refreshUser();
+      await queryClient.invalidateQueries({ queryKey: ['business', 'me'] });
     } catch (err) {
       setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível enviar o contrato social.');
     } finally {
@@ -158,10 +140,8 @@ export function BusinessVerificationCard() {
     <div className="mt-3 space-y-3 rounded-xl border border-border bg-surface p-3">
       <p className="text-xs text-muted">
         {status === 'rejected'
-          ? `Validação anterior reprovada: ${user?.businessVerificationNote ?? 'envie um novo documento.'}`
-          : t(
-              'Só na primeira vez: informe o CNPJ e anexe o contrato social. Conferimos se o documento bate com o CNPJ e depois reaproveitamos nos próximos eventos.',
-            )}
+          ? t('Corrija os dados e reenvie o contrato social para uma nova análise.')
+          : t('Informe o CNPJ e anexe o contrato social. Conferimos se o documento bate com o CNPJ.')}
       </p>
       <div>
         <label className="mb-2 block text-sm font-semibold text-muted">CNPJ</label>

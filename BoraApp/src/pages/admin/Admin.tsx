@@ -6,12 +6,14 @@ import { Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, BarChart3, CheckCircle2, Clock3, History, Search, ShieldCheck, Users, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/i18n';
+import { LanguageMenu } from '@/components/LanguageSelector';
 import { adminService, type AdminUser, type Breakdown, type Page } from '@/services/admin.service';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
 import { Select } from '@/shared/ui/Select';
 import { BottomSheet } from '@/shared/ui/BottomSheet';
 import type { BoraEvent } from '@/types/domain';
+import { formatCnpj } from '@/utils/businessContract';
 
 const labels: Record<string, string> = {
   pending_review: 'Em análise',
@@ -243,9 +245,12 @@ function AdminPanel() {
             </div>
             <p className="mt-2 text-sm text-muted">{t('Acompanhe a comunidade, revise eventos e gerencie acessos.')}</p>
           </div>
-          <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm">
-            {user?.name} · {t('Administrador')}
-          </span>
+          <div className="flex items-center gap-2">
+            <LanguageMenu />
+            <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm">
+              {user?.name} · {t('Administrador')}
+            </span>
+          </div>
         </header>
         <nav
           aria-label={t('Navegação administrativa')}
@@ -472,7 +477,12 @@ function AdminPanel() {
                       <td className="px-4 py-4">
                         <p className="font-semibold">{u.name}</p>
                         <p className="text-xs text-muted">{u.email}</p>
-                        {u.businessName && <p className="mt-1 text-xs text-muted">{u.businessName}</p>}
+                        {u.businessName && (
+                          <p className={tab === 'business' ? 'mt-1 text-sm font-semibold' : 'mt-1 text-xs text-muted'}>
+                            {tab === 'business' && `${t('Estabelecimento')}: `}
+                            {u.businessName}
+                          </p>
+                        )}
                       </td>
                       <td className="px-4 py-4">{u.city ?? '—'}</td>
                       <td className="px-4 py-4">
@@ -481,7 +491,7 @@ function AdminPanel() {
                       <td className="px-4 py-4">
                         {t(u.isActive ? 'Ativa' : 'Suspensa')}
                         <p className="mt-1 text-xs text-muted">
-                          {t(u.phoneVerified ? 'Telefone verificado' : 'Telefone não verificado')}
+                          {t(u.emailVerified ? 'E-mail verificado' : 'E-mail não verificado')}
                         </p>
                       </td>
                       <td className="px-4 py-4">{new Date(u.createdAt).toLocaleDateString(locale)}</td>
@@ -641,8 +651,23 @@ function AdminPanel() {
               <h3 className="font-bold">{review.name}</h3>
               {review.kind === 'business' && (
                 <div className="space-y-2 text-sm">
-                  <p>{document.data?.cnpj}</p>
-                  <p className="text-muted">{document.data?.note}</p>
+                  {document.data?.venue && (
+                    <div className="rounded-xl border border-border bg-background p-3">
+                      <p className="text-xs font-semibold uppercase text-muted">{t('Estabelecimento')}</p>
+                      <p className="font-semibold">{document.data.venue.name}</p>
+                      <p className="text-xs text-muted">
+                        {domainLabel(document.data.venue.category)} · {document.data.venue.address}
+                        {document.data.venue.city ? ` · ${document.data.venue.city}` : ''}
+                      </p>
+                    </div>
+                  )}
+                  {document.data?.cnpj && <p>CNPJ {formatCnpj(document.data.cnpj)}</p>}
+                  {(document.data?.aiNote ?? document.data?.note) && (
+                    <div className="rounded-xl border border-destaque/40 bg-background p-3">
+                      <p className="text-xs font-semibold uppercase text-destaque">{t('Parecer da IA')}</p>
+                      <p className="mt-1 whitespace-pre-line">{document.data.aiNote ?? document.data.note}</p>
+                    </div>
+                  )}
                   {document.isLoading && <p>{t('Carregando documento...')}</p>}
                   {document.isError && <p role="alert">{t('Não foi possível carregar o documento.')}</p>}
                   {document.data?.document &&

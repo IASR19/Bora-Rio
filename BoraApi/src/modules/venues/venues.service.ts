@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { distanceKm, isWithinRadius } from '../../shared/helpers/geo.helper';
@@ -47,11 +47,30 @@ export class VenuesService {
     return this.venuesRepository.save(venue);
   }
 
-  /** Local novo criado por ponto comercial com CNPJ já aprovado (ver EventsService.create). */
-  markVerifiedByBusiness(venue: Venue, cnpj: string): Promise<Venue> {
-    venue.cnpj = cnpj;
-    venue.verified = true;
-    return this.venuesRepository.save(venue);
+  /** Local da conta de comércio, criado no cadastro dela (ver AuthService.registerBusiness).
+   * Nasce `verified=false` (invisível nas buscas) até o admin aprovar o comércio. Recebe o
+   * `manager` pra entrar na mesma transação que cria a conta. */
+  createForBusiness(
+    dto: CreateVenueDto,
+    owner: { ownerUserId: string; cnpj: string },
+    manager: EntityManager = this.venuesRepository.manager,
+  ): Promise<Venue> {
+    const venue = manager.create(Venue, {
+      name: dto.name,
+      category: dto.category as Venue['category'],
+      address: dto.address,
+      latitude: dto.latitude,
+      longitude: dto.longitude,
+      city: dto.city ?? null,
+      description: dto.description ?? null,
+      priceRange: (dto.priceRange ?? 'medio') as Venue['priceRange'],
+      musicGenres: [],
+      vibes: [],
+      verified: false,
+      cnpj: owner.cnpj,
+      ownerUserId: owner.ownerUserId,
+    });
+    return manager.save(venue);
   }
 
   async search(query: QueryVenuesDto, preferences: UserPreferences | null): Promise<VenueWithScore[]> {

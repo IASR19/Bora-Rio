@@ -33,7 +33,7 @@ export async function ensureAdmin(manager: EntityManager): Promise<User> {
       gender: Gender.UNDISCLOSED,
       birthDate: null,
       phone: null,
-      phoneVerified: false,
+      emailVerified: true,
       city: null,
     }),
   );

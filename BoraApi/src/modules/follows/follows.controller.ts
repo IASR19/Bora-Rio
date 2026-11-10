@@ -1,12 +1,15 @@
-import { Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ParseGuidPipe } from '../../shared/pipes/parse-guid.pipe';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { UserAccountGuard } from '../business/guards/user-account.guard';
 import { FollowsService } from './follows.service';
 
+/** Função do lado "usuário": contas de comércio ficam de fora. */
 @ApiTags('follows')
+@UseGuards(UserAccountGuard)
 @Controller('follows')
 export class FollowsController {
   constructor(private readonly followsService: FollowsService) {}

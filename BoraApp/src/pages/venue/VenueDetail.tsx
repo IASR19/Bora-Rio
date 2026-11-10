@@ -11,7 +11,6 @@ import { eventsService } from '@/services/events.service';
 import { favoritesService } from '@/services/favorites.service';
 import { venuesService } from '@/services/venues.service';
 import { venueCategoryLabel } from '@/shared/constants/venue-categories';
-import { Button } from '@/shared/ui/Button';
 import { CoverImage } from '@/shared/ui/CoverImage';
 import { ScoreBadge } from '@/shared/ui/ScoreBadge';
 import { cn } from '@/utils/cn';
@@ -166,11 +165,6 @@ export function VenueDetail() {
             {events?.length === 0 && (
               <div className="rounded-2xl border border-border bg-surface p-6 text-center">
                 <p className="font-semibold">{t('Nenhum evento marcado aqui ainda.')}</p>
-                <p className="mt-1 text-sm text-muted">{t('Vai rolar algo? Crie o primeiro evento neste lugar.')}</p>
-                <Button className="mt-4" onClick={() => navigate('/events/create')}>
-                  {' '}
-                  {t('Criar evento')}{' '}
-                </Button>
               </div>
             )}
             {events?.map((event) => (

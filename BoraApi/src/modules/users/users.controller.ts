@@ -17,9 +17,10 @@ export class UsersController {
     private readonly businessVerificationService: BusinessVerificationService,
   ) {}
 
+  /** Usuário logado + `businessVenueId` (local da conta de comércio, ou null). */
   @Get('me')
   me(@CurrentUser() user: JwtPayload) {
-    return this.usersService.findById(user.sub);
+    return this.usersService.findMe(user.sub);
   }
 
   @Patch('me')
@@ -32,7 +33,7 @@ export class UsersController {
     return this.usersService.submitIdentity(user.sub, dto);
   }
 
-  /** Primeira criação de evento como ponto comercial: CNPJ + contrato social analisado por IA. */
+  /** Reenvio do CNPJ + contrato social pela conta de comércio depois de uma rejeição do admin. */
   @Post('me/business-verification')
   submitBusinessVerification(@CurrentUser() user: JwtPayload, @Body() dto: SubmitBusinessVerificationDto) {
     return this.businessVerificationService.submit(user.sub, dto);

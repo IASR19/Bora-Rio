@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BlocksModule } from '../blocks/blocks.module';
+import { AccountGuardsModule } from '../business/guards/account-guards.module';
 import { Event } from '../events/entities/event.entity';
 import { EventParticipation } from '../events/entities/event-participation.entity';
 import { UsersModule } from '../users/users.module';
@@ -15,6 +16,7 @@ import { Message } from './entities/message.entity';
     TypeOrmModule.forFeature([Conversation, Message, Event, EventParticipation]),
     BlocksModule,
     UsersModule,
+    AccountGuardsModule,
   ],
   controllers: [ChatController],
   providers: [ChatService],

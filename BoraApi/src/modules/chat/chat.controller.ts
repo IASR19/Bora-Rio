@@ -1,13 +1,16 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ParseGuidPipe } from '../../shared/pipes/parse-guid.pipe';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { UserAccountGuard } from '../business/guards/user-account.guard';
 import { ChatService } from './chat.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 
+/** Função do lado "usuário": contas de comércio ficam de fora. */
 @ApiTags('chat')
+@UseGuards(UserAccountGuard)
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}

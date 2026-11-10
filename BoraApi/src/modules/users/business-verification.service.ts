@@ -3,11 +3,17 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 
+import { CommonErrorCodes } from '../../common/constants/error-codes';
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
+import { isUniqueViolation } from '../../common/utils/database.utils';
 import { isValidCnpj } from '../../shared/helpers/document.helper';
+import { Venue } from '../venues/entities/venue.entity';
 import { SubmitBusinessVerificationDto } from './dto/submit-business-verification.dto';
 import { BusinessVerificationStatus, User } from './entities/user.entity';
+
+export const cnpjTakenException = () =>
+  new BusinessException('Esse CNPJ já está cadastrado em outra conta', CommonErrorCodes.DUPLICATED_RESOURCE);
 
 /** Tipos aceitos pro contrato social e limite do arquivo decodificado: em base64 ele cresce 4/3,
  * e precisa caber no body JSON da API (4mb, ver bootstrap) e no limite da Vercel (~4,5mb). */
@@ -43,44 +49,56 @@ export interface BusinessDecision {
   note: string;
 }
 
+const CONFIDENCE_LABEL: Record<ContractAnalysis['confidence'], string> = {
+  high: 'alta confiança',
+  medium: 'confiança média',
+  low: 'baixa confiança',
+};
+
 /**
- * Aprovação automática só quando tudo bate com alta confiança; qualquer dúvida vira PENDING
- * (revisão manual), nunca REJECTED: reprovar é decisão humana (ver scripts/review-business).
+ * Parecer automático da conta de comércio. Nunca aprova nem reprova: aprovar/rejeitar é sempre
+ * decisão do admin (painel /admin, aba Cadastros comerciais). O status é sempre PENDING e a
+ * nota resume o que a consulta à Receita e a IA acharam, pra ajudar quem revisa.
  * O contrato de constituição pode ser anterior ao CNPJ, então CNPJ ausente no documento não
- * reprova se a razão social bater.
- *
- * Decisão de produto: basta contrato social + CNPJ, sem conferir quem envia (CPF/identidade).
- * O CPF dos sócios está no próprio contrato, então pedi-lo não provaria nada. Em troca, dois
- * reforços baratos: os sócios do documento têm de bater com os da Receita (documento é mesmo da
- * empresa) e um CNPJ já aprovado em outra conta nunca é aprovado de novo sozinho (anti-imitação).
+ * conta contra se a razão social bater. Empresário individual/MEI pode vir sem quadro de sócios
+ * na Receita: aí não há com o que comparar.
  */
 export function decideBusinessStatus(
   company: CompanyData,
   analysis: ContractAnalysis | null,
-  cnpjClaimedByAnotherAccount = false,
 ): BusinessDecision {
-  if (cnpjClaimedByAnotherAccount) {
-    return { status: BusinessVerificationStatus.PENDING, note: 'Esse CNPJ já está vinculado a outra conta. Vamos revisar manualmente.' };
-  }
-  if (!company.active) {
-    return { status: BusinessVerificationStatus.PENDING, note: 'O CNPJ não está com situação ATIVA na Receita. Vamos revisar manualmente.' };
-  }
+  const notes: string[] = [];
+  if (!company.active) notes.push('Atenção: o CNPJ não está com situação ATIVA na Receita.');
+
   if (!analysis) {
-    return { status: BusinessVerificationStatus.PENDING, note: 'Não conseguimos analisar o documento agora. Vamos revisar manualmente.' };
+    notes.push('Parecer da IA: não conseguimos analisar o documento agora. Revisar manualmente.');
+  } else {
+    const issues: string[] = [];
+    if (!analysis.isCompanyDocument) issues.push('não parece contrato social');
+    if (!analysis.companyNameMatches) issues.push('razão social não confere');
+    if (!(analysis.cnpjMatches || analysis.cnpjFound === '')) issues.push('CNPJ do documento não confere');
+    if (company.partners.length > 0 && !analysis.partnersMatch)
+      issues.push('sócios não conferem com a Receita');
+    const confidence = CONFIDENCE_LABEL[analysis.confidence] ?? analysis.confidence;
+    const verdict =
+      issues.length === 0 && analysis.confidence === 'high'
+        ? `tudo confere (${confidence}).`
+        : issues.length === 0
+          ? `sem divergências, mas com ${confidence}.`
+          : `${issues.join('; ')} (${confidence}).`;
+    notes.push(`Parecer da IA: ${verdict} ${analysis.reason}`.trim());
   }
-  const cnpjOk = analysis.cnpjMatches || analysis.cnpjFound === '';
-  // Empresário individual/MEI pode vir sem quadro de sócios na Receita: aí não há com o que comparar.
-  const partnersOk = company.partners.length === 0 || analysis.partnersMatch;
-  const approved =
-    analysis.isCompanyDocument &&
-    analysis.companyNameMatches &&
-    cnpjOk &&
-    partnersOk &&
-    analysis.confidence === 'high';
-  return approved
-    ? { status: BusinessVerificationStatus.APPROVED, note: analysis.reason }
-    : { status: BusinessVerificationStatus.PENDING, note: `Em revisão manual: ${analysis.reason}` };
+
+  return { status: BusinessVerificationStatus.PENDING, note: notes.join(' ') };
 }
+
+/** Mensagem que o comércio vê enquanto o cadastro está em análise. O parecer da IA fica à parte
+ * (users.business_ai_note), só pro admin. */
+export const BUSINESS_PENDING_NOTE =
+  'Recebemos seu cadastro. Nossa equipe vai analisar o contrato social e liberar seu acesso.';
+
+/** Nota pro admin quando nenhuma fonte pública respondeu: a conta é criada mesmo assim e o admin confere. */
+export const CNPJ_LOOKUP_FAILED_NOTE = 'Não conseguimos consultar o CNPJ agora. Revisar manualmente.';
 
 const ANALYSIS_SCHEMA = {
   type: 'object',
@@ -200,13 +218,54 @@ export class BusinessVerificationService {
     private readonly configService: ConfigService,
   ) {}
 
-  /** Primeira vez como ponto comercial: valida o contrato social contra o CNPJ informado.
-   * Depois de aprovado, o CNPJ fica no usuário e é reaproveitado (sem novo envio). */
+  /** CNPJ só com dígitos e dígito verificador válido. */
+  normalizeCnpj(raw: string): string {
+    const cnpj = raw.replace(/\D/g, '');
+    if (!isValidCnpj(cnpj)) throw new BusinessException('CNPJ inválido');
+    return cnpj;
+  }
+
+  /** Uma conta por CNPJ (índice único parcial em users.business_cnpj, só entre contas não
+   * excluídas; aqui só pra dar erro claro antes de gastar a consulta e a análise da IA).
+   * Conta excluída ou rejeitada pelo admin não segura o CNPJ. */
+  async assertCnpjAvailable(cnpj: string, exceptUserId?: string): Promise<void> {
+    const taken = await this.usersRepository.exists({
+      where: exceptUserId ? { businessCnpj: cnpj, id: Not(exceptUserId) } : { businessCnpj: cnpj },
+    });
+    if (taken) throw cnpjTakenException();
+  }
+
+  /**
+   * Confere o arquivo, consulta o CNPJ e pede o parecer da IA (`decision.note`, guardado em
+   * users.business_ai_note, nunca mostrado ao comércio). Usado no cadastro do comércio
+   * (AuthService.registerBusiness) e no reenvio depois de uma rejeição (submit).
+   * CNPJ inexistente na Receita (todas as fontes 404) é erro; consulta que só falhou não
+   * bloqueia: a conta fica em análise com uma nota pro admin conferir na mão.
+   */
+  async review(
+    cnpj: string,
+    contractFile: string,
+  ): Promise<{ company: CompanyData | null; decision: BusinessDecision }> {
+    const file = this.parseContractFile(contractFile);
+    const company = await this.fetchCompany(cnpj);
+    if (!company) {
+      return {
+        company: null,
+        decision: { status: BusinessVerificationStatus.PENDING, note: CNPJ_LOOKUP_FAILED_NOTE },
+      };
+    }
+    const analysis = await this.analyzeContract(file, cnpj, company);
+    return { company, decision: decideBusinessStatus(company, analysis) };
+  }
+
+  /** Reenvio do CNPJ + contrato social pela conta de comércio, só depois de uma rejeição do admin.
+   * Reenviar em análise geraria uma nova análise paga a cada clique. */
   async submit(userId: string, dto: SubmitBusinessVerificationDto): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) throw new ResourceNotFoundException('User', userId);
-    // Só a primeira vez ou depois de uma reprovação: reenviar em análise trocaria o CNPJ dos
-    // eventos já criados e geraria uma nova análise paga a cada clique.
+    if (user.accountType !== 'business') {
+      throw new BusinessException('Só contas de comércio enviam CNPJ e contrato social.');
+    }
     if (user.businessVerificationStatus === BusinessVerificationStatus.APPROVED) {
       throw new BusinessException('Seu CNPJ já foi validado.');
     }
@@ -214,34 +273,33 @@ export class BusinessVerificationService {
       throw new BusinessException('Seu CNPJ já está em análise. Aguarde a revisão.');
     }
 
-    const cnpj = dto.cnpj.replace(/\D/g, '');
-    if (!isValidCnpj(cnpj)) throw new BusinessException('CNPJ inválido');
-    const file = this.parseContractFile(dto.contractFile);
-
-    const company = await this.fetchCompany(cnpj);
-    // Falha de consulta é problema nosso/de fora, não do documento: não gasta a tentativa do
-    // usuário (nada é salvo) e ele pode reenviar em seguida.
-    if (!company) {
-      throw new BusinessException('Não conseguimos consultar o CNPJ agora. Tente novamente em alguns minutos.');
-    }
-    const claimedElsewhere = await this.usersRepository.exists({
-      where: { businessCnpj: cnpj, businessVerificationStatus: BusinessVerificationStatus.APPROVED, id: Not(user.id) },
-    });
-    const analysis = await this.analyzeContract(file, cnpj, company);
-    const decision = decideBusinessStatus(company, analysis, claimedElsewhere);
+    const cnpj = this.normalizeCnpj(dto.cnpj);
+    await this.assertCnpjAvailable(cnpj, user.id);
+    const { company, decision } = await this.review(cnpj, dto.contractFile);
 
     user.businessCnpj = cnpj;
-    user.businessName = company.legalName || null;
+    user.businessName = company?.legalName || user.businessName;
     user.businessVerificationStatus = decision.status;
-    user.businessVerificationNote = decision.note;
+    user.businessVerificationNote = BUSINESS_PENDING_NOTE;
+    user.businessAiNote = decision.note;
     user.businessContractFile = dto.contractFile;
-    user.businessVerifiedAt = decision.status === BusinessVerificationStatus.APPROVED ? new Date() : null;
-    const saved = await this.usersRepository.save(user);
-    saved.businessContractFile = null; // não devolve o documento na resposta
-    return saved;
+    user.businessVerifiedAt = null;
+    try {
+      await this.usersRepository.manager.transaction(async (manager) => {
+        await manager.save(user);
+        // O local da conta acompanha o CNPJ reenviado (continua não verificado até a aprovação).
+        await manager.update(Venue, { ownerUserId: user.id }, { cnpj });
+      });
+    } catch (err) {
+      // Corrida: outra conta cadastrou o mesmo CNPJ entre a checagem e o save.
+      if (isUniqueViolation(err)) throw cnpjTakenException();
+      throw err;
+    }
+    // Recarrega sem o contrato social nem o parecer da IA (colunas `select: false`).
+    return this.usersRepository.findOneOrFail({ where: { id: user.id } });
   }
 
-  private parseContractFile(dataUrl: string): { mime: (typeof ALLOWED_CONTRACT_MIME)[number]; dataUrl: string } {
+  parseContractFile(dataUrl: string): { mime: (typeof ALLOWED_CONTRACT_MIME)[number]; dataUrl: string } {
     const match = dataUrl.match(/^data:([\w/+.-]+);base64,(.+)$/);
     const mime = match?.[1] as (typeof ALLOWED_CONTRACT_MIME)[number] | undefined;
     if (!match || !mime || !ALLOWED_CONTRACT_MIME.includes(mime)) {
@@ -260,7 +318,7 @@ export class BusinessVerificationService {
    *
    * 404 numa fonte não é definitivo: várias usam a base pública da Receita, atualizada uma vez por
    * mês, e empresa aberta há poucas semanas ainda não está lá. Só é "não encontrado" quando TODAS
-   * as fontes respondem 404; se alguma só falhou, devolve null (o usuário tenta de novo).
+   * as fontes respondem 404; se alguma só falhou, devolve null (cadastro segue pra revisão manual).
    */
   private async fetchCompany(cnpj: string): Promise<CompanyData | null> {
     const deadline = Date.now() + CNPJ_LOOKUP_BUDGET_MS;

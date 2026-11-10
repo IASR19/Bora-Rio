@@ -13,7 +13,7 @@ export function Splash() {
   useEffect(() => {
     if (loading) return;
     const timer = setTimeout(() => {
-      navigate(user ? '/home' : '/welcome', { replace: true });
+      navigate(user ? (user.accountType === 'business' ? '/business' : '/home') : '/welcome', { replace: true });
     }, 1400);
     return () => clearTimeout(timer);
   }, [loading, user, navigate]);

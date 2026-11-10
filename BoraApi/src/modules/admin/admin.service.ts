@@ -7,9 +7,10 @@ import {
 } from '@nestjs/common';
 import { DataSource, EntityManager, In, SelectQueryBuilder } from 'typeorm';
 
+import { applyBusinessReview } from '../business/business-review';
 import { CheckIn } from '../checkins/entities/checkin.entity';
 import { Event, EventStatus } from '../events/entities/event.entity';
-import { BusinessVerificationStatus, User } from '../users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { Venue } from '../venues/entities/venue.entity';
 import { AdminQuery, AdminReviewDto, AdminUpdateUserDto, REGIONS } from './admin.dto';
 import { AdminAudit } from './entities/admin-audit.entity';
@@ -20,9 +21,10 @@ const USER_FIELDS = [
   'u.email',
   'u.city',
   'u.role',
+  'u.accountType',
   'u.isActive',
   'u.language',
-  'u.phoneVerified',
+  'u.emailVerified',
   'u.showInWhoIsGoing',
   'u.subscriptionStatus',
   'u.businessName',
@@ -210,36 +212,32 @@ export class AdminService {
       .getRepository(User)
       .createQueryBuilder('u')
       .select(['u.id', 'u.businessCnpj', 'u.businessName', 'u.businessVerificationNote'])
-      .addSelect('u.businessContractFile')
+      .addSelect(['u.businessContractFile', 'u.businessAiNote'])
       .where('u.id = :id', { id })
       .getOne();
     if (!user) throw new NotFoundException();
+    // Local da conta de comércio (contas antigas, que validaram CNPJ ao criar evento, não têm).
+    const venue = await this.db.getRepository(Venue).findOne({
+      where: { ownerUserId: id },
+      select: { id: true, name: true, category: true, address: true, city: true },
+    });
     return {
       cnpj: user.businessCnpj,
       name: user.businessName,
       note: user.businessVerificationNote,
+      // Parecer consultivo da IA: só aparece aqui, pro admin; o comércio vê apenas `note`.
+      aiNote: user.businessAiNote,
       document: user.businessContractFile,
+      venue: venue
+        ? { id: venue.id, name: venue.name, category: venue.category, address: venue.address, city: venue.city }
+        : null,
     };
   }
 
   async reviewBusiness(actorId: string, id: string, dto: AdminReviewDto) {
     return this.db.transaction(async (manager) => {
       await this.authorize(manager, actorId);
-      const user = await manager.findOne(User, { where: { id }, lock: { mode: 'pessimistic_write' } });
-      if (!user) throw new NotFoundException();
-      if (user.businessVerificationStatus !== BusinessVerificationStatus.PENDING)
-        throw new ConflictException('Este cadastro já foi revisado.');
-      user.businessVerificationStatus =
-        dto.decision === 'approved' ? BusinessVerificationStatus.APPROVED : BusinessVerificationStatus.REJECTED;
-      user.businessVerificationNote = dto.note;
-      user.businessVerifiedAt = dto.decision === 'approved' ? new Date() : null;
-      await manager.save(user);
-      if (dto.decision === 'approved')
-        await manager.update(
-          Event,
-          { createdBy: id, createdAsBusiness: true, status: EventStatus.PENDING_REVIEW },
-          { status: EventStatus.PUBLISHED },
-        );
+      await applyBusinessReview(manager, id, dto.decision, dto.note);
       await manager.save(AdminAudit, {
         actorId,
         targetId: id,

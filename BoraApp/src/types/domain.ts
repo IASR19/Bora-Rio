@@ -1,12 +1,14 @@
 export interface User {
   role: 'user' | 'admin';
+  accountType: 'user' | 'business';
+  businessVenueId?: string | null;
   language: 'pt' | 'es' | 'en';
   isActive: boolean;
   id: string;
   name: string;
   email: string;
   phone: string | null;
-  phoneVerified: boolean;
+  emailVerified: boolean;
   birthDate: string | null;
   gender: string;
   avatarUrl: string | null;
@@ -105,9 +107,13 @@ export interface Reward {
   id: string;
   eventId: string;
   title: string;
+  kind: 'gift' | 'fixed_price' | 'percent_off';
+  description: string | null;
+  priceCents: number | null;
+  percentOff: number | null;
   validFrom: string;
   validUntil: string;
-  quantityTotal: number;
+  quantityTotal: number | null;
   quantityRedeemed: number;
 }
 

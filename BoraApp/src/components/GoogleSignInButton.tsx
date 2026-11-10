@@ -3,14 +3,25 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 import { googleClientId } from '@/config/featureFlags';
 import { useAuth } from '@/context/AuthContext';
+import { ApiError } from '@/shared/api/client';
+import type { User } from '@/types/domain';
 import { Button } from '@/shared/ui/Button';
 
+/**
+ * Conta existente sempre entra (`onSuccess`). Para quem ainda não tem conta:
+ * - com `onAccountNotFound`, nada é criado e o token volta para a tela decidir o tipo de conta;
+ * - sem ele, cria conta de usuário (cadastro de quem já escolheu "Quero curtir eventos").
+ */
 export function GoogleSignInButton({
   onSuccess,
   onError,
+  onAccountNotFound,
+  text = 'continue_with',
 }: {
-  onSuccess: () => void;
+  onSuccess: (user: User) => void;
   onError: (message: string) => void;
+  onAccountNotFound?: (credential: string) => void;
+  text?: 'continue_with' | 'signup_with';
 }) {
   const { language } = useI18n();
   const { loginWithGoogle } = useAuth();
@@ -37,16 +48,20 @@ export function GoogleSignInButton({
           theme="filled_black"
           shape="pill"
           size="large"
-          text="continue_with"
-          onSuccess={async (credentialResponse) => {
-            if (!credentialResponse.credential) {
+          text={text}
+          onSuccess={async ({ credential }) => {
+            if (!credential) {
               onError('Não foi possível continuar com o Google.');
               return;
             }
             try {
-              await loginWithGoogle(credentialResponse.credential);
-              onSuccess();
-            } catch {
+              const loggedUser = await loginWithGoogle(credential, { createAccount: !onAccountNotFound });
+              onSuccess(loggedUser);
+            } catch (err) {
+              if (onAccountNotFound && err instanceof ApiError && err.errorCode === 'GOOGLE_ACCOUNT_NOT_FOUND') {
+                onAccountNotFound(credential);
+                return;
+              }
               onError('Não foi possível continuar com o Google.');
             }
           }}

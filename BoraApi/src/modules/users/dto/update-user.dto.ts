@@ -56,4 +56,10 @@ export class UpdateUserDto {
   @IsOptional()
   @IsBoolean()
   showInWhoIsGoing?: boolean;
+
+  /** Só pra quem ainda não tem CPF (login com Google ou conta antiga): informado uma vez,
+   * validado e único; depois não muda (ver UsersService.update). */
+  @IsOptional()
+  @IsString()
+  cpf?: string;
 }

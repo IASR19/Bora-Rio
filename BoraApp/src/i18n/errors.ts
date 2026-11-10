@@ -6,6 +6,7 @@ const aliases: Record<string, string> = {
   'Email already registered': 'Este e-mail já está cadastrado.',
   'Invalid or expired verification code': 'Código de verificação inválido ou expirado.',
   'Invalid Google token': 'Não foi possível validar o login com Google.',
+  'Google account not registered': 'Essa conta Google ainda não tem cadastro no Bora.',
   'Missing refresh token': 'Sua sessão expirou. Entre novamente.',
   Unauthorized: 'Sua sessão expirou. Entre novamente.',
   Forbidden: 'Você não tem permissão para realizar esta ação.',

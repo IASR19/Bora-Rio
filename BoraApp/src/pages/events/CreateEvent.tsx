@@ -1,33 +1,20 @@
 import { domainLabel } from '@/i18n/domain-label';
 import { t, useI18n } from '@/i18n';
-import { ArrowLeft } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { ArrowLeft, MapPin } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/context/AuthContext';
+import { useBusinessMe } from '@/pages/business/BusinessLayout';
 import { eventsService } from '@/services/events.service';
-import { geocodeAddress, lookupCep, type CepAddress } from '@/services/cep.service';
-import { venuesService } from '@/services/venues.service';
 import { ApiError } from '@/shared/api/client';
-import { VENUE_CATEGORY_OPTIONS } from '@/shared/constants/venue-categories';
 import { Button } from '@/shared/ui/Button';
 import { Chip } from '@/shared/ui/Chip';
 import { Input } from '@/shared/ui/Input';
-import type { Venue } from '@/types/domain';
 import { resizeImageToBase64 } from '@/utils/image';
-
-import { BusinessVerificationCard } from './BusinessVerificationCard';
-
-type CreatorType = 'business' | 'personal';
 
 const MUSIC = ['pagode', 'samba', 'sertanejo', 'eletronico', 'funk', 'pop', 'rock', 'mpb', 'jazz', 'outros'];
 const COVER_SIZE = 800;
-const VENUE_SEARCH_DEBOUNCE_MS = 300;
-
-function formatCep(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 8);
-  return digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
-}
 
 /** Datetime local pro <input type="datetime-local">, já a partir de amanhã. */
 function defaultStartsAt() {
@@ -36,87 +23,22 @@ function defaultStartsAt() {
   return d.toISOString().slice(0, 16);
 }
 
+/** Criação de evento pelo comércio: o local é sempre o da própria conta. */
 export function CreateEvent() {
   useI18n();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const me = useBusinessMe();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const creatorTypeRef = useRef<HTMLDivElement>(null);
-
-  const [venueQuery, setVenueQuery] = useState('');
-  const [venueResults, setVenueResults] = useState<Venue[]>([]);
-  const [searchingVenues, setSearchingVenues] = useState(false);
-  const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
-  const [creatingNewVenue, setCreatingNewVenue] = useState(false);
-  const latestVenueQueryRef = useRef('');
-
-  const [creatorType, setCreatorType] = useState<CreatorType | null>(null);
-
-  const [newVenueName, setNewVenueName] = useState('');
-  const [newVenueCategory, setNewVenueCategory] = useState('bar');
-  const [cep, setCep] = useState('');
-  const [cepStatus, setCepStatus] = useState<'idle' | 'loading' | 'found' | 'not-found'>('idle');
-  const [address, setAddress] = useState<CepAddress | null>(null);
-  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [musicGenres, setMusicGenres] = useState<string[]>([]);
   const [startsAt, setStartsAt] = useState(defaultStartsAt());
+  const [endsAt, setEndsAt] = useState('');
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
-
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ status: string; eventId: string } | null>(null);
-
-  const handleVenueQueryChange = (value: string) => {
-    setVenueQuery(value);
-    setSelectedVenue(null);
-  };
-
-  // Debounced e com guarda contra resposta fora de ordem: só aplica o resultado
-  // se a busca ainda corresponder ao texto mais recente digitado.
-  useEffect(() => {
-    const query = venueQuery.trim();
-    if (selectedVenue || query.length < 2) {
-      setVenueResults([]);
-      setSearchingVenues(false);
-      return;
-    }
-
-    setSearchingVenues(true);
-    const timeoutId = setTimeout(async () => {
-      latestVenueQueryRef.current = query;
-      try {
-        const results = await venuesService.search({ q: query });
-        if (latestVenueQueryRef.current === query) setVenueResults(results.slice(0, 6));
-      } finally {
-        if (latestVenueQueryRef.current === query) setSearchingVenues(false);
-      }
-    }, VENUE_SEARCH_DEBOUNCE_MS);
-
-    return () => clearTimeout(timeoutId);
-  }, [venueQuery, selectedVenue]);
-
-  const handleCepChange = async (value: string) => {
-    const formatted = formatCep(value);
-    setCep(formatted);
-    const digits = formatted.replace(/\D/g, '');
-    if (digits.length !== 8) {
-      setCepStatus('idle');
-      return;
-    }
-    setCepStatus('loading');
-    const found = await lookupCep(digits);
-    if (!found) {
-      setCepStatus('not-found');
-      return;
-    }
-    setAddress(found);
-    setCepStatus('found');
-    const geo = await geocodeAddress(found);
-    setCoords(geo);
-  };
 
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -135,54 +57,26 @@ export function CreateEvent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    if (!creatorType) {
-      setError('Diga se o evento é de um estabelecimento comercial ou pessoal.');
-      creatorTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    const businessStatus = user?.businessVerificationStatus;
-    if (creatorType === 'business' && businessStatus !== 'approved' && businessStatus !== 'pending') {
-      setError('Valide seu CNPJ com o contrato social antes de criar o evento como ponto comercial.');
-      creatorTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    if (!selectedVenue && !creatingNewVenue) {
-      setError('Escolha um local existente ou cadastre um novo.');
-      return;
-    }
-    if (creatingNewVenue && (!newVenueName || !address || !coords)) {
-      setError('Preencha nome, CEP e aguarde o endereço ser localizado.');
-      return;
-    }
     if (!name.trim() || musicGenres.length === 0) {
       setError('Dê um nome ao evento e escolha pelo menos um gênero musical.');
       return;
     }
-
+    if (endsAt && new Date(endsAt) <= new Date(startsAt)) {
+      setError('O término precisa ser depois do início.');
+      return;
+    }
     setLoading(true);
     try {
       const event = await eventsService.create({
-        venueId: selectedVenue?.id,
-        newVenue: creatingNewVenue
-          ? {
-              name: newVenueName,
-              category: newVenueCategory,
-              address: `${address!.street ? `${address!.street}, ` : ''}${address!.neighborhood}, ${address!.city} - ${address!.state}`,
-              latitude: coords!.latitude,
-              longitude: coords!.longitude,
-              city: `${address!.city} - ${address!.state}`,
-            }
-          : undefined,
         name: name.trim(),
         description: description.trim() || undefined,
         musicGenres,
         startsAt: new Date(startsAt).toISOString(),
+        endsAt: endsAt ? new Date(endsAt).toISOString() : undefined,
         coverImageUrl: coverImageUrl ?? undefined,
-        asBusiness: creatorType === 'business',
       });
-
-      setResult({ status: event.status ?? 'published', eventId: event.id });
+      await queryClient.invalidateQueries({ queryKey: ['business'] });
+      navigate(`/business/events/${event.id}`, { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível criar o evento.');
     } finally {
@@ -190,32 +84,12 @@ export function CreateEvent() {
     }
   };
 
-  if (result) {
-    const published = result.status === 'published';
-    return (
-      <div className="bg-background px-5 pt-8 text-center">
-        <p className="text-2xl font-extrabold">{published ? t('Evento publicado! 🎉') : t('Evento enviado ✅')}</p>
-        <p className="mx-auto mt-3 max-w-xs text-sm text-muted">
-          {published
-            ? t('Já aparece na busca pra todo mundo.')
-            : creatorType === 'business'
-              ? t('Fica em análise até a validação do seu CNPJ ser aprovada — dá pra ver pelo link direto.')
-              : t(
-                  'Ainda está em análise — dá pra ver pelo link direto, e ele aparece pra todo mundo assim que ganhar mais confiança (ex.: pessoas confirmando presença de verdade no local, ou você verificar sua identidade em Perfil > Segurança).',
-                )}
-        </p>
-        <Button size="lg" className="mt-6 w-full" onClick={() => navigate(`/event/${result.eventId}`)}>
-          {' '}
-          {t('Ver evento')}{' '}
-        </Button>
-      </div>
-    );
-  }
-
+  const label = 'mb-2 block text-sm font-semibold text-muted';
   return (
     <div className="bg-background px-5 pt-6">
       <button
         onClick={() => navigate(-1)}
+        aria-label={t('Voltar')}
         className="flex h-10 w-10 items-center justify-center rounded-full bg-surface"
       >
         <ArrowLeft className="h-5 w-5" />
@@ -223,154 +97,28 @@ export function CreateEvent() {
 
       <h1 className="mt-4 text-2xl font-extrabold">{t('Criar evento')}</h1>
       <p className="mt-1 text-sm text-muted">
-        {' '}
-        {t('Ponto comercial com CNPJ validado, local verificado ou você com identidade verificada (Perfil')} {'>'}{' '}
-        {t(
-          'Segurança) publicam na hora. Senão, o evento fica em análise até 3 check-ins reais confirmarem que é de verdade.',
-        )}{' '}
+        {t('O evento é publicado na hora. Depois você pode adicionar promoções e mostrar o QR de check-in.')}
       </p>
 
-      <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-        <div ref={creatorTypeRef}>
-          <label className="mb-2 block text-sm font-semibold text-muted">
-            {' '}
-            {t('Este evento é de...')} <span className="text-destaque">*</span>
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setCreatorType('business')}
-              className={
-                creatorType === 'business'
-                  ? 'rounded-xl border-2 border-destaque bg-bora-gradient-soft px-3 py-3 text-sm font-semibold'
-                  : 'rounded-xl border border-border bg-surface px-3 py-3 text-sm font-semibold text-muted'
-              }
-            >
-              {' '}
-              {t('Estabelecimento comercial')}{' '}
-            </button>
-            <button
-              type="button"
-              onClick={() => setCreatorType('personal')}
-              className={
-                creatorType === 'personal'
-                  ? 'rounded-xl border-2 border-destaque bg-bora-gradient-soft px-3 py-3 text-sm font-semibold'
-                  : 'rounded-xl border border-border bg-surface px-3 py-3 text-sm font-semibold text-muted'
-              }
-            >
-              {' '}
-              {t('Pessoa física')}{' '}
-            </button>
-          </div>
-          {creatorType === 'business' && <BusinessVerificationCard />}
-          {creatorType === 'personal' && (
-            <p className="mt-2 text-xs text-muted">
-              {' '}
-              {t('Pra publicar na hora, verifique sua identidade (telefone + CPF + selfie) em')}{' '}
-              <button
-                type="button"
-                onClick={() => navigate('/profile/security')}
-                className="font-semibold text-destaque"
-              >
-                {' '}
-                {t('Perfil')} {'>'} {t('Segurança')}{' '}
-              </button>{' '}
-              {t('. Sem isso, o evento fica em análise até 3 check-ins confirmarem que é real.')}{' '}
+      <form onSubmit={handleSubmit} className="mt-6 space-y-5 pb-10">
+        {me.data?.venue && (
+          <div className="flex items-start gap-2 rounded-xl border border-border bg-surface p-3 text-sm">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-destaque" />
+            <p>
+              <span className="block text-xs text-muted">{t('Local do evento')}</span>
+              <span className="font-semibold">{me.data.venue.name}</span>
+              <span className="block text-xs text-muted">{me.data.venue.address}</span>
             </p>
-          )}
-          {!creatorType && error && <p className="mt-2 text-sm text-destaque">{t(error)}</p>}
-        </div>
+          </div>
+        )}
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">{t('Local')}</label>
-          {!creatingNewVenue ? (
-            <>
-              <Input
-                placeholder={t('Buscar local existente...')}
-                value={selectedVenue ? selectedVenue.name : venueQuery}
-                onChange={(e) => handleVenueQueryChange(e.target.value)}
-              />
-              {searchingVenues && <p className="mt-2 text-xs text-muted">{t('Buscando...')}</p>}
-              {!selectedVenue && venueResults.length > 0 && (
-                <div className="mt-2 divide-y divide-border rounded-xl border border-border bg-surface">
-                  {venueResults.map((v) => (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedVenue(v);
-                        setVenueQuery(v.name);
-                        setVenueResults([]);
-                      }}
-                      className="block w-full px-4 py-2.5 text-left text-sm"
-                    >
-                      {v.name} <span className="text-muted">· {v.city}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-              <p className="mt-2 text-xs text-muted">
-                {' '}
-                {t('Não achou?')}{' '}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCreatingNewVenue(true);
-                    setSelectedVenue(null);
-                  }}
-                  className="font-semibold text-destaque"
-                >
-                  {' '}
-                  {t('Cadastrar novo local')}{' '}
-                </button>
-              </p>
-            </>
-          ) : (
-            <div className="space-y-3 rounded-2xl border border-border bg-surface p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold">{t('Cadastrar novo local')}</p>
-                <button type="button" onClick={() => setCreatingNewVenue(false)} className="text-xs text-muted">
-                  {' '}
-                  {t('Cancelar')}{' '}
-                </button>
-              </div>
-              <Input
-                placeholder={t('Nome do local')}
-                value={newVenueName}
-                onChange={(e) => setNewVenueName(e.target.value)}
-              />
-              <div className="flex flex-wrap gap-2">
-                {VENUE_CATEGORY_OPTIONS.map(({ value: c, label }) => (
-                  <Chip key={c} selected={newVenueCategory === c} onClick={() => setNewVenueCategory(c)}>
-                    {t(label)}
-                  </Chip>
-                ))}
-              </div>
-              <Input
-                placeholder="00000-000"
-                value={cep}
-                onChange={(e) => handleCepChange(e.target.value)}
-                inputMode="numeric"
-              />
-              {cepStatus === 'loading' && <p className="text-xs text-muted">{t('Buscando endereço...')}</p>}
-              {cepStatus === 'not-found' && <p className="text-xs text-destaque">{t('CEP não encontrado.')}</p>}
-              {cepStatus === 'found' && address && (
-                <p className="text-xs text-muted">
-                  {address.street && `${address.street}, `}
-                  {address.neighborhood} — {address.city}/{address.state}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">{t('Nome do evento')}</label>
+          <label className={label}>{t('Nome do evento')}</label>
           <Input value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">{t('Descrição')}</label>
+          <label className={label}>{t('Descrição')}</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -380,11 +128,11 @@ export function CreateEvent() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">{t('Gêneros musicais')}</label>
+          <label className={label}>{t('Gêneros musicais')}</label>
           <div className="flex flex-wrap gap-2">
             {MUSIC.map((genre) => (
               <Chip
-                key={domainLabel(genre)}
+                key={genre}
                 selected={musicGenres.includes(genre)}
                 onClick={() => toggleMusicGenre(genre)}
               >
@@ -395,12 +143,17 @@ export function CreateEvent() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">{t('Data e hora')}</label>
+          <label className={label}>{t('Data e hora')}</label>
           <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-muted">{t('Capa (opcional)')}</label>
+          <label className={label}>{t('Término (opcional)')}</label>
+          <Input type="datetime-local" value={endsAt} min={startsAt} onChange={(e) => setEndsAt(e.target.value)} />
+        </div>
+
+        <div>
+          <label className={label}>{t('Capa (opcional)')}</label>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
@@ -418,7 +171,7 @@ export function CreateEvent() {
         {error && <p className="text-sm text-destaque">{t(error)}</p>}
 
         <Button size="lg" className="w-full" type="submit" disabled={loading}>
-          {loading ? t('Criando...') : t('Criar evento')}
+          {loading ? t('Publicando...') : t('Publicar evento')}
         </Button>
       </form>
     </div>

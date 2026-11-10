@@ -1,30 +1,10 @@
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsDateString,
-  IsIn,
-  IsInt,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsDateString, IsIn, IsInt, IsOptional, IsString, Length } from 'class-validator';
 
 import { MUSIC_GENRES } from '../../../shared/constants/domain.constants';
-import { CreateVenueDto } from '../../venues/dto/create-venue.dto';
 
+/** Evento criado por conta de comércio aprovada: o local é sempre o do próprio comércio
+ * (venues.owner_user_id), por isso não vem no pedido. */
 export class CreateEventDto {
-  @IsOptional()
-  @IsUUID()
-  venueId?: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => CreateVenueDto)
-  newVenue?: CreateVenueDto;
-
   @IsString()
   @Length(2, 160)
   name: string;
@@ -51,9 +31,4 @@ export class CreateEventDto {
   @IsOptional()
   @IsString()
   coverImageUrl?: string;
-
-  /** Criado como ponto comercial: exige o CNPJ do criador validado (ou em análise). */
-  @IsOptional()
-  @IsBoolean()
-  asBusiness?: boolean;
 }

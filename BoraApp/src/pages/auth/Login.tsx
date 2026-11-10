@@ -8,7 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
-import { isProfileComplete } from '@/utils/profile';
+import { useGoAfterLogin } from '@/hooks/useGoAfterLogin';
 
 export function Login() {
   useI18n();
@@ -19,13 +19,15 @@ export function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const goAfterLogin = useGoAfterLogin();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
       const user = await login(email, password);
-      navigate(isProfileComplete(user) ? '/home' : '/complete-profile', { replace: true });
+      goAfterLogin(user);
     } catch (err) {
       setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível entrar.');
     } finally {
@@ -38,7 +40,12 @@ export function Login() {
       <h1 className="text-3xl font-extrabold">{t('Entrar no BORA')}</h1>
 
       <div className="mt-8 space-y-3">
-        <GoogleSignInButton onSuccess={() => navigate('/home')} onError={setError} />
+        {/* Google sem cadastro: vai escolher entre conta de usuário e de comércio, como no cadastro. */}
+        <GoogleSignInButton
+          onSuccess={goAfterLogin}
+          onError={setError}
+          onAccountNotFound={(credential) => navigate('/register', { state: { googleCredential: credential } })}
+        />
         {featureFlags.appleLogin && (
           <Button variant="outline" className="w-full" type="button">
             {' '}

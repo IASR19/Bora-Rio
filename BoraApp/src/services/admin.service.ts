@@ -10,7 +10,7 @@ export type AdminUser = Pick<
   | 'role'
   | 'isActive'
   | 'language'
-  | 'phoneVerified'
+  | 'emailVerified'
   | 'showInWhoIsGoing'
   | 'subscriptionStatus'
   | 'businessName'
@@ -56,7 +56,10 @@ export interface BusinessDocument {
   cnpj: string | null;
   name: string | null;
   note: string | null;
+  /** Parecer da IA (só para o admin); `note` fica como fallback. */
+  aiNote?: string | null;
   document: string | null;
+  venue?: { id: string; name: string; category: string; address: string; city: string | null } | null;
 }
 const query = (filters: Record<string, string>) => {
   const q = new URLSearchParams();

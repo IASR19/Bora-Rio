@@ -2,17 +2,19 @@ import { Body, Controller, Patch, Post, Req, Res, UnauthorizedException } from '
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
+import { User } from '../../users/entities/user.entity';
+import { UsersService } from '../../users/users.service';
 import { REFRESH_TOKEN_COOKIE } from '../auth.constants';
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from '../auth.cookies';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { Public } from '../decorators/public.decorator';
 import {
   ChangePasswordDto,
-  ConfirmVerificationDto,
+  ConfirmEmailVerificationDto,
   GoogleLoginDto,
   LoginDto,
+  RegisterBusinessDto,
   RegisterDto,
-  RequestVerificationDto,
 } from '../dto/auth.dto';
 import { AuthService } from '../services/auth.service';
 import { JwtPayload } from '../types/jwt-payload.type';
@@ -20,33 +22,41 @@ import { JwtPayload } from '../types/jwt-payload.type';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
+
+  /** Emite os tokens (refresh no cookie) e devolve o usuário no mesmo formato do GET /users/me. */
+  private async signIn(user: User, res: Response) {
+    const tokens = this.authService.issueTokens(user);
+    setRefreshTokenCookie(res, tokens.refreshToken);
+    return { user: await this.usersService.withBusinessVenue(user), accessToken: tokens.accessToken };
+  }
 
   @Public()
   @Post('register')
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.register(dto);
-    const tokens = this.authService.issueTokens(user);
-    setRefreshTokenCookie(res, tokens.refreshToken);
-    return { user, accessToken: tokens.accessToken };
+    return this.signIn(await this.authService.register(dto), res);
+  }
+
+  /** Cadastro de conta de comércio: fica em análise até o admin aprovar. */
+  @Public()
+  @Post('register/business')
+  async registerBusiness(@Body() dto: RegisterBusinessDto, @Res({ passthrough: true }) res: Response) {
+    return this.signIn(await this.authService.registerBusiness(dto), res);
   }
 
   @Public()
   @Post('login')
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.validateCredentials(dto);
-    const tokens = this.authService.issueTokens(user);
-    setRefreshTokenCookie(res, tokens.refreshToken);
-    return { user, accessToken: tokens.accessToken };
+    return this.signIn(await this.authService.validateCredentials(dto), res);
   }
 
   @Public()
   @Post('google')
   async loginWithGoogle(@Body() dto: GoogleLoginDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.loginWithGoogle(dto.idToken, dto.language);
-    const tokens = this.authService.issueTokens(user);
-    setRefreshTokenCookie(res, tokens.refreshToken);
-    return { user, accessToken: tokens.accessToken };
+    return this.signIn(await this.authService.loginWithGoogle(dto.idToken, dto.language, dto.createAccount), res);
   }
 
   @Public()
@@ -73,18 +83,18 @@ export class AuthController {
     return { success: true };
   }
 
-  @Public()
-  @Post('verification/request')
-  async requestVerification(@Body() dto: RequestVerificationDto) {
-    const code = await this.authService.requestPhoneVerification(dto.phone);
+  /** Envia o código de confirmação ao e-mail da conta logada. */
+  @Post('verification/email/request')
+  async requestEmailVerification(@CurrentUser() user: JwtPayload) {
+    const { code, ...result } = await this.authService.requestEmailVerification(user.sub);
+    // Sem Resend em dev/teste, o código volta na resposta para dar pra testar o fluxo.
     const isDev = process.env.NODE_ENV !== 'production';
-    return { sent: true, ...(isDev ? { devCode: code } : {}) };
+    return { ...result, ...(isDev && code ? { devCode: code } : {}) };
   }
 
-  @Public()
-  @Post('verification/confirm')
-  async confirmVerification(@Body() dto: ConfirmVerificationDto) {
-    await this.authService.confirmPhoneVerification(dto.phone, dto.code);
+  @Post('verification/email/confirm')
+  async confirmEmailVerification(@Body() dto: ConfirmEmailVerificationDto, @CurrentUser() user: JwtPayload) {
+    await this.authService.confirmEmailVerification(user.sub, dto.code);
     return { verified: true };
   }
 }

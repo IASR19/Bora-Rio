@@ -2,6 +2,7 @@ import { t, useI18n } from '@/i18n';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { LanguageMenu } from '@/components/LanguageSelector';
 import { cn } from '@/utils/cn';
 
 import { BrandLockup } from '../components/BrandLockup';
@@ -30,7 +31,8 @@ export function LandingHeader() {
           <BrandLockup />
         </a>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <LanguageMenu />
           <Link
             to="/login"
             className="rounded-full px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-foreground"

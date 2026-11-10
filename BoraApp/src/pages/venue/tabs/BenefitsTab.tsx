@@ -1,4 +1,4 @@
-import { t, useI18n } from '@/i18n';
+import { getLocale, t, useI18n } from '@/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Gift } from 'lucide-react';
 import { useState } from 'react';
@@ -40,13 +40,41 @@ export function BenefitsTab({ eventId }: { eventId: string }) {
   };
 
   if (!rewards?.length)
-    return <p className="text-sm text-muted">{t('Nenhum benefício disponível para este evento.')}</p>;
+    return <p className="text-sm text-muted">{t('Nenhuma promoção disponível para este evento.')}</p>;
 
   return (
     <div className="space-y-3">
       {rewards.map((reward) => {
+        const from = reward.validFrom.slice(0, 5);
+        const until = reward.validUntil.slice(0, 5);
+        const hours =
+          from === '00:00' ? `${t('até')} ${until}` : `${t('das')} ${from} ${t('às')} ${until}`;
+
+        if (reward.kind === 'fixed_price' || reward.kind === 'percent_off') {
+          const badge =
+            reward.kind === 'fixed_price'
+              ? new Intl.NumberFormat(getLocale(), { style: 'currency', currency: 'BRL' }).format(
+                  (reward.priceCents ?? 0) / 100,
+                )
+              : t('{percent}% OFF', { percent: reward.percentOff ?? 0 });
+          return (
+            <div key={reward.id} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4">
+              <span className="flex h-11 min-w-11 shrink-0 items-center justify-center rounded-xl bg-bora-gradient-soft px-2 text-sm font-extrabold text-destaque">
+                {badge}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-bold">{reward.title}</p>
+                {reward.description && <p className="text-xs text-muted">{reward.description}</p>}
+                <p className="text-xs text-muted">
+                  {t('Válido')} {hours}
+                </p>
+              </div>
+            </div>
+          );
+        }
+
         const redeemed = redeemedIds?.includes(reward.id);
-        const soldOut = reward.quantityRedeemed >= reward.quantityTotal;
+        const soldOut = reward.quantityTotal !== null && reward.quantityRedeemed >= reward.quantityTotal;
         return (
           <div key={reward.id} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-bora-gradient-soft text-destaque">
@@ -54,10 +82,15 @@ export function BenefitsTab({ eventId }: { eventId: string }) {
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-bold">{reward.title}</p>
+              {reward.description && <p className="text-xs text-muted">{reward.description}</p>}
               <p className="text-xs text-muted">
-                {' '}
-                {t('Válido')} {reward.validFrom.slice(0, 5)}–{reward.validUntil.slice(0, 5)} ·{' '}
-                {reward.quantityTotal - reward.quantityRedeemed} {t('disponíveis')}{' '}
+                {t('Válido')} {hours}
+                {reward.quantityTotal !== null && (
+                  <>
+                    {' · '}
+                    {reward.quantityTotal - reward.quantityRedeemed} {t('disponíveis')}
+                  </>
+                )}
               </p>
               {error?.rewardId === reward.id && <p className="mt-1 text-xs text-destaque">{t(error.message)}</p>}
             </div>

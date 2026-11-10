@@ -9,11 +9,8 @@ import { ApiError } from '@/shared/api/client';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
 import { Select } from '@/shared/ui/Select';
-
-function formatCep(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 8);
-  return digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
-}
+import { formatCep, formatCpf } from '@/utils/businessContract';
+import { takePendingCheckin } from '@/utils/pendingCheckin';
 
 export function CompleteProfile() {
   useI18n();
@@ -29,6 +26,10 @@ export function CompleteProfile() {
   const [name, setName] = useState(user?.name ?? '');
   const [gender, setGender] = useState(user?.gender ?? 'undisclosed');
   const [birthDate, setBirthDate] = useState(user?.birthDate ?? '');
+  const [cpf, setCpf] = useState('');
+  const needsCpf = !user?.cpf;
+  // Só o CPF faltava (cadastro antigo): não precisa refazer o onboarding de preferências.
+  const [onlyCpfMissing] = useState(() => !user?.cpf && !!user?.birthDate && !!user?.phone && !!user?.city);
   const [phone, setPhone] = useState(user?.phone ?? '');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -68,9 +69,15 @@ export function CompleteProfile() {
       return;
     }
 
+    if (needsCpf && cpf.replace(/\D/g, '').length !== 11) {
+      setError('Informe o CPF completo.');
+      return;
+    }
+
     setLoading(true);
     try {
       await usersService.updateMe({
+        ...(needsCpf ? { cpf: cpf.replace(/\D/g, '') } : {}),
         name: name.trim(),
         gender,
         birthDate,
@@ -79,7 +86,8 @@ export function CompleteProfile() {
         ...(coords ? { latitude: coords.latitude, longitude: coords.longitude } : {}),
       });
       await refreshUser();
-      navigate('/preferences/intentions', { replace: true });
+      const pending = takePendingCheckin();
+      navigate(pending ?? (onlyCpfMissing ? '/home' : '/preferences/intentions'), { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? err.sourceMessage : 'Não foi possível salvar seu cadastro.');
     } finally {
@@ -88,7 +96,7 @@ export function CompleteProfile() {
   };
 
   return (
-    <div className="app-shell min-h-dvh bg-background px-6 py-10">
+    <div className="app-shell min-h-dvh bg-background px-6 pb-10 pt-16">
       <h1 className="text-2xl font-extrabold">{t('Complete seu cadastro')}</h1>
       <p className="mt-2 text-sm text-muted">
         {' '}
@@ -161,6 +169,19 @@ export function CompleteProfile() {
             required
           />
         </div>
+
+        {needsCpf && (
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-muted">CPF</label>
+            <Input
+              placeholder="000.000.000-00"
+              value={cpf}
+              onChange={(e) => setCpf(formatCpf(e.target.value))}
+              inputMode="numeric"
+              required
+            />
+          </div>
+        )}
 
         {error && <p className="text-sm text-destaque">{t(error)}</p>}
 

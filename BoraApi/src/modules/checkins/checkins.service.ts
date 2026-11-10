@@ -6,12 +6,14 @@ import { randomUUID } from 'crypto';
 import { Not, Repository } from 'typeorm';
 
 import { BusinessException } from '../../common/exceptions/business.exception';
+import { assertOwnsEventVenue } from '../business/business-ownership';
 import { EventParticipation } from '../events/entities/event-participation.entity';
 import { EventsService } from '../events/events.service';
 import { ConfirmCheckinDto } from './dto/confirm-checkin.dto';
 import { CheckIn } from './entities/checkin.entity';
 
-const QR_TOKEN_TTL_SECONDS = 30;
+/** Cada QR vale 60s; a tela do comércio troca o código sozinha antes de expirar. */
+const QR_TOKEN_TTL_SECONDS = 60;
 
 @Injectable()
 export class CheckinsService {
@@ -22,16 +24,21 @@ export class CheckinsService {
     private readonly configService: ConfigService,
   ) {}
 
-  /**
-   * Simulates the establishment's dynamic QR display (see escopo.md #24).
-   * In production this is rendered on a screen/tablet at the venue, not in the guest's app.
-   */
   countByUser(userId: string): Promise<number> {
     return this.checkinsRepository.count({ where: { userId } });
   }
 
-  async generateQrToken(eventId: string): Promise<{ qrToken: string; expiresInSeconds: number }> {
-    await this.eventsService.findParticipatingById(eventId);
+  /**
+   * QR dinâmico mostrado na tela do estabelecimento (ver escopo.md #24). Só o comércio dono do
+   * local do evento gera; o app monta o link `…/checkin/<eventId>?t=<qrToken>` que o cliente
+   * lê com a câmera do celular.
+   */
+  async generateQrToken(
+    userId: string,
+    eventId: string,
+  ): Promise<{ qrToken: string; expiresInSeconds: number }> {
+    const event = await this.eventsService.findParticipatingById(eventId);
+    assertOwnsEventVenue(event.venue, userId);
     const qrToken = this.jwtService.sign(
       { eventId, nonce: randomUUID() },
       { secret: this.configService.get<string>('CHECKIN_QR_SECRET'), expiresIn: `${QR_TOKEN_TTL_SECONDS}s` },

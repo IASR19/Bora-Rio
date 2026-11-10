@@ -1,11 +1,7 @@
 import { apiFetch } from '@/shared/api/client';
 import type { BoraEvent, EventParticipants } from '@/types/domain';
 
-import type { CreateVenuePayload } from './venues.service';
-
 export interface CreateEventPayload {
-  venueId?: string;
-  newVenue?: CreateVenuePayload;
   name: string;
   description?: string;
   musicGenres: string[];
@@ -13,7 +9,6 @@ export interface CreateEventPayload {
   endsAt?: string;
   targetAge?: number;
   coverImageUrl?: string;
-  asBusiness?: boolean;
 }
 
 export const eventsService = {

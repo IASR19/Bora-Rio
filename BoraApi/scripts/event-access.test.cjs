@@ -52,7 +52,7 @@ test('rejected events cannot issue QR codes or use a previously issued one', asy
     },
     { get: () => 'test-secret' },
   );
-  await assert.rejects(() => checkins.generateQrToken('fixture'), rejected);
+  await assert.rejects(() => checkins.generateQrToken('owner', 'fixture'), rejected);
   await assert.rejects(
     () => checkins.confirm('guest', { eventId: 'fixture', qrToken: 'old', deviceId: 'device' }),
     rejected,

@@ -1,9 +1,11 @@
 const assert = require('node:assert/strict');
 const { test } = require('node:test');
 require('reflect-metadata');
-const { decideBusinessStatus } = require('../dist/modules/users/business-verification.service');
-const { EventsService } = require('../dist/modules/events/events.service');
-const { BoraScoreService } = require('../dist/shared/services/bora-score.service');
+const {
+  decideBusinessStatus,
+  BusinessVerificationService,
+  CNPJ_LOOKUP_FAILED_NOTE,
+} = require('../dist/modules/users/business-verification.service');
 
 const COMPANY = { legalName: 'BAR DO ZE LTDA', tradeName: 'Bar do Zé', active: true, partners: ['JOSE DA SILVA'] };
 const MATCH = {
@@ -16,75 +18,53 @@ const MATCH = {
   reason: 'Contrato social da empresa, assinado pelo sócio.',
 };
 
-test('approves only when everything matches with high confidence', () => {
-  assert.equal(decideBusinessStatus(COMPANY, MATCH).status, 'approved');
+test('AI never approves on its own: everything matching still goes to admin review with an advisory note', () => {
+  const decision = decideBusinessStatus(COMPANY, MATCH);
+  assert.equal(decision.status, 'pending');
+  assert.match(decision.note, /^Parecer da IA: tudo confere \(alta confiança\)\. Contrato social/);
   // Contrato de constituição anterior ao CNPJ: sem CNPJ no documento, vale a razão social.
-  assert.equal(decideBusinessStatus(COMPANY, { ...MATCH, cnpjFound: '', cnpjMatches: false }).status, 'approved');
+  assert.match(decideBusinessStatus(COMPANY, { ...MATCH, cnpjFound: '', cnpjMatches: false }).note, /tudo confere/);
 });
 
 test('without an official partner list (MEI/individual), partners are not required to match', () => {
-  assert.equal(decideBusinessStatus({ ...COMPANY, partners: [] }, { ...MATCH, partnersMatch: false }).status, 'approved');
+  const decision = decideBusinessStatus({ ...COMPANY, partners: [] }, { ...MATCH, partnersMatch: false });
+  assert.equal(decision.status, 'pending');
+  assert.match(decision.note, /tudo confere/);
 });
 
-test('any doubt goes to manual review, never auto-rejected', () => {
-  const pending = [
-    decideBusinessStatus({ ...COMPANY, active: false }, MATCH),
-    decideBusinessStatus(COMPANY, null),
-    decideBusinessStatus(COMPANY, { ...MATCH, confidence: 'medium' }),
-    decideBusinessStatus(COMPANY, { ...MATCH, companyNameMatches: false }),
-    decideBusinessStatus(COMPANY, { ...MATCH, cnpjMatches: false }),
-    decideBusinessStatus(COMPANY, { ...MATCH, isCompanyDocument: false }),
-    decideBusinessStatus(COMPANY, { ...MATCH, partnersMatch: false }),
-    // CNPJ já aprovado em outra conta: tentativa de se passar pela empresa → nunca aprova sozinho.
-    decideBusinessStatus(COMPANY, MATCH, true),
+test('every case stays pending (never auto-approved or auto-rejected) and the note explains the doubt', () => {
+  const cases = [
+    [decideBusinessStatus({ ...COMPANY, active: false }, MATCH), /não está com situação ATIVA/],
+    [decideBusinessStatus(COMPANY, null), /não conseguimos analisar o documento/],
+    [decideBusinessStatus(COMPANY, { ...MATCH, confidence: 'medium' }), /sem divergências, mas com confiança média/],
+    [decideBusinessStatus(COMPANY, { ...MATCH, companyNameMatches: false }), /razão social não confere/],
+    [decideBusinessStatus(COMPANY, { ...MATCH, cnpjMatches: false }), /CNPJ do documento não confere/],
+    [decideBusinessStatus(COMPANY, { ...MATCH, isCompanyDocument: false }), /não parece contrato social/],
+    [decideBusinessStatus(COMPANY, { ...MATCH, partnersMatch: false }), /sócios não conferem/],
   ];
-  for (const decision of pending) assert.equal(decision.status, 'pending');
+  for (const [decision, note] of cases) {
+    assert.equal(decision.status, 'pending');
+    assert.match(decision.note, note);
+  }
 });
 
-function eventsService(creator, venue) {
-  const saved = [];
-  const repository = { create: (values) => values, save: async (values) => (saved.push(values), values) };
-  const venuesService = {
-    findById: async () => venue,
-    createFromUser: async () => ({ ...venue, verified: false }),
-    markVerifiedByBusiness: async (v, cnpj) => ({ ...v, cnpj, verified: true }),
-  };
-  const usersService = { findById: async () => creator };
-  return { service: new EventsService(repository, {}, new BoraScoreService(), venuesService, usersService), saved };
-}
-
-const DTO = { venueId: 'v1', name: 'Festa', musicGenres: ['pop'], startsAt: new Date(Date.now() + 86_400_000).toISOString() };
-const VERIFIED_VENUE = { id: 'v1', verified: true };
-const USER = { phoneVerified: false, cpf: null, selfieUrl: null, businessVerificationStatus: null, businessCnpj: null };
-
-test('business event requires a submitted CNPJ', async () => {
-  const { service } = eventsService(USER, VERIFIED_VENUE);
-  await assert.rejects(service.create('u1', { ...DTO, asBusiness: true }), /CNPJ/);
+test('review: a CNPJ lookup outage does not block signup, it leaves a note for the admin', async (t) => {
+  const service = new BusinessVerificationService({}, { get: () => undefined });
+  t.mock.method(console, 'warn', () => {});
+  t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 503 }));
+  const result = await service.review('11222333000181', 'data:application/pdf;base64,dGVzdA==');
+  assert.equal(result.company, null);
+  assert.deepEqual(result.decision, { status: 'pending', note: CNPJ_LOOKUP_FAILED_NOTE });
 });
 
-test('business with CNPJ under review stays pending even at a verified venue', async () => {
-  const { service, saved } = eventsService({ ...USER, businessVerificationStatus: 'pending' }, VERIFIED_VENUE);
-  await service.create('u1', { ...DTO, asBusiness: true });
-  assert.equal(saved[0].status, 'pending_review');
-  assert.equal(saved[0].createdAsBusiness, true);
-});
-
-test('approved business publishes and verifies the new venue it creates', async () => {
-  const creator = { ...USER, businessVerificationStatus: 'approved', businessCnpj: '11222333000181' };
-  const { service, saved } = eventsService(creator, VERIFIED_VENUE);
-  const event = await service.create('u1', {
-    ...DTO,
-    venueId: undefined,
-    newVenue: { name: 'Bar Novo', category: 'bar', address: 'Rua 1', latitude: -22, longitude: -45 },
-    asBusiness: true,
-  });
-  assert.equal(saved[0].status, 'published');
-  assert.equal(event.venue.verified, true);
-  assert.equal(event.venue.cnpj, '11222333000181');
+test('review: rejects a contract file that is not PDF or image before any lookup', async (t) => {
+  const service = new BusinessVerificationService({}, { get: () => undefined });
+  const fetchMock = t.mock.method(globalThis, 'fetch', async () => Response.json({}));
+  await assert.rejects(service.review('11222333000181', 'data:text/plain;base64,dGVzdA=='), /PDF ou imagem/);
+  assert.equal(fetchMock.mock.callCount(), 0);
 });
 
 test('CNPJ lookup falls back to the next public source when one is down', async (t) => {
-  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
   const service = new BusinessVerificationService({}, { get: () => undefined });
   t.mock.method(console, 'warn', () => {});
   const calls = [];
@@ -99,7 +79,6 @@ test('CNPJ lookup falls back to the next public source when one is down', async 
 });
 
 test('404 from a monthly-snapshot source falls through: a newly opened company is still found', async (t) => {
-  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
   const service = new BusinessVerificationService({}, { get: () => undefined });
   t.mock.method(console, 'warn', () => {});
   let calls = 0;
@@ -113,14 +92,12 @@ test('404 from a monthly-snapshot source falls through: a newly opened company i
 });
 
 test('CNPJ is "not found" only when every source answers 404', async (t) => {
-  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
   const service = new BusinessVerificationService({}, { get: () => undefined });
   t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 404 }));
   await assert.rejects(service.fetchCompany('11222333000181'), /não encontrado/);
 });
 
 test('404 mixed with an outage is not "not found": user can retry', async (t) => {
-  const { BusinessVerificationService } = require('../dist/modules/users/business-verification.service');
   const service = new BusinessVerificationService({}, { get: () => undefined });
   t.mock.method(console, 'warn', () => {});
   let calls = 0;

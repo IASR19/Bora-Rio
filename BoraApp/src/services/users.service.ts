@@ -17,6 +17,7 @@ export const usersService = {
         | 'birthDate'
         | 'showInWhoIsGoing'
         | 'language'
+        | 'cpf'
       >
     >,
   ) => apiFetch<User>('/users/me', { method: 'PATCH', body: data }),

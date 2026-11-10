@@ -1,8 +1,9 @@
 import { t, useI18n } from '@/i18n';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { useAuth } from '@/context/AuthContext';
 import { usersService } from '@/services/users.service';
 
@@ -57,6 +58,13 @@ export function Settings() {
       <h1 className="mt-4 text-2xl font-extrabold">{t('Configurações')}</h1>
 
       <div className="mt-6 space-y-3">
+        <div className="rounded-2xl border border-border bg-surface p-4">
+          <p className="flex items-center gap-2 font-semibold">
+            <Globe aria-hidden="true" className="h-4 w-4 text-destaque" /> {t('Idioma')}
+          </p>
+          <LanguageSelector className="mt-3" />
+        </div>
+
         <div className="flex items-center justify-between rounded-2xl border border-border bg-surface p-4">
           <div className="pr-4">
             <p className="font-semibold">{t('Aparecer em "Quem vai"')}</p>

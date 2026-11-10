@@ -25,6 +25,13 @@ export class InvalidGoogleTokenException extends BusinessException {
   }
 }
 
+/** Login com Google de quem ainda não tem conta: o app leva a pessoa a escolher o tipo de conta. */
+export class GoogleAccountNotFoundException extends BusinessException {
+  constructor() {
+    super('Google account not registered', CommonErrorCodes.GOOGLE_ACCOUNT_NOT_FOUND);
+  }
+}
+
 export class GoogleLoginNotConfiguredException extends BusinessException {
   constructor() {
     super('Login com Google não está configurado no servidor');

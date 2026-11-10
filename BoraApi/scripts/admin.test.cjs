@@ -16,6 +16,18 @@ const { CheckIn } = require('../dist/modules/checkins/entities/checkin.entity');
 const { EventParticipation } = require('../dist/modules/events/entities/event-participation.entity');
 const { Reward } = require('../dist/modules/rewards/entities/reward.entity');
 
+/** CPF aleatório com dígito verificador válido (o cadastro exige CPF único). */
+function randomCpf() {
+  const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+  const check = (digits) => {
+    const sum = digits.reduce((acc, digit, i) => acc + digit * (digits.length + 1 - i), 0);
+    const rest = sum % 11;
+    return rest < 2 ? 0 : 11 - rest;
+  };
+  const d1 = check(base);
+  return [...base, d1, check([...base, d1])].join('');
+}
+
 test(
   'admin access, moderation, geographic analytics and account management',
   {
@@ -31,12 +43,18 @@ test(
     const suffix = randomUUID();
     const ids = [randomUUID(), randomUUID(), randomUUID()];
     const venueId = randomUUID();
+    // Local da conta de comércio pendente (ids[2]), criado no teste de revisão do cadastro.
+    const pendingVenueId = randomUUID();
+    const pendingCnpj = String(Math.floor(Math.random() * 1e14)).padStart(14, '0');
+    // Dono do local de teste: só o estabelecimento aprovado dono do evento gera o QR de check-in.
+    const ownerId = randomUUID();
     const eventId = randomUUID();
     const eventIds = [eventId];
     const city = `Admin test ${suffix}`;
     const userRepo = db.getRepository(User);
     let regularToken;
     let adminToken;
+    let ownerToken;
     const headers = (token) => ({ Authorization: `Bearer ${token}` });
     try {
       await userRepo.save([
@@ -68,11 +86,26 @@ test(
           city: `${city} - RJ`,
           isActive: true,
           businessVerificationStatus: 'pending',
+          businessVerificationNote: 'Recebemos seu cadastro.',
+          businessAiNote: 'Parecer da IA de teste',
+          businessCnpj: pendingCnpj,
           businessContractFile: 'data:application/pdf;base64,dGVzdA==',
         },
+        {
+          id: ownerId,
+          name: 'Venue Owner Test',
+          email: `owner-${suffix}@example.test`,
+          phone: '+5521999999973',
+          role: 'user',
+          accountType: 'business',
+          isActive: true,
+          businessVerificationStatus: 'approved',
+        },
       ]);
+      ids.push(ownerId);
       adminToken = auth.issueTokens(await userRepo.findOneByOrFail({ id: ids[0] })).accessToken;
       regularToken = auth.issueTokens(await userRepo.findOneByOrFail({ id: ids[1] })).accessToken;
+      ownerToken = auth.issueTokens(await userRepo.findOneByOrFail({ id: ownerId })).accessToken;
       await db.getRepository(Venue).save({
         id: venueId,
         name: 'Admin fixture venue',
@@ -84,6 +117,7 @@ test(
         city,
         catalogMetadata: { state: 'RJ' },
         verified: false,
+        ownerUserId: ownerId,
       });
       await db.getRepository(Event).save({
         id: eventId,
@@ -120,7 +154,7 @@ test(
           .query({ q: suffix, limit: 1, page: 2 })
           .set(headers(adminToken))
           .expect(200);
-        assert.equal(response.body.total, 3);
+        assert.equal(response.body.total, 4); // admin, usuário, comércio pendente e dono do local
         assert.equal(response.body.items.length, 1);
         assert.equal(response.body.page, 2);
         for (const field of ['passwordHash', 'cpf', 'selfieUrl', 'businessContractFile', 'phone', 'googleId'])
@@ -193,14 +227,45 @@ test(
         },
       );
       await suite.test('business documents are protected and decisions are persisted', async () => {
+        await db.getRepository(Venue).save({
+          id: pendingVenueId,
+          name: 'Pending business venue',
+          category: 'bar',
+          priceRange: 'medio',
+          address: 'Test',
+          latitude: -22,
+          longitude: -43,
+          city: `Pending ${suffix}`,
+          verified: false,
+          cnpj: pendingCnpj,
+          ownerUserId: ids[2],
+        });
         const doc = await http.get(`/api/admin/users/${ids[2]}/business-document`).set(headers(adminToken)).expect(200);
         assert.equal(doc.body.document, 'data:application/pdf;base64,dGVzdA==');
+        assert.equal(doc.body.aiNote, 'Parecer da IA de teste');
+        assert.equal(doc.body.note, 'Recebemos seu cadastro.');
+        // O parecer da IA é só do admin: nunca vai pra própria conta avaliada.
+        const pendingToken = auth.issueTokens(await userRepo.findOneByOrFail({ id: ids[2] })).accessToken;
+        const me = await http.get('/api/users/me').set(headers(pendingToken)).expect(200);
+        assert.equal('businessAiNote' in me.body, false);
         await http
           .patch(`/api/admin/users/${ids[2]}/business-review`)
           .set(headers(adminToken))
           .send({ decision: 'rejected', note: 'Documento de teste rejeitado' })
           .expect(200);
-        assert.equal((await userRepo.findOneByOrFail({ id: ids[2] })).businessVerificationStatus, 'rejected');
+        const rejected = await userRepo.findOneByOrFail({ id: ids[2] });
+        assert.equal(rejected.businessVerificationStatus, 'rejected');
+        assert.equal(rejected.businessVerificationNote, 'Documento de teste rejeitado');
+        // Rejeitar solta o CNPJ (na conta e no local) pro dono de verdade poder se cadastrar.
+        assert.equal(rejected.businessCnpj, null);
+        const venue = await db.getRepository(Venue).findOneByOrFail({ id: pendingVenueId });
+        assert.equal(venue.cnpj, null);
+        assert.equal(venue.ownerUserId, ids[2]);
+        await http
+          .patch(`/api/admin/users/${ids[2]}/business-review`)
+          .set(headers(adminToken))
+          .send({ decision: 'approved', note: 'Revisão repetida' })
+          .expect(409);
       });
       await suite.test('self service language persists and public registration cannot assign roles', async () => {
         await http.patch('/api/users/me').set(headers(regularToken)).send({ language: 'en' }).expect(200);
@@ -227,6 +292,7 @@ test(
             email: `language-${suffix}@example.test`,
             phone: `+55219${Math.floor(10000000 + Math.random() * 89999999)}`,
             password: 'TestPass123!',
+            cpf: randomCpf(),
             language: 'es',
           })
           .expect(201);
@@ -279,7 +345,7 @@ test(
           musicGenres: ['samba'],
         });
         await http.post(`/api/events/${id}/interested`).set(headers(regularToken)).expect(201);
-        const qr = await http.get(`/api/checkins/qr/${id}`).set(headers(regularToken)).expect(200);
+        const qr = await http.get(`/api/checkins/qr/${id}`).set(headers(ownerToken)).expect(200);
         await http
           .post('/api/checkins')
           .set(headers(regularToken))
@@ -302,7 +368,7 @@ test(
           const response = await http.post(`/api/events/${id}/${action}`).set(headers(regularToken)).expect(400);
           assert.equal(response.body.errorCode, 'EVENT_REJECTED');
         }
-        await http.get(`/api/checkins/qr/${id}`).set(headers(regularToken)).expect(400);
+        await http.get(`/api/checkins/qr/${id}`).set(headers(ownerToken)).expect(400);
         await http
           .post('/api/checkins')
           .set(headers(adminToken))
@@ -333,18 +399,64 @@ test(
           musicGenres: ['samba'],
         });
         await http.post(`/api/events/${id}/confirmed`).set(headers(regularToken)).expect(201);
-        const qr = await http.get(`/api/checkins/qr/${id}`).set(headers(regularToken)).expect(200);
+        const qr = await http.get(`/api/checkins/qr/${id}`).set(headers(ownerToken)).expect(200);
         await http
           .post('/api/checkins')
           .set(headers(regularToken))
           .send({ eventId: id, qrToken: qr.body.qrToken, deviceId: 'review-regression' })
           .expect(201);
       });
+      await suite.test('only an approved business creates events, always on its own venue and published', async () => {
+        const pendingBusinessId = randomUUID();
+        ids.push(pendingBusinessId);
+        const pendingBusiness = await userRepo.save({
+          id: pendingBusinessId,
+          name: 'Pending business events',
+          email: `pending-business-${suffix}@example.test`,
+          accountType: 'business',
+          isActive: true,
+          businessVerificationStatus: 'pending',
+        });
+        const body = {
+          name: 'Business created event',
+          musicGenres: ['samba'],
+          startsAt: new Date(Date.now() + 2 * 86400000).toISOString(),
+        };
+        await http.post('/api/events').set(headers(regularToken)).send(body).expect(403);
+        await http
+          .post('/api/events')
+          .set(headers(auth.issueTokens(pendingBusiness).accessToken))
+          .send(body)
+          .expect(403);
+        const created = await http.post('/api/events').set(headers(ownerToken)).send(body).expect(201);
+        eventIds.push(created.body.id);
+        assert.equal(created.body.venueId, venueId);
+        assert.equal(created.body.status, 'published');
+        assert.equal(created.body.createdBy, ownerId);
+      });
+      await suite.test('a business cannot create promotions on an event of another venue', async () => {
+        const otherBusinessId = randomUUID();
+        ids.push(otherBusinessId);
+        const otherBusiness = await userRepo.save({
+          id: otherBusinessId,
+          name: 'Other approved business',
+          email: `other-business-${suffix}@example.test`,
+          accountType: 'business',
+          isActive: true,
+          businessVerificationStatus: 'approved',
+        });
+        await http
+          .post(`/api/rewards/event/${eventId}`)
+          .set(headers(auth.issueTokens(otherBusiness).accessToken))
+          .send({ kind: 'gift', title: 'Brinde alheio', validFrom: '18:00', validUntil: '22:00' })
+          .expect(403);
+        assert.equal(await db.getRepository(Reward).countBy({ eventId, title: 'Brinde alheio' }), 0);
+      });
     } finally {
       // Only delete fixtures created by this run, never existing application records.
       await db.getRepository(AdminAudit).delete({ actorId: In(ids) });
       await db.getRepository(Event).delete({ id: In(eventIds) });
-      await db.getRepository(Venue).delete({ id: venueId });
+      await db.getRepository(Venue).delete({ id: In([venueId, pendingVenueId]) });
       await userRepo.delete({ id: In(ids) });
       await app.close();
     }

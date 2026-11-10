@@ -57,14 +57,21 @@ export class Venue extends BaseEntity {
   @Column({ name: 'catalog_metadata', type: 'jsonb', nullable: true })
   catalogMetadata: VenueCatalogMetadata | null;
 
-  /** Locais do catálogo/seed nascem true; locais cadastrados por usuário ao criar
-   * um evento nascem false — controla se eventos ali podem se auto-publicar. */
+  /** Locais do catálogo/seed nascem true; local de conta de comércio (e o cadastrado via
+   * POST /venues) nasce false e fica fora das buscas até o admin aprovar o comércio. */
   @Column({ type: 'boolean', default: true })
   verified: boolean;
 
-  /** CNPJ do ponto comercial aprovado que cadastrou o local (ver VenuesService.markVerifiedByBusiness).
+  /** CNPJ da conta de comércio dona do local (ver VenuesService.createForBusiness); acompanha o
+   * CNPJ da conta e volta a null quando o admin rejeita o cadastro (ver applyBusinessReview).
    * Não é único — uma rede pode ter várias unidades com o mesmo CNPJ. */
   @Index()
   @Column({ type: 'varchar', length: 14, nullable: true })
   cnpj: string | null;
+
+  /** Conta de comércio dona do local (1 conta = 1 CNPJ = 1 local). Nasce com `verified=false`
+   * e vira verificado quando o admin aprova o comércio (ver AdminService.reviewBusiness). */
+  @Index()
+  @Column({ name: 'owner_user_id', type: 'uuid', nullable: true })
+  ownerUserId: string | null;
 }

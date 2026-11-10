@@ -11,6 +11,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { BlocksModule } from './modules/blocks/blocks.module';
+import { BusinessModule } from './modules/business/business.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { CheckinsModule } from './modules/checkins/checkins.module';
 import { DeuBoraModule } from './modules/deu-bora/deu-bora.module';
@@ -49,6 +50,7 @@ import { SharedModule } from './shared/shared.module';
     BlocksModule,
     ChatModule,
     DeuBoraModule,
+    BusinessModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

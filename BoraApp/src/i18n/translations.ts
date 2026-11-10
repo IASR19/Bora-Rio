@@ -1,6 +1,8 @@
+import { businessTranslations } from './business-translations';
 import { errorTranslations } from './error-messages';
 
 export const translations: Record<string, { en: string; es: string }> = {
+  ...businessTranslations,
   ...errorTranslations,
   Gênero: { en: 'Gender', es: 'Género' },
   'Complete seu cadastro antes de acessar a administração.': {
@@ -23,7 +25,6 @@ export const translations: Record<string, { en: string; es: string }> = {
     es: 'Aún no hay mensajes. ¡Inicia una conversación!',
   },
   'Diga oi 👋': { en: 'Say hi 👋', es: 'Di hola 👋' },
-  'R$ 4,99/mês ·': { en: 'R$4.99/month ·', es: 'R$4,99/mes ·' },
   Ativo: { en: 'Active', es: 'Activo' },
   Cancelado: { en: 'Canceled', es: 'Cancelado' },
   'Estamos conferindo seu contrato social.': {
@@ -260,14 +261,6 @@ export const translations: Record<string, { en: string; es: string }> = {
     en: 'Actions',
     es: 'Acciones',
   },
-  'Telefone verificado': {
-    en: 'Phone verified',
-    es: 'Teléfono verificado',
-  },
-  'Telefone não verificado': {
-    en: 'Phone not verified',
-    es: 'Teléfono sin verificar',
-  },
   Editar: {
     en: 'Edit',
     es: 'Editar',
@@ -468,10 +461,6 @@ export const translations: Record<string, { en: string; es: string }> = {
     en: 'Could not continue with Google.',
     es: 'No se pudo continuar con Google.',
   },
-  'Confirme seu número': {
-    en: 'Confirm your number',
-    es: 'Confirma tu número',
-  },
   'Enviamos um código para': {
     en: 'We sent a code to',
     es: 'Enviamos un código a',
@@ -660,25 +649,9 @@ export const translations: Record<string, { en: string; es: string }> = {
     en: 'Free',
     es: 'Gratis',
   },
-  'Assinar agora': {
-    en: 'Subscribe now',
-    es: 'Suscribirme ahora',
-  },
   'Continuar grátis': {
     en: 'Continue for free',
     es: 'Continuar gratis',
-  },
-  'Talvez depois': {
-    en: 'Maybe later',
-    es: 'Quizás después',
-  },
-  'Pagamentos chegando em breve — comece grátis por enquanto.': {
-    en: 'Payments are coming soon — start for free today.',
-    es: 'Los pagos llegarán pronto: empieza gratis por ahora.',
-  },
-  '/mês': {
-    en: '/month',
-    es: '/mes',
   },
   'O que você está procurando?': {
     en: 'What are you looking for?',
@@ -952,10 +925,6 @@ export const translations: Record<string, { en: string; es: string }> = {
     en: 'Attach business document (PDF or photo, up to 2.5 MB)',
     es: 'Adjuntar documento comercial (PDF o foto, hasta 2,5 MB)',
   },
-  'Seus eventos comerciais ficam em análise até a aprovação.': {
-    en: 'Your business events stay under review until approval.',
-    es: 'Tus eventos comerciales quedan en revisión hasta su aprobación.',
-  },
   'Enviando contrato social...': {
     en: 'Uploading business document...',
     es: 'Enviando documento comercial...',
@@ -1167,10 +1136,6 @@ export const translations: Record<string, { en: string; es: string }> = {
   'Inserir código manualmente': {
     en: 'Enter code manually',
     es: 'Introducir código manualmente',
-  },
-  'Escanear (demo)': {
-    en: 'Scan (demo)',
-    es: 'Escanear (demo)',
   },
   'Confirmando...': {
     en: 'Confirming...',
@@ -1588,10 +1553,6 @@ export const translations: Record<string, { en: string; es: string }> = {
     en: 'BORA Score of the hottest event',
     es: 'BORA Score del evento más popular',
   },
-  'por mês, se quiser o Club': {
-    en: 'per month, if you choose Club',
-    es: 'al mes, si eliges Club',
-  },
   lugares: {
     en: 'places',
     es: 'lugares',
@@ -1930,19 +1891,10 @@ export const translations: Record<string, { en: string; es: string }> = {
       en: 'Every BORA event has a score calculated for you, based on what matters to you. It considers:',
       es: 'Cada evento tiene una puntuación calculada para ti, basada en lo que te importa. Tiene en cuenta:',
     },
-  'Dá pra começar de graça e assinar quando fizer sentido. Pagamentos ainda estão chegando.': {
-    en: "Start for free and subscribe when you're ready. Payments are coming soon.",
-    es: 'Empieza gratis y suscríbete cuando quieras. Los pagos llegarán pronto.',
-  },
   'Não. O ponto de partida é sempre o lugar. Depois do evento existe o "Deu BORA", mas ele só aparece entre pessoas que fizeram check-in no mesmo evento, e a conversa só abre se as duas se escolherem. É consequência de ter saído, não o objetivo do app.':
     {
       en: 'The experience starts with a place. After an event, Deu BORA lets people who checked in connect. A chat opens only if both choose each other.',
       es: 'La experiencia empieza por un lugar. Después del evento, Deu BORA permite conectar a quienes hicieron check-in. El chat solo se abre si ambos se eligen.',
-    },
-  'Hoje, não. Criar conta, descobrir lugares, ver quem vai e fazer check-in são gratuitos. O BORA Club, de R$ 4,99 por mês, é o plano de assinatura previsto — os pagamentos ainda não estão integrados, então por enquanto dá pra usar tudo sem pagar.':
-    {
-      en: "Currently, accounts, discovery, Who's going and check-ins are free. BORA Club is planned at R$4.99 per month. Payments aren't integrated yet, so you can use everything for free.",
-      es: 'Crear cuenta, descubrir lugares, ver quién va y hacer check-in es gratis. BORA Club está previsto por R$4,99 al mes. Los pagos aún no están integrados: por ahora puedes usar todo gratis.',
     },
   'Não. O BORA abre direto no navegador e pode ser instalado na tela inicial do celular pelo menu do próprio navegador — sem App Store, sem Play Store, sem ocupar espaço de app tradicional.':
     {
@@ -2067,4 +2019,53 @@ export const translations: Record<string, { en: string; es: string }> = {
     en: 'Account suspended.',
     es: 'Cuenta suspendida.',
   },
+  'Informe o CPF completo.': { en: 'Enter your full CPF.', es: 'Introduce tu CPF completo.' },
+  'Informe o CNPJ completo.': { en: 'Enter your full CNPJ.', es: 'Introduce tu CNPJ completo.' },
+  'Anexe o contrato social (PDF ou foto).': { en: 'Attach the articles of incorporation (PDF or photo).', es: 'Adjunta el contrato social (PDF o foto).' },
+  'Preencha o CEP e aguarde o endereço ser localizado.': { en: 'Fill in the ZIP code and wait for the address to be found.', es: 'Completa el CEP y espera a que se localice la dirección.' },
+  'Conta de estabelecimento': { en: 'Business account', es: 'Cuenta de establecimiento' },
+  'Passo': { en: 'Step', es: 'Paso' },
+  'de': { en: 'of', es: 'de' },
+  'Voltar': { en: 'Back', es: 'Volver' },
+  'Número': { en: 'Number', es: 'Número' },
+  'Complemento': { en: 'Complement', es: 'Complemento' },
+  'Nome do responsável': { en: 'Name of the responsible person', es: 'Nombre del responsable' },
+  'E-mail do comércio': { en: 'Business email', es: 'Correo del comercio' },
+  'Nome do estabelecimento': { en: 'Business name', es: 'Nombre del establecimiento' },
+  'Criar conta de estabelecimento': { en: 'Create business account', es: 'Crear cuenta de establecimiento' },
+  'Como você quer usar o Bora?': { en: 'How do you want to use Bora?', es: '¿Cómo quieres usar Bora?' },
+  'Quero curtir eventos': { en: 'I want to enjoy events', es: 'Quiero disfrutar de eventos' },
+  'Tenho um estabelecimento': { en: 'I have a business', es: 'Tengo un establecimiento' },
+  'Descubra lugares, confirme presença e faça check-in.': { en: 'Discover places, confirm attendance and check in.', es: 'Descubre lugares, confirma asistencia y haz check-in.' },
+  'Gerencie seu local, eventos e promoções.': { en: 'Manage your venue, events and promotions.', es: 'Gestiona tu local, eventos y promociones.' },
+  'Use o e-mail e os dados do seu comércio. Esta conta serve só para administrar o seu estabelecimento. Para usar o Bora como pessoa, faça outro cadastro com outro e-mail.': { en: 'Use your business email and details. This account is only for managing your establishment. To use Bora as a person, sign up again with a different email.', es: 'Usa el correo y los datos de tu comercio. Esta cuenta sirve solo para administrar tu establecimiento. Para usar Bora como persona, regístrate de nuevo con otro correo.' },
+  'Nenhuma promoção disponível para este evento.': { en: 'No promotions available for this event.', es: 'No hay promociones disponibles para este evento.' },
+  'até': { en: 'until', es: 'hasta' },
+  'das': { en: 'from', es: 'de' },
+  'às': { en: 'to', es: 'a' },
+  'Aponte a câmera do seu celular para o QR Code do estabelecimento.': { en: 'Point your phone camera at the QR Code of the establishment.', es: 'Apunta la cámara de tu celular al código QR del establecimiento.' },
+  'Esse CPF já está associado a outra conta': { en: 'This CPF is already linked to another account', es: 'Este CPF ya está asociado a otra cuenta' },
+  'Esse CNPJ já está cadastrado em outra conta': { en: 'This CNPJ is already registered to another account', es: 'Este CNPJ ya está registrado en otra cuenta' },
+  'Contas de estabelecimento não podem usar esta função. Crie uma conta de usuário.': { en: 'Business accounts cannot use this feature. Create a user account.', es: 'Las cuentas de establecimiento no pueden usar esta función. Crea una cuenta de usuario.' },
+  'Esta promoção não precisa de resgate: é só pedir no balcão.': { en: 'This promotion needs no redemption: just ask at the counter.', es: 'Esta promoción no necesita canje: solo pídela en el mostrador.' },
+  'Sua sessão do Google expirou. Clique em "Continuar com Google" de novo.': { en: 'Your Google session expired. Click "Continue with Google" again.', es: 'Tu sesión de Google expiró. Haz clic en "Continuar con Google" de nuevo.' },
+  'Sua conta Google {email} ainda não tem cadastro no Bora. Escolha o tipo de conta para continuar.': { en: 'Your Google account {email} is not registered on Bora yet. Choose the account type to continue.', es: 'Tu cuenta de Google {email} aún no está registrada en Bora. Elige el tipo de cuenta para continuar.' },
+  'Acesso pela conta Google': { en: 'Access with your Google account', es: 'Acceso con tu cuenta de Google' },
+  'Usar e-mail e senha': { en: 'Use email and password', es: 'Usar correo y contraseña' },
+  'Essa conta Google ainda não tem cadastro no Bora.': { en: 'This Google account is not registered on Bora yet.', es: 'Esta cuenta de Google aún no está registrada en Bora.' },
+  'Em breve': { en: 'Coming soon', es: 'Próximamente' },
+  'Chega em breve. Por enquanto, tudo no BORA é de graça.': { en: 'Coming soon. For now, everything on BORA is free.', es: 'Llega pronto. Por ahora, todo en BORA es gratis.' },
+  'Hoje, não. Criar conta, descobrir lugares, ver quem vai e fazer check-in são gratuitos. O BORA Club, plano de assinatura, chega em breve — por enquanto dá pra usar tudo sem pagar.': {
+    en: "Not today. Creating an account, discovering places, seeing who's going and checking in are free. BORA Club, the subscription plan, is coming soon — for now you can use everything for free.",
+    es: 'Hoy no. Crear cuenta, descubrir lugares, ver quién va y hacer check-in es gratis. BORA Club, el plan de suscripción, llega pronto: por ahora puedes usar todo sin pagar.',
+  },
+  'grátis pra usar': { en: 'free to use', es: 'gratis para usar' },
+  'Esse Google já tem uma conta de usuário no Bora. Use outro e-mail para o comércio.': { en: 'This Google account already has a user account on Bora. Use a different email for the business.', es: 'Esta cuenta de Google ya tiene una cuenta de usuario en Bora. Usa otro correo para el comercio.' },
+  'E-mail verificado': { en: 'Email verified', es: 'Correo verificado' },
+  'E-mail não verificado': { en: 'Email not verified', es: 'Correo sin verificar' },
+  'Confirme seu e-mail': { en: 'Confirm your email', es: 'Confirma tu correo' },
+  'Reenviar em {seconds}s': { en: 'Resend in {seconds}s', es: 'Reenviar en {seconds}s' },
+  'Código de teste': { en: 'Test code', es: 'Código de prueba' },
+  'Dígito': { en: 'Digit', es: 'Dígito' },
+  'Não foi possível enviar o e-mail. Tente novamente em instantes.': { en: 'Could not send the email. Please try again shortly.', es: 'No se pudo enviar el correo. Inténtalo de nuevo en unos instantes.' },
 };

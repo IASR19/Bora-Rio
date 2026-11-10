@@ -1,8 +1,10 @@
 import 'dotenv/config';
 
 import dataSource from '../data-source';
+import { applyBusinessReview } from '../modules/business/business-review';
 import { Event, EventStatus } from '../modules/events/entities/event.entity';
 import { BusinessVerificationStatus, User } from '../modules/users/entities/user.entity';
+import { Venue } from '../modules/venues/entities/venue.entity';
 
 /**
  * Revisão manual da validação de ponto comercial (CNPJ + contrato social) que a IA deixou em análise.
@@ -12,7 +14,9 @@ import { BusinessVerificationStatus, User } from '../modules/users/entities/user
  *   npm run business:review -- --email dono@bar.com --reject --note "Contrato de outra empresa"
  *   npm run business:review -- --email dono@bar.com --reset   (apaga a validação: o usuário reenvia do zero)
  *
- * Aprovar publica os eventos que esse usuário criou como ponto comercial e estavam em análise.
+ * Aprovar e rejeitar seguem as mesmas regras do painel admin (ver applyBusinessReview): aprovar
+ * verifica o local do comércio e publica os eventos comerciais dele em análise; rejeitar solta o
+ * CNPJ pro dono de verdade poder se cadastrar.
  */
 function arg(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`);
@@ -25,10 +29,16 @@ async function reviewBusiness(): Promise<void> {
     const users = dataSource.getRepository(User);
 
     if (process.argv.includes('--list')) {
-      const pending = await users.find({ where: { businessVerificationStatus: BusinessVerificationStatus.PENDING } });
+      const pending = await users
+        .createQueryBuilder('u')
+        .addSelect('u.businessAiNote')
+        .where('u.businessVerificationStatus = :status', { status: BusinessVerificationStatus.PENDING })
+        .getMany();
       if (!pending.length) console.log('Nenhuma validação de CNPJ em análise.');
       for (const user of pending) {
-        console.log(`${user.email} | CNPJ ${user.businessCnpj} | ${user.businessName ?? '?'} | ${user.businessVerificationNote}`);
+        console.log(
+          `${user.email} | CNPJ ${user.businessCnpj} | ${user.businessName ?? '?'} | ${user.businessAiNote ?? '-'}`,
+        );
       }
       return;
     }
@@ -46,10 +56,12 @@ async function reviewBusiness(): Promise<void> {
             businessName: null,
             businessVerificationStatus: null,
             businessVerificationNote: null,
+            businessAiNote: null,
             businessContractFile: null,
             businessVerifiedAt: null,
           },
         );
+        await manager.update(Venue, { ownerUserId: user.id }, { cnpj: null });
         // Eventos comerciais ainda em análise eram do CNPJ apagado: deixam de ser "comerciais" pra
         // não serem publicados por engano quando um CNPJ novo for aprovado. Seguem em análise.
         const detached = await manager.update(
@@ -69,24 +81,14 @@ async function reviewBusiness(): Promise<void> {
     }
 
     const user = await users.findOne({ where: { email } });
-    if (!user?.businessCnpj) throw new Error(`Nenhuma validação de CNPJ para ${email}`);
+    if (!user) throw new Error(`Usuário ${email} não encontrado`);
 
-    await dataSource.transaction(async (manager) => {
-      user.businessVerificationStatus = approve ? BusinessVerificationStatus.APPROVED : BusinessVerificationStatus.REJECTED;
-      user.businessVerificationNote = arg('note') ?? (approve ? 'Aprovado na revisão manual.' : 'Reprovado na revisão manual.');
-      user.businessVerifiedAt = approve ? new Date() : null;
-      await manager.save(user);
-
-      if (approve) {
-        const result = await manager.update(
-          Event,
-          { createdBy: user.id, createdAsBusiness: true, status: EventStatus.PENDING_REVIEW },
-          { status: EventStatus.PUBLISHED },
-        );
-        console.log(`Eventos publicados: ${result.affected ?? 0}`);
-      }
-    });
-    console.log(`${email}: ${user.businessVerificationStatus}`);
+    const note = arg('note') ?? (approve ? 'Aprovado na revisão manual.' : 'Reprovado na revisão manual.');
+    const result = await dataSource.transaction((manager) =>
+      applyBusinessReview(manager, user.id, approve ? 'approved' : 'rejected', note),
+    );
+    if (approve) console.log(`Eventos publicados: ${result.publishedEvents}`);
+    console.log(`${email}: ${result.user.businessVerificationStatus}`);
   } finally {
     await dataSource.destroy();
   }

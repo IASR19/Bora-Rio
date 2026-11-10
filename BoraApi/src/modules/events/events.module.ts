@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { SharedModule } from '../../shared/shared.module';
+import { AccountGuardsModule } from '../business/guards/account-guards.module';
 import { PreferencesModule } from '../preferences/preferences.module';
-import { UsersModule } from '../users/users.module';
-import { VenuesModule } from '../venues/venues.module';
 import { Event } from './entities/event.entity';
 import { EventParticipation } from './entities/event-participation.entity';
 import { EventsController } from './events.controller';
@@ -15,8 +14,7 @@ import { EventsService } from './events.service';
     TypeOrmModule.forFeature([Event, EventParticipation]),
     PreferencesModule,
     SharedModule,
-    VenuesModule,
-    UsersModule,
+    AccountGuardsModule,
   ],
   controllers: [EventsController],
   providers: [EventsService],

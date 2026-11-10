@@ -121,11 +121,6 @@ export const errorTranslations: Record<string, { en: string; es: string }> = Obj
     ['Essa Bora Room já encerrou', 'This BORA Room has closed.', 'Esta BORA Room ya cerró.'],
     ['Você já denunciou isso', 'You have already reported this.', 'Ya denunciaste esto.'],
     ['Telefone já está em uso', 'This phone number is already in use.', 'Este teléfono ya está en uso.'],
-    [
-      'Verifique seu telefone antes de enviar sua identidade',
-      'Verify your phone before submitting your identity.',
-      'Verifica tu teléfono antes de enviar tu identidad.',
-    ],
     ['CPF inválido', 'Invalid CPF.', 'CPF inválido.'],
     [
       'Esse CPF já está associado a outra conta',

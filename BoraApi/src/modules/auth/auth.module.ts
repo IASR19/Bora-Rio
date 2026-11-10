@@ -4,18 +4,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { SharedModule } from '../../shared/shared.module';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
+import { VenuesModule } from '../venues/venues.module';
 import { AuthController } from './controllers/auth.controller';
-import { PhoneVerification } from './entities/phone-verification.entity';
+import { EmailVerification } from './entities/email-verification.entity';
 import { AuthService } from './services/auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    VenuesModule,
     PassportModule,
-    TypeOrmModule.forFeature([PhoneVerification, User]),
+    SharedModule,
+    TypeOrmModule.forFeature([EmailVerification, User]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

@@ -8,8 +8,6 @@ function readFlag(value: string | undefined, defaultValue: boolean): boolean {
 }
 
 export const featureFlags = {
-  /** Confirmação do número por SMS no cadastro (escopo.md #4.3). */
-  phoneVerification: readFlag(import.meta.env.VITE_FEATURE_PHONE_VERIFICATION, true),
   /** "Continuar com Apple" no login (escopo.md #4.1) — ainda não implementado. */
   appleLogin: readFlag(import.meta.env.VITE_FEATURE_APPLE_LOGIN, false),
 };

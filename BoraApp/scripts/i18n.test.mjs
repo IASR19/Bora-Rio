@@ -69,7 +69,11 @@ test('registration and language selector render in Portuguese, Spanish and Engli
     ['en', 'Create account', 'Name', 'Password'],
   ]) {
     i18n.setLanguage(language);
-    const html = renderToStaticMarkup(h(MemoryRouter, null, h(AuthProvider, null, h(LanguageSelector), h(Register))));
+    const html = renderToStaticMarkup(h(
+        MemoryRouter,
+        { initialEntries: ['/register?tipo=usuario'] },
+        h(QueryClientProvider, { client: new QueryClient() }, h(AuthProvider, null, h(LanguageSelector), h(Register))),
+      ));
     assert.ok(html.includes(title), language);
     assert.ok(html.includes(`placeholder="${name}"`), language);
     assert.ok(html.includes(`placeholder="${password}"`), language);
@@ -110,6 +114,15 @@ test('first-login profile requires personal details and supports the three langu
   assert.equal(isProfileComplete({ birthDate: null, phone: null, city: null }), false);
   assert.equal(
     isProfileComplete({ birthDate: '1990-01-01', phone: '+5521999999999', city: 'Rio de Janeiro - RJ' }),
+    false,
+  );
+  assert.equal(
+    isProfileComplete({
+      birthDate: '1990-01-01',
+      phone: '+5521999999999',
+      city: 'Rio de Janeiro - RJ',
+      cpf: '52998224725',
+    }),
     true,
   );
   for (const [language, title] of [
@@ -118,7 +131,7 @@ test('first-login profile requires personal details and supports the three langu
     ['en', 'Complete your profile'],
   ]) {
     i18n.setLanguage(language);
-    const html = renderToStaticMarkup(h(MemoryRouter, null, h(AuthProvider, null, h(CompleteProfile))));
+    const html = renderToStaticMarkup(h(MemoryRouter, null, h(QueryClientProvider, { client: new QueryClient() }, h(AuthProvider, null, h(CompleteProfile)))));
     assert.ok(html.includes(title));
     assert.ok(html.includes('id="complete-name"'));
     assert.ok(html.includes('id="complete-gender"'));
@@ -142,7 +155,7 @@ test('language selection and device data survive blocked or full local storage w
     assert.equal(document.documentElement.lang, 'es');
     storageApi.writeLocalStorage('bora:device-id', 'session-device');
     assert.equal(storageApi.readLocalStorage('bora:device-id'), 'session-device');
-    const html = renderToStaticMarkup(h(MemoryRouter, null, h(AuthProvider, null, h(LanguageSelector), h(Register))));
+    const html = renderToStaticMarkup(h(MemoryRouter, null, h(QueryClientProvider, { client: new QueryClient() }, h(AuthProvider, null, h(LanguageSelector), h(Register)))));
     assert.ok(html.includes('Crear cuenta'));
     Object.defineProperty(globalThis, 'localStorage', {
       configurable: true,

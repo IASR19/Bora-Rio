@@ -6,10 +6,8 @@ import { BusinessException } from '../../common/exceptions/business.exception';
 import { ResourceNotFoundException } from '../../common/exceptions/resource-not-found.exception';
 import { distanceKm, isWithinRadius } from '../../shared/helpers/geo.helper';
 import { BoraScoreService } from '../../shared/services/bora-score.service';
+import { getOwnedVenue } from '../business/business-ownership';
 import { UserPreferences } from '../preferences/entities/user-preferences.entity';
-import { BusinessVerificationStatus } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
-import { VenuesService } from '../venues/venues.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { QueryEventsDto } from './dto/query-events.dto';
 import { Event, EventStatus } from './entities/event.entity';
@@ -31,8 +29,6 @@ export class EventsService {
     @InjectRepository(EventParticipation)
     private readonly participationRepository: Repository<EventParticipation>,
     private readonly scoreService: BoraScoreService,
-    private readonly venuesService: VenuesService,
-    private readonly usersService: UsersService,
   ) {}
 
   async findById(id: string): Promise<Event> {
@@ -122,47 +118,19 @@ export class EventsService {
     );
   }
 
+  /** Só conta de comércio aprovada chega aqui (BusinessAccountGuard). O local é sempre o do
+   * próprio comércio e, como ele já foi conferido pelo admin, o evento nasce publicado. */
   async create(userId: string, dto: CreateEventDto): Promise<Event> {
-    if (!dto.venueId && !dto.newVenue) {
-      throw new BusinessException('Informe um local existente ou os dados de um novo local');
-    }
-
     const startsAt = new Date(dto.startsAt);
     if (startsAt.getTime() <= Date.now()) {
       throw new BusinessException('A data do evento precisa estar no futuro');
     }
-
-    const creator = await this.usersService.findById(userId);
-    const asBusiness = dto.asBusiness === true;
-    const businessStatus = creator.businessVerificationStatus;
-    if (
-      asBusiness &&
-      businessStatus !== BusinessVerificationStatus.APPROVED &&
-      businessStatus !== BusinessVerificationStatus.PENDING
-    ) {
-      throw new BusinessException('Valide seu CNPJ com o contrato social antes de criar evento como ponto comercial');
-    }
-    const businessApproved = asBusiness && businessStatus === BusinessVerificationStatus.APPROVED;
-
-    // Resolve o local depois de tudo que pode falhar ter sido validado acima (data no futuro,
-    // CNPJ) — evita criar um Venue novo órfão se uma validação falhar.
-    let venue = dto.venueId
-      ? await this.venuesService.findById(dto.venueId)
-      : await this.venuesService.createFromUser(dto.newVenue!);
-    // Local novo cadastrado por ponto comercial aprovado já nasce verificado com o CNPJ dele.
-    if (businessApproved && dto.newVenue && !venue.verified) {
-      venue = await this.venuesService.markVerifiedByBusiness(venue, creator.businessCnpj!);
+    const endsAt = dto.endsAt ? new Date(dto.endsAt) : null;
+    if (endsAt && endsAt.getTime() <= startsAt.getTime()) {
+      throw new BusinessException('O fim do evento precisa ser depois do início');
     }
 
-    const identityVerified = creator.phoneVerified && Boolean(creator.cpf) && Boolean(creator.selfieUrl);
-    // Comercial com CNPJ ainda em análise fica em análise, mesmo em local verificado: é a
-    // garantia de que o "ponto comercial" foi conferido antes de aparecer pra todo mundo.
-    const status =
-      asBusiness && !businessApproved
-        ? EventStatus.PENDING_REVIEW
-        : venue.verified || identityVerified || businessApproved
-          ? EventStatus.PUBLISHED
-          : EventStatus.PENDING_REVIEW;
+    const venue = await getOwnedVenue(this.eventsRepository.manager, userId);
 
     const event = await this.eventsRepository.save(
       this.eventsRepository.create({
@@ -172,11 +140,11 @@ export class EventsService {
         description: dto.description ?? null,
         musicGenres: dto.musicGenres,
         startsAt,
-        endsAt: dto.endsAt ? new Date(dto.endsAt) : null,
+        endsAt,
         targetAge: dto.targetAge ?? null,
         coverImageUrl: dto.coverImageUrl ?? null,
-        status,
-        createdAsBusiness: asBusiness,
+        status: EventStatus.PUBLISHED,
+        createdAsBusiness: true,
       }),
     );
 
