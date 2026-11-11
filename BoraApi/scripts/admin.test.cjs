@@ -226,6 +226,86 @@ test(
           await http.get('/api/users/me').set(headers(regularToken)).expect(200);
         },
       );
+      await suite.test('support access signs the admin into another account, is audited and can be undone', async () => {
+        const cookiesOf = (res) => res.headers['set-cookie'].map((cookie) => cookie.split(';')[0]);
+        await http.post(`/api/admin/users/${ids[0]}/impersonate`).expect(401);
+        await http.post(`/api/admin/users/${ids[0]}/impersonate`).set(headers(regularToken)).expect(403);
+        await http.post(`/api/admin/users/${ids[0]}/impersonate`).set(headers(adminToken)).expect(400);
+        await http.post(`/api/admin/users/${randomUUID()}/impersonate`).set(headers(adminToken)).expect(404);
+        await userRepo.update({ id: ids[1] }, { isActive: false });
+        await http.post(`/api/admin/users/${ids[1]}/impersonate`).set(headers(adminToken)).expect(409);
+        await userRepo.update({ id: ids[1] }, { isActive: true });
+
+        const started = await http.post(`/api/admin/users/${ids[1]}/impersonate`).set(headers(adminToken)).expect(200);
+        assert.equal(started.body.user.id, ids[1]);
+        assert.deepEqual(started.body.user.impersonation, { adminId: ids[0], adminName: 'Admin Test' });
+        const cookies = cookiesOf(started);
+        assert.ok(cookies.some((cookie) => cookie.startsWith('bora_refresh_token=')));
+        assert.ok(cookies.some((cookie) => cookie.startsWith('bora_admin_refresh_token=')));
+        const support = headers(started.body.accessToken);
+
+        // Age como a conta acessada, mas sem as ações exclusivas do dono nem poderes de admin.
+        const me = await http.get('/api/users/me').set(support).expect(200);
+        assert.equal(me.body.id, ids[1]);
+        assert.equal(me.body.impersonation.adminId, ids[0]);
+        await http.get('/api/admin/options').set(support).expect(403);
+        await http.delete('/api/users/me').set(support).expect(403);
+        await http
+          .patch('/api/auth/password')
+          .set(support)
+          .send({ currentPassword: 'Senha@12345', newPassword: 'Senha@54321' })
+          .expect(403);
+        assert.ok(await userRepo.findOneBy({ id: ids[1] }));
+        // Identidade e confirmação de e-mail são do dono da conta; o resto do perfil o suporte altera.
+        await http.post('/api/auth/verification/email/request').set(support).expect(403);
+        await http.post('/api/auth/verification/email/confirm').set(support).send({ code: '123456' }).expect(403);
+        await http.patch('/api/users/me').set(support).send({ cpf: randomCpf() }).expect(403);
+        await http
+          .patch('/api/users/me/identity')
+          .set(support)
+          .send({ cpf: randomCpf(), selfieUrl: 'data:image/png;base64,AAAA' })
+          .expect(403);
+        await http.patch('/api/users/me').set(support).send({ showInWhoIsGoing: true }).expect(200);
+        const own =await http.get('/api/users/me').set(headers(regularToken)).expect(200);
+        assert.equal(own.body.impersonation, null);
+
+        // Renovar mantém o acesso de suporte e não estende o prazo dele.
+        const refreshed = await http.post('/api/auth/refresh').set('Cookie', cookies).expect(201);
+        const refreshedMe = await http.get('/api/users/me').set(headers(refreshed.body.accessToken)).expect(200);
+        assert.equal(refreshedMe.body.impersonation.adminId, ids[0]);
+        const exp = (cookie) => JSON.parse(Buffer.from(cookie.split('=')[1].split('.')[1], 'base64url').toString()).exp;
+        const refreshCookie = (list) => list.find((cookie) => cookie.startsWith('bora_refresh_token='));
+        assert.ok(exp(refreshCookie(cookiesOf(refreshed))) <= exp(refreshCookie(cookies)));
+
+        // Admin acessando outro admin: não abre um segundo acesso e as ações ficam no nome do admin real.
+        await userRepo.update({ id: ids[1] }, { role: 'admin' });
+        await http.post(`/api/admin/users/${ownerId}/impersonate`).set(support).expect(403);
+        await http.patch(`/api/admin/users/${ownerId}`).set(support).send({ language: 'en' }).expect(200);
+        const audited = await db
+          .getRepository(AdminAudit)
+          .findOneByOrFail({ targetId: ownerId, action: 'user.update' });
+        assert.equal(audited.actorId, ids[0]);
+        await userRepo.update({ id: ids[1] }, { role: 'user' });
+
+        // Quem abriu o acesso deixou de ser admin: o acesso cai na hora.
+        await userRepo.update({ id: ids[0] }, { role: 'user' });
+        await http.get('/api/users/me').set(support).expect(401);
+        await http.post('/api/auth/refresh').set('Cookie', cookies).expect(401);
+        await userRepo.update({ id: ids[0] }, { role: 'admin' });
+
+        const stopped = await http.post('/api/auth/impersonation/stop').set('Cookie', cookies).expect(201);
+        assert.equal(stopped.body.user.id, ids[0]);
+        const back = await http.get('/api/users/me').set(headers(stopped.body.accessToken)).expect(200);
+        assert.equal(back.body.impersonation, null);
+        await http.get('/api/admin/options').set(headers(stopped.body.accessToken)).expect(200);
+        await http.post('/api/auth/impersonation/stop').expect(401);
+
+        const actions = (await db.getRepository(AdminAudit).findBy({ actorId: ids[0], targetId: ids[1] })).map(
+          (item) => item.action,
+        );
+        assert.ok(actions.includes('user.impersonate'));
+        assert.ok(actions.includes('user.impersonate.stop'));
+      });
       await suite.test('business documents are protected and decisions are persisted', async () => {
         await db.getRepository(Venue).save({
           id: pendingVenueId,

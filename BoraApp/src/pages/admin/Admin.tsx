@@ -2,7 +2,7 @@ import { domainLabel } from '@/i18n/domain-label';
 import { isProfileComplete } from '@/utils/profile';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { ArrowLeft, BarChart3, CheckCircle2, Clock3, History, Search, ShieldCheck, Users, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/i18n';
@@ -27,6 +27,8 @@ const labels: Record<string, string> = {
   'user.update': 'Usuário atualizado',
   'event.review': 'Evento revisado',
   'business.review': 'Cadastro comercial revisado',
+  'user.impersonate': 'Acesso de suporte iniciado',
+  'user.impersonate.stop': 'Acesso de suporte encerrado',
 };
 const initialFilters = {
   region: '',
@@ -105,13 +107,15 @@ export function Admin() {
 }
 
 function AdminPanel() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, impersonate } = useAuth();
+  const navigate = useNavigate();
   const { t, locale } = useI18n();
   const cache = useQueryClient();
   const [tab, setTab] = useState<Tab>('dashboard');
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<AdminUser | null>(null);
+  const [accessing, setAccessing] = useState<AdminUser | null>(null);
   const [review, setReview] = useState<{ id: string; name: string; kind: 'event' | 'business' } | null>(null);
   const [note, setNote] = useState('');
   const [notice, setNotice] = useState('');
@@ -180,6 +184,11 @@ function AdminPanel() {
     setNote('');
     setNotice('Alterações salvas.');
   };
+  // Acesso de suporte: a sessão passa a ser a da conta escolhida, então sai do painel.
+  const access = useMutation({
+    mutationFn: (u: AdminUser) => impersonate(u.id),
+    onSuccess: (target) => navigate(target.accountType === 'business' ? '/business' : '/home', { replace: true }),
+  });
   const update = useMutation({
     mutationFn: (u: AdminUser) =>
       adminService.updateUser(u.id, {
@@ -544,6 +553,19 @@ function AdminPanel() {
                         >
                           {t(tab === 'business' ? 'Revisar' : 'Editar')}
                         </Button>
+                        {tab === 'users' && u.id !== user?.id && u.isActive && !user?.impersonation && (
+                          <Button
+                            className="ml-2"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setAccessing(u);
+                              access.reset();
+                            }}
+                          >
+                            {t('Acessar conta')}
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -669,6 +691,46 @@ function AdminPanel() {
                 </Button>
               </div>
             </form>
+          )}
+        </BottomSheet>
+        <BottomSheet
+          open={Boolean(accessing)}
+          onOpenChange={(open) => {
+            if (!open && !access.isPending) setAccessing(null);
+          }}
+          title={t('Acessar conta')}
+        >
+          {accessing && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-bold">{accessing.name}</h3>
+                <p className="break-all text-sm text-muted">{accessing.email}</p>
+              </div>
+              <p className="text-sm text-muted">
+                {t(
+                  'Você vai usar o aplicativo como esta pessoa, vendo e podendo alterar o que ela vê. O acesso fica registrado no histórico e dura até 2 horas. Para sair, use "Voltar para minha conta" no topo da tela.',
+                )}
+              </p>
+              {access.error && (
+                <p role="alert" className="text-sm text-destaque">
+                  {t(access.error.message)}
+                </p>
+              )}
+              <div className="flex gap-2">
+                <Button size="sm" disabled={access.isPending} onClick={() => access.mutate(accessing)}>
+                  {t(access.isPending ? 'Entrando...' : 'Acessar conta')}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={access.isPending}
+                  onClick={() => setAccessing(null)}
+                >
+                  {t('Cancelar')}
+                </Button>
+              </div>
+            </div>
           )}
         </BottomSheet>
         <BottomSheet

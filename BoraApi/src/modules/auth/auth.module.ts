@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { SharedModule } from '../../shared/shared.module';
+import { AdminAudit } from '../admin/entities/admin-audit.entity';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
 import { VenuesModule } from '../venues/venues.module';
@@ -19,7 +20,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     VenuesModule,
     PassportModule,
     SharedModule,
-    TypeOrmModule.forFeature([EmailVerification, User]),
+    TypeOrmModule.forFeature([EmailVerification, User, AdminAudit]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

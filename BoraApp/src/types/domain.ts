@@ -4,6 +4,8 @@ export interface User {
   role: 'user' | 'admin';
   accountType: 'user' | 'business';
   businessVenueId?: string | null;
+  /** Preenchido quando um admin está acessando esta conta em modo suporte. */
+  impersonation?: { adminId: string; adminName: string } | null;
   language: 'pt' | 'es' | 'en';
   isActive: boolean;
   id: string;

@@ -11,6 +11,7 @@ import { DataSource, Repository } from 'typeorm';
 import { BusinessException } from '../../../common/exceptions/business.exception';
 import { isUniqueViolation } from '../../../common/utils/database.utils';
 import { MailService } from '../../../shared/services/mail.service';
+import { AdminAudit } from '../../admin/entities/admin-audit.entity';
 import {
   BUSINESS_PENDING_NOTE,
   BusinessVerificationService,
@@ -19,7 +20,12 @@ import {
 import { BusinessVerificationStatus, User } from '../../users/entities/user.entity';
 import { cpfTakenException, UsersService } from '../../users/users.service';
 import { VenuesService } from '../../venues/venues.service';
-import { EMAIL_CODE_COOLDOWN_SECONDS, EMAIL_CODE_MAX_ATTEMPTS, VERIFICATION_CODE_TTL_MINUTES } from '../auth.constants';
+import {
+  EMAIL_CODE_COOLDOWN_SECONDS,
+  EMAIL_CODE_MAX_ATTEMPTS,
+  IMPERSONATION_TTL_SECONDS,
+  VERIFICATION_CODE_TTL_MINUTES,
+} from '../auth.constants';
 import {
   EmailAlreadyRegisteredException,
   GoogleAccountNotFoundException,
@@ -31,6 +37,7 @@ import {
 } from '../auth-errors';
 import { LoginDto, RegisterBusinessDto, RegisterDto } from '../dto/auth.dto';
 import { EmailVerification } from '../entities/email-verification.entity';
+import { JwtPayload } from '../types/jwt-payload.type';
 import { buildVerificationEmail } from '../verification-email';
 
 interface GoogleIdentity {
@@ -178,27 +185,90 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  /**
+   * Tokens do acesso de suporte: valem para a conta `target`, mas carregam o id do admin real
+   * (`impersonatorId`). O refresh nasce com prazo curto e `refreshTokens` não o estende.
+   */
+  issueImpersonationTokens(target: User, impersonatorId: string): TokenPair {
+    if (!target.isActive) throw new UnauthorizedException('Conta suspensa.');
+    const payload: JwtPayload = { sub: target.id, email: target.email, impersonatorId };
+    return {
+      accessToken: this.signAccessToken(payload),
+      refreshToken: this.jwtService.sign(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: IMPERSONATION_TTL_SECONDS,
+      }),
+    };
+  }
+
+  private signAccessToken(payload: JwtPayload): string {
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN', '15m') as any,
+    });
+  }
+
+  /** Lê um refresh token sem renovar nada (ex.: saber de qual conta o admin está saindo). */
+  readRefreshToken(refreshToken: string): JwtPayload | null {
+    try {
+      return this.jwtService.verify<JwtPayload>(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  /** O acesso de suporte só vale enquanto quem o abriu continua sendo admin ativo. */
+  private async assertImpersonatorStillAdmin(impersonatorId: string): Promise<void> {
+    const admin = await this.usersService.findById(impersonatorId).catch(() => null);
+    if (!admin?.isActive || admin.role !== 'admin') throw new UnauthorizedException();
+  }
+
   async refreshTokens(refreshToken: string): Promise<TokenPair> {
-    const payload = this.jwtService.verify(refreshToken, {
+    const payload = this.jwtService.verify<JwtPayload & { exp: number }>(refreshToken, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
     const user = await this.usersService.findById(payload.sub).catch(() => null);
     if (!user?.isActive) throw new UnauthorizedException('Conta suspensa.');
-    const accessToken = this.jwtService.sign(
-      { sub: payload.sub, email: payload.email },
-      {
-        secret: this.configService.get<string>('JWT_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN', '15m') as any,
-      },
-    );
-    const newRefreshToken = this.jwtService.sign(
-      { sub: payload.sub, email: payload.email },
-      {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '10d') as any,
-      },
-    );
-    return { accessToken, refreshToken: newRefreshToken };
+
+    if (payload.impersonatorId) {
+      await this.assertImpersonatorStillAdmin(payload.impersonatorId);
+      // Mantém o vencimento original: renovar não prolonga o acesso de suporte.
+      const remainingSeconds = payload.exp - Math.floor(Date.now() / 1000);
+      if (remainingSeconds <= 0) throw new UnauthorizedException();
+      const claims: JwtPayload = { sub: payload.sub, email: payload.email, impersonatorId: payload.impersonatorId };
+      return {
+        accessToken: this.signAccessToken(claims),
+        refreshToken: this.jwtService.sign(claims, {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: remainingSeconds,
+        }),
+      };
+    }
+
+    const claims: JwtPayload = { sub: payload.sub, email: payload.email };
+    const newRefreshToken = this.jwtService.sign(claims, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '10d') as any,
+    });
+    return { accessToken: this.signAccessToken(claims), refreshToken: newRefreshToken };
+  }
+
+  /**
+   * Fim do acesso de suporte: troca a sessão guardada do admin por tokens novos dele.
+   * `currentRefreshToken` (o da conta acessada) só serve para registrar de qual conta ele saiu.
+   */
+  async stopImpersonation(adminRefreshToken: string, currentRefreshToken?: string): Promise<TokenPair & { user: User }> {
+    const tokens = await this.refreshTokens(adminRefreshToken);
+    const admin = this.readRefreshToken(tokens.refreshToken)!;
+    const current = currentRefreshToken ? this.readRefreshToken(currentRefreshToken) : null;
+    if (current?.impersonatorId === admin.sub) {
+      await this.dataSource
+        .getRepository(AdminAudit)
+        .save({ actorId: admin.sub, targetId: current.sub, action: 'user.impersonate.stop', changes: {} });
+    }
+    return { ...tokens, user: await this.usersService.findById(admin.sub) };
   }
 
   /**

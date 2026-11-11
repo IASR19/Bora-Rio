@@ -188,6 +188,24 @@ export class AdminService {
     });
   }
 
+  /**
+   * Acesso de suporte: o admin entra na conta de outra pessoa (usuário, comércio ou outro admin)
+   * como se tivesse feito login nela. Fica registrado no histórico; quem emite os tokens é o controller.
+   */
+  async impersonate(actorId: string, id: string): Promise<{ actor: User; target: User }> {
+    return this.db.transaction(async (manager) => {
+      await this.authorize(manager, actorId);
+      if (actorId === id) throw new BadRequestException('Você já está na sua própria conta.');
+      // Em sequência: as duas consultas usam a mesma conexão da transação.
+      const actor = await manager.findOneByOrFail(User, { id: actorId });
+      const target = await manager.findOneBy(User, { id });
+      if (!target) throw new NotFoundException();
+      if (!target.isActive) throw new ConflictException('Reative a conta antes de acessá-la.');
+      await manager.save(AdminAudit, { actorId, targetId: id, action: 'user.impersonate', changes: {} });
+      return { actor, target };
+    });
+  }
+
   async reviewEvent(actorId: string, id: string, dto: AdminReviewDto) {
     return this.db.transaction(async (manager) => {
       await this.authorize(manager, actorId);

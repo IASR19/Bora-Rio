@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
+import { ImpersonationBanner } from './components/ImpersonationBanner';
 import { MainLayout } from './components/MainLayout';
-import { isProfileComplete } from './utils/profile';
+import { isProfileComplete, needsEmailVerification } from './utils/profile';
 import { isPublicAppRoute, PublicLanguageCorner } from './components/LanguageSelector';
 import { Admin } from './pages/admin/Admin';
 import { useAuth } from './context/AuthContext';
@@ -53,7 +54,7 @@ function RequireAuth({ children }: { children: React.ReactElement }) {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  if (!user.emailVerified) return <Navigate to="/verification" replace />;
+  if (needsEmailVerification(user)) return <Navigate to="/verification" replace />;
   if (user.accountType === 'business') return <Navigate to="/business" replace />;
   return children;
 }
@@ -64,7 +65,7 @@ function ProtectedLayout() {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  if (!user.emailVerified) return <Navigate to="/verification" replace />;
+  if (needsEmailVerification(user)) return <Navigate to="/verification" replace />;
   if (user.accountType === 'business') return <Navigate to="/business" replace />;
   if (!isProfileComplete(user)) return <Navigate to="/complete-profile" replace />;
   return <MainLayout />;
@@ -78,6 +79,7 @@ export default function App() {
       {/* O idioma fica no cabeçalho da landing e do admin, em Configurações (usuário) e em
        * Conta (comércio). Só as telas de entrada, que não têm cabeçalho, usam o canto flutuante. */}
       {isPublicAppRoute(pathname) && <PublicLanguageCorner />}
+      <ImpersonationBanner />
       <Routes>
         <Route path="/admin" element={<Admin />} />
         {/* "/" é a vitrine pública (landing). O app propriamente dito começa em "/app",

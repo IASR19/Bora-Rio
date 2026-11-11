@@ -6,6 +6,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { businessService } from "@/services/business.service";
 import { formatCnpj } from "@/utils/businessContract";
+import { needsEmailVerification } from "@/utils/profile";
 import { BusinessVerificationCard } from "@/pages/events/BusinessVerificationCard";
 
 import { BusinessBottomNav } from "./BusinessBottomNav";
@@ -81,7 +82,7 @@ export function BusinessLayout() {
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  if (!user.emailVerified) return <Navigate to="/verification" replace />;
+  if (needsEmailVerification(user)) return <Navigate to="/verification" replace />;
   if (user.accountType !== "business") return <Navigate to="/home" replace />;
 
   const onAccount = location.pathname.startsWith("/business/account");

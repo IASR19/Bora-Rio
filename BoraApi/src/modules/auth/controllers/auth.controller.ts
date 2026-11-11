@@ -4,8 +4,8 @@ import { Request, Response } from 'express';
 
 import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
-import { REFRESH_TOKEN_COOKIE } from '../auth.constants';
-import { clearRefreshTokenCookie, setRefreshTokenCookie } from '../auth.cookies';
+import { ADMIN_REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from '../auth.constants';
+import { clearAdminRefreshTokenCookie, clearRefreshTokenCookie, setRefreshTokenCookie } from '../auth.cookies';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { Public } from '../decorators/public.decorator';
 import {
@@ -16,6 +16,7 @@ import {
   RegisterBusinessDto,
   RegisterDto,
 } from '../dto/auth.dto';
+import { assertNotImpersonating } from '../impersonation';
 import { AuthService } from '../services/auth.service';
 import { JwtPayload } from '../types/jwt-payload.type';
 
@@ -31,6 +32,8 @@ export class AuthController {
   private async signIn(user: User, res: Response) {
     const tokens = this.authService.issueTokens(user);
     setRefreshTokenCookie(res, tokens.refreshToken);
+    // Entrar de novo encerra qualquer acesso de suporte que tenha ficado aberto neste navegador.
+    clearAdminRefreshTokenCookie(res);
     return { user: await this.usersService.withBusinessVenue(user), accessToken: tokens.accessToken };
   }
 
@@ -74,11 +77,32 @@ export class AuthController {
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
     clearRefreshTokenCookie(res);
+    clearAdminRefreshTokenCookie(res);
     return { success: true };
+  }
+
+  /** Encerra o acesso de suporte e devolve o admin para a própria conta. */
+  @Public()
+  @Post('impersonation/stop')
+  async stopImpersonation(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const adminRefreshToken = req.cookies?.[ADMIN_REFRESH_TOKEN_COOKIE];
+    if (!adminRefreshToken) throw new UnauthorizedException('Missing admin session');
+
+    clearAdminRefreshTokenCookie(res);
+    const { user, accessToken, refreshToken } = await this.authService
+      .stopImpersonation(adminRefreshToken, req.cookies?.[REFRESH_TOKEN_COOKIE])
+      .catch(() => {
+        // Sessão do admin vencida ou revogada: não sobra sessão nenhuma, o app pede login.
+        clearRefreshTokenCookie(res);
+        throw new UnauthorizedException('Admin session expired');
+      });
+    setRefreshTokenCookie(res, refreshToken);
+    return { user: await this.usersService.withBusinessVenue(user), accessToken };
   }
 
   @Patch('password')
   async changePassword(@Body() dto: ChangePasswordDto, @CurrentUser() user: JwtPayload) {
+    assertNotImpersonating(user);
     await this.authService.changePassword(user.sub, dto.currentPassword, dto.newPassword);
     return { success: true };
   }
@@ -86,6 +110,8 @@ export class AuthController {
   /** Envia o código de confirmação ao e-mail da conta logada. */
   @Post('verification/email/request')
   async requestEmailVerification(@CurrentUser() user: JwtPayload) {
+    // O código vai para o e-mail do dono da conta: o suporte não deve disparar isso por ele.
+    assertNotImpersonating(user);
     const { code, ...result } = await this.authService.requestEmailVerification(user.sub);
     // Sem Resend em dev/teste, o código volta na resposta para dar pra testar o fluxo.
     const isDev = process.env.NODE_ENV !== 'production';
@@ -94,6 +120,7 @@ export class AuthController {
 
   @Post('verification/email/confirm')
   async confirmEmailVerification(@Body() dto: ConfirmEmailVerificationDto, @CurrentUser() user: JwtPayload) {
+    assertNotImpersonating(user);
     await this.authService.confirmEmailVerification(user.sub, dto.code);
     return { verified: true };
   }

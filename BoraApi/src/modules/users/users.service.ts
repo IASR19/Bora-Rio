@@ -103,6 +103,17 @@ export class UsersService {
     return this.withBusinessVenue(await this.findById(id));
   }
 
+  /**
+   * Marca a resposta com o admin que está acessando a conta em modo suporte (ou `null`),
+   * para o app mostrar o aviso e o "voltar para minha conta".
+   */
+  async withImpersonation<T extends object>(view: T, impersonatorId?: string) {
+    const admin = impersonatorId
+      ? await this.usersRepository.findOne({ where: { id: impersonatorId }, select: { id: true, name: true } })
+      : null;
+    return Object.assign(view, { impersonation: admin ? { adminId: admin.id, adminName: admin.name } : null });
+  }
+
   /** CPF só com dígitos e dígito verificador válido. */
   normalizeCpf(raw: string): string {
     const digits = raw.replace(/\D/g, '');

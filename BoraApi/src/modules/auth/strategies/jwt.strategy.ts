@@ -24,6 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JwtPayload): Promise<JwtPayload> {
     const user = await this.users.findOneBy({ id: payload.sub });
     if (!user?.isActive) throw new UnauthorizedException();
+    if (payload.impersonatorId) {
+      // Acesso de suporte: cai na hora se quem o abriu deixou de ser admin ativo.
+      const admin = await this.users.findOneBy({ id: payload.impersonatorId });
+      if (!admin?.isActive || admin.role !== 'admin') throw new UnauthorizedException();
+    }
     return payload;
   }
 }

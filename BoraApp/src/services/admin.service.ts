@@ -1,4 +1,5 @@
 import { apiFetch } from '@/shared/api/client';
+import type { AuthResponse } from '@/services/auth.service';
 import type { BoraEvent, User } from '@/types/domain';
 
 export type AdminUser = Pick<
@@ -8,6 +9,7 @@ export type AdminUser = Pick<
   | 'email'
   | 'city'
   | 'role'
+  | 'accountType'
   | 'isActive'
   | 'language'
   | 'emailVerified'
@@ -81,5 +83,7 @@ export const adminService = {
       method: 'PATCH',
       body: { decision, note },
     }),
+  /** Acesso de suporte: a sessão deste navegador passa a ser a da conta `id`. */
+  impersonate: (id: string) => apiFetch<AuthResponse>(`/admin/users/${id}/impersonate`, { method: 'POST' }),
   document: (id: string) => apiFetch<BusinessDocument>(`/admin/users/${id}/business-document`),
 };

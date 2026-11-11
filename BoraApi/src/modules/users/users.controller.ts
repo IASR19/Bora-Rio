@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { assertNotImpersonating } from '../auth/impersonation';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 import { BusinessVerificationService } from './business-verification.service';
 import { SubmitBusinessVerificationDto } from './dto/submit-business-verification.dto';
@@ -19,17 +20,20 @@ export class UsersController {
 
   /** Usuário logado + `businessVenueId` (local da conta de comércio, ou null). */
   @Get('me')
-  me(@CurrentUser() user: JwtPayload) {
-    return this.usersService.findMe(user.sub);
+  async me(@CurrentUser() user: JwtPayload) {
+    return this.usersService.withImpersonation(await this.usersService.findMe(user.sub), user.impersonatorId);
   }
 
   @Patch('me')
   updateMe(@CurrentUser() user: JwtPayload, @Body() dto: UpdateUserDto) {
+    // Documento de identidade só o dono da conta informa.
+    if (dto.cpf !== undefined) assertNotImpersonating(user);
     return this.usersService.update(user.sub, dto);
   }
 
   @Patch('me/identity')
   submitIdentity(@CurrentUser() user: JwtPayload, @Body() dto: SubmitIdentityDto) {
+    assertNotImpersonating(user);
     return this.usersService.submitIdentity(user.sub, dto);
   }
 
@@ -41,6 +45,7 @@ export class UsersController {
 
   @Delete('me')
   async deleteMe(@CurrentUser() user: JwtPayload) {
+    assertNotImpersonating(user);
     await this.usersService.delete(user.sub);
     return { success: true };
   }
